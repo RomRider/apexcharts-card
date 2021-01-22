@@ -1,18 +1,23 @@
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
 
-export function compress(data: any): string {
+export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
 }
 
-export function decompress(data: any | undefined): any | undefined {
-  return data !== undefined && typeof data === 'string' ? JSON.parse(lzStringDecompress(data)!) : data;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function decompress(data: unknown | undefined): any | undefined {
+  if (data !== undefined && typeof data === 'string') {
+    const dec = lzStringDecompress(data);
+    return dec && JSON.parse(dec);
+  }
+  return data;
 }
 
 export function getMilli(hours: number): number {
   return hours * 60 ** 2 * 10 ** 3;
 }
 
-export function log(message): void {
+export function log(message: unknown): void {
   // eslint-disable-next-line no-console
   console.warn('apexcharts-card: ', message);
 }
