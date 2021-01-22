@@ -1,0 +1,15 @@
+views:
+  - title: Main
+    cards:
+      - type: custom:apexcharts-card
+        stacked: true
+        series:
+          - entity: sensor.random_0_1000
+            name: test1
+            type: area
+          - entity: sensor.random_0_1000
+            name: test2
+            type: area
+        hours_to_show: 0.25
+        cache: true
+
