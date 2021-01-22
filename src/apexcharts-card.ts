@@ -107,6 +107,9 @@ class ChartsCard extends LitElement {
       useCompress: false,
       ...JSON.parse(JSON.stringify(config)),
     };
+    this._config?.series.map((serie) => {
+      serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
+    });
   }
 
   static get styles(): CSSResult {
@@ -240,9 +243,11 @@ class ChartsCard extends LitElement {
       const promise = this._entities.map((entity, i) => this._updateEntity(entity, i, start));
       await Promise.all(promise);
       const graphData = {
-        series: this._history.map((history) => {
+        series: this._history.map((history, index) => {
           return {
-            data: history?.data,
+            data: this._config?.series[index].extend_to_end
+              ? [...history?.data, ...[[end.getTime(), history?.data.slice(-1)[0][1]]]]
+              : history?.data,
           };
         }),
         subtitle: {

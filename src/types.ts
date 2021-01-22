@@ -18,6 +18,7 @@ export interface ChartCardSeriesExternalConfig {
   name?: string;
   type: 'line' | 'bar' | 'area';
   curve?: 'smooth' | 'straight' | 'stepline';
+  extend_to_end?: boolean;
 }
 
 export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
