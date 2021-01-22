@@ -36,6 +36,7 @@
     "lz-string": "^1.4.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.10",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
