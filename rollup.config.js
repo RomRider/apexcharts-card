@@ -31,7 +31,10 @@ const plugins = [
   // cleanup({ comments: 'none' }),
   dev && serve(serveopts),
   !dev &&
-    terser({
+  terser({
+    format: {
+        comments: false,
+      },
       mangle: {
         safari10: true,
       },
