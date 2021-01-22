@@ -19,6 +19,9 @@ views:
             hours_to_show: 0.20
             cache: true
             layout: minimal
+            apex_config:
+              chart:
+                height: 100%
           - type: custom:apexcharts-card
             stacked: true
             series:
@@ -30,6 +33,9 @@ views:
                 type: bar
             hours_to_show: 0.25
             cache: true
+            apex_config:
+              chart:
+                height: 100%
 
       - type: custom:apexcharts-card
         stacked: true

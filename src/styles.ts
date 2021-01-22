@@ -17,6 +17,11 @@ export const styles: CSSResult = css`
     height: 100%;
   }
 
+  /* Needed for minimal layout */
+  svg:not(:root) {
+    overflow: visible !important;
+  }
+
   .apexcharts-canvas {
     position: relative;
     user-select: none;

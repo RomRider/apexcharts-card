@@ -107,6 +107,12 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
             right: 0,
           },
         },
+        subtitle: {
+          offsetY: -15,
+        },
+        title: {
+          offsetY: -15,
+        },
         xaxis: {
           labels: {
             show: false,
@@ -141,5 +147,5 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
       break;
   }
 
-  return mergeDeep(def, conf);
+  return config.apex_config ? mergeDeep(mergeDeep(def, conf), config.apex_config) : mergeDeep(def, conf);
 }

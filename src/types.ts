@@ -1,3 +1,5 @@
+import { ApexOptions } from 'apexcharts';
+
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
   hours_to_show: number;
@@ -12,6 +14,7 @@ export interface ChartCardExternalConfig {
   cache?: boolean;
   stacked?: boolean;
   layout?: string;
+  apex_config?: ApexOptions;
 }
 
 export interface ChartCardSeriesExternalConfig {
