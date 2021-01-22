@@ -183,13 +183,13 @@ export const styles: CSSResult = css`
     opacity: 0;
     padding: 9px 10px;
     pointer-events: none;
-    color: #373d3f;
+    color: var(--primary-text-color);
     font-size: 13px;
     text-align: center;
     border-radius: 2px;
     position: absolute;
     z-index: 10;
-    background: #eceff1;
+    background: var(--card-background-color);
     border: 1px solid #90a4ae;
     transition: 0.15s ease all;
   }
@@ -274,13 +274,13 @@ export const styles: CSSResult = css`
     opacity: 0;
     padding: 4px 10px;
     pointer-events: none;
-    color: #373d3f;
+    color: var(--primary-text-color)
     font-size: 13px;
     text-align: center;
     border-radius: 2px;
     position: absolute;
     z-index: 10;
-    background: #eceff1;
+    background: var(--card-background-color);
     border: 1px solid #90a4ae;
   }
 
