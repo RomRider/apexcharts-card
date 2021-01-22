@@ -180,7 +180,7 @@ class ChartsCard extends LitElement {
     if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
       this._loaded = true;
       const graph = this.shadowRoot.querySelector('#graph');
-      this._apexChart = new ApexCharts(graph, getLayoutConfig(this._config));
+      this._apexChart = new ApexCharts(graph, getLayoutConfig(this._config, this._hass));
       this._apexChart.render();
     }
   }

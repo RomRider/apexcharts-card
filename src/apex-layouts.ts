@@ -1,8 +1,9 @@
+import { HomeAssistant } from 'custom-card-helpers';
 import moment from 'moment';
 import { ChartCardConfig } from './types';
 import { getMilli, mergeDeep } from './utils';
 
-export function getLayoutConfig(config: ChartCardConfig): unknown {
+export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
     chart: {
       stacked: config?.stacked,
@@ -47,6 +48,19 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
       fixed: {
         enabled: true,
         postion: 'topRight',
+      },
+    },
+    legend: {
+      formatter: function (seriesName, opts, conf = config, hass2 = hass) {
+        return [
+          seriesName,
+          ' - ',
+          `<strong>${opts.w.globals.series[opts.seriesIndex].slice(-1)}${
+            conf.series[opts.seriesIndex].unit ||
+            hass2?.states[conf.series[opts.seriesIndex].entity].attributes.unit_of_measurement ||
+            ''
+          }</strong>`,
+        ];
       },
     },
     stroke: {
