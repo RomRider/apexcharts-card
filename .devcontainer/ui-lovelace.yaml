@@ -66,6 +66,8 @@ views:
         hours_to_show: 0.25
         series:
           - entity: sensor.humidity
+          - entity: sensor.random0_100
+            type: bar
             # extend_to_end: true
       - type: custom:apexcharts-card
         hours_to_show: 0.25

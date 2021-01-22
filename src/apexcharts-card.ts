@@ -78,7 +78,7 @@ class ChartsCard extends LitElement {
     let updated = false;
     const queue: string[] = [];
     this._config.series.forEach((serie, index) => {
-      serie.index = index; // Required for filtered views
+      // serie.index = index; // Required for filtered views
       const entityState = (hass && hass.states[serie.entity]) || undefined;
       if (entityState && this._entities[index] !== entityState) {
         this._entities[index] = entityState;
@@ -118,12 +118,30 @@ class ChartsCard extends LitElement {
 
   protected render(): TemplateResult {
     if (!this._config || !this._hass) return html``;
+    if (this._config.series.some((_, index) => this._entities[index] === undefined)) {
+      return this.renderWarnings();
+    }
 
     return html`
       <ha-card>
         <div id="wrapper">
           <div id="graph"></div>
         </div>
+      </ha-card>
+    `;
+  }
+
+  renderWarnings() {
+    return html`
+      <ha-card>
+        <hui-warning>
+          <div style="font-weight: bold;">apexcharts-card</div>
+          ${this._config?.series.map((_, index) =>
+            !this._entities[index]
+              ? html` <div>Entity not available: ${this._config?.series[index].entity}</div> `
+              : html``,
+          )}
+        </hui-warning>
       </ha-card>
     `;
   }
