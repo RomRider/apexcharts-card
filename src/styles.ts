@@ -7,14 +7,18 @@ export const styles: CSSResult = css`
 
   ha-card {
     overflow: hidden;
-    height: 100%;
   }
-  #wrapper {
-    overflow: hidden;
-    height: 100%;
+
+  .wrapper {
+    display: grid;
+    grid-template-areas: "header" "graph";
+    grid-template-columns: 1fr;
+    grid-template-rows: min-content 1fr;
   }
-  #graph {
+
+  #graph-wrapper {
     height: 100%;
+    grid-area: graph;
   }
 
   /* Needed for minimal layout */
@@ -22,6 +26,26 @@ export const styles: CSSResult = css`
     overflow: visible !important;
   }
 
+  .header {
+    padding-top: 10px;
+    padding-left: 10px;
+    grid-area: header;
+  }
+  .title > .state {
+    font-size: 1.8em;
+    font-weight: 500;
+  }
+  .title > .uom {
+    font-size: 1em;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  .subtitble {
+    font-size: 0.8em;
+    font-weight: 300;
+  }
+
+  /* Apex Charts Default CSS */
   .apexcharts-canvas {
     position: relative;
     user-select: none;

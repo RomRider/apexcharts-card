@@ -9,13 +9,6 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
       type: 'line',
       foreColor: 'var(--primary-text-color)',
       width: '100%',
-      // animations: {
-      //   enabled: true,
-      //   easing: 'linear',
-      //   dynamicAnimation: {
-      //     speed: 1000,
-      //   },
-      // },
       zoom: {
         enabled: false,
       },
@@ -25,31 +18,6 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
     },
     grid: {
       strokeDashArray: 3,
-    },
-    title: {
-      text: config?.series[0].name || config?.series[0].entity,
-      align: 'left',
-      floating: false,
-      // offsetX: 10,
-      style: {
-        fontSize: '20px',
-        fontWeight: '500',
-        fontFamily: 'var(--paper-font-body1_-_font-family)',
-        // color:  '#263238'
-      },
-    },
-    subtitle: {
-      text: undefined,
-      align: 'right',
-      floating: true,
-      offsetY: 0,
-      margin: 0,
-      style: {
-        fontSize: '40px',
-        fontWeight: '300',
-        fontFamily: 'var(--paper-font-body1_-_font-family)',
-        // color:  '#9699a2'
-      },
     },
     series: config?.series.map((serie) => {
       return {
@@ -106,12 +74,6 @@ export function getLayoutConfig(config: ChartCardConfig): unknown {
             left: 0,
             right: 0,
           },
-        },
-        subtitle: {
-          offsetY: -15,
-        },
-        title: {
-          offsetY: -15,
         },
         xaxis: {
           labels: {

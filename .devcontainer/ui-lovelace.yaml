@@ -19,9 +19,8 @@ views:
             hours_to_show: 0.20
             cache: true
             layout: minimal
-            apex_config:
-              chart:
-                height: 100%
+            header:
+              display: false
           - type: custom:apexcharts-card
             stacked: true
             series:
@@ -33,19 +32,19 @@ views:
                 type: bar
             hours_to_show: 0.25
             cache: true
-            apex_config:
-              chart:
-                height: 100%
 
       - type: custom:apexcharts-card
         stacked: true
         series:
           - entity: sensor.random_0_1000
-            name: test1
+            name: RAM Usage
+            unit: Mb
             type: area
-            curve: straight
+            curve: smooth
           - entity: sensor.random_0_1000
-            name: test2
+            name: Ram Free
+            type: area
+          - entity: sensor.humidity
             type: area
         hours_to_show: 0.20
         cache: true
@@ -63,14 +62,23 @@ views:
         hours_to_show: 0.25
         cache: true
       - type: custom:apexcharts-card
-        hours_to_show: 0.25
+        hours_to_show: 200
         series:
           - entity: sensor.humidity
-          - entity: sensor.random0_100
-            type: bar
+          # - entity: sensor.random0_100
+          #   type: bar
             # extend_to_end: true
-      - type: custom:apexcharts-card
-        hours_to_show: 0.25
-        series:
-          - entity: sensor.non_existent
-            # extend_to_end: true
+      # - type: custom:apexcharts-card
+      #   hours_to_show: 0.25
+      #   series:
+      #     - entity: sensor.non_existent
+      #       # extend_to_end: true
+      # - type: custom:apexcharts-card
+      #   series:
+      #     - entity: sensor.random0_100
+      #       type: bubble
+      #     - entity: sensor.random0_100
+      #       type: bubble
+      #   apex_config:
+      #     chart:
+      #       type: bubble

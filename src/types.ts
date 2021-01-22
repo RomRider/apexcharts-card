@@ -15,6 +15,7 @@ export interface ChartCardExternalConfig {
   stacked?: boolean;
   layout?: string;
   apex_config?: ApexOptions;
+  header?: ChartCardHeaderExternalConfig;
 }
 
 export interface ChartCardSeriesExternalConfig {
@@ -23,16 +24,21 @@ export interface ChartCardSeriesExternalConfig {
   type: 'line' | 'bar' | 'area';
   curve?: 'smooth' | 'straight' | 'stepline';
   extend_to_end?: boolean;
+  unit?: string;
 }
 
 export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
   index: number;
 }
 
+export interface ChartCardHeaderExternalConfig {
+  display?: boolean;
+}
+
 export interface EntityEntryCache {
   hours_to_show: number;
   last_fetched: Date;
-  data: [number, number][];
+  data: [number, number | null][];
 }
 
 export interface HassHistory {

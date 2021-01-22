@@ -55,7 +55,7 @@ class ChartsCard extends LitElement {
 
   @property() private _config?: ChartCardConfig;
 
-  private _entities: HassEntity[] = [];
+  @property() private _entities: HassEntity[] = [];
 
   public connectedCallback() {
     super.connectedCallback();
@@ -105,6 +105,7 @@ class ChartsCard extends LitElement {
       hours_to_show: 24,
       cache: true,
       useCompress: false,
+      header: { display: true },
       ...JSON.parse(JSON.stringify(config)),
     };
     this._config?.series.map((serie) => {
@@ -124,8 +125,11 @@ class ChartsCard extends LitElement {
 
     return html`
       <ha-card>
-        <div id="wrapper">
-          <div id="graph"></div>
+        <div class="wrapper ${this._config.header?.display ? 'with-header' : ''}">
+          ${this._config.header?.display ? this._renderHeader() : html``}
+          <div id="graph-wrapper">
+            <div id="graph"></div>
+          </div>
         </div>
       </ha-card>
     `;
@@ -133,7 +137,7 @@ class ChartsCard extends LitElement {
 
   renderWarnings() {
     return html`
-      <ha-card>
+      <ha-card class="warning">
         <hui-warning>
           <div style="font-weight: bold;">apexcharts-card</div>
           ${this._config?.series.map((_, index) =>
@@ -146,10 +150,34 @@ class ChartsCard extends LitElement {
     `;
   }
 
+  private _renderHeader(): TemplateResult {
+    return html`
+      <div class="header">
+        <div class="title">
+          <span class="state">${this._entities[0].state}</span>
+          <span class="uom">${this._computeUom(0)}</span>
+        </div>
+        <div class="subtitble">${this._computeName(0)}</div>
+      </div>
+    `;
+  }
+
+  private _computeName(index: number): string {
+    return (
+      this._config?.series[index].name ||
+      this._entities[index].attributes.friendly_name ||
+      this._entities[index].entity_id
+    );
+  }
+
+  private _computeUom(index: number): string {
+    return this._config?.series[index].unit || this._entities[index].attributes.unit_of_measurement || '';
+  }
+
   private async _initialLoad() {
     await this.updateComplete;
 
-    if (!this._apexChart && this.shadowRoot && this._config) {
+    if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
       this._loaded = true;
       const graph = this.shadowRoot.querySelector('#graph');
       this._apexChart = new ApexCharts(graph, getLayoutConfig(this._config));
@@ -181,7 +209,7 @@ class ChartsCard extends LitElement {
     start.setTime(start.getTime() - getMilli(config.hours_to_show));
 
     try {
-      const promise = this._entities.map((entity, i) => this._updateEntity(entity, i, start));
+      const promise = this._entities.map((entity, i) => this._updateEntity(entity, i, start, end));
       await Promise.all(promise);
       const graphData = {
         series: this._history.map((history, index) => {
@@ -189,14 +217,10 @@ class ChartsCard extends LitElement {
             data:
               this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'bar'
                 ? [...history?.data, ...[[end.getTime(), history?.data.slice(-1)[0][1]]]]
-                : history?.data,
+                : history?.data || [],
           };
         }),
-        subtitle: {
-          text: this._entities[0].state,
-        },
         xaxis: {
-          // min: end.get
           max: end.getTime(),
         },
       };
@@ -207,7 +231,12 @@ class ChartsCard extends LitElement {
     this._updating = false;
   }
 
-  private async _updateEntity(entity: HassEntity, index: number, start: Date): Promise<EntityEntryCache | undefined> {
+  private async _updateEntity(
+    entity: HassEntity,
+    index: number,
+    start: Date,
+    end: Date,
+  ): Promise<EntityEntryCache | undefined> {
     if (!this._config || !entity || !this._updateQueue.includes(`${entity.entity_id}-${index}`)) return;
     this._updateQueue = this._updateQueue.filter((entry) => entry !== `${entity.entity_id}-${index}`);
 
@@ -239,15 +268,14 @@ class ChartsCard extends LitElement {
       entity.entity_id,
       // if data in cache, get data from last data's time + 1ms
       history && history.data.length !== 0 ? new Date(history.data.slice(-1)[0][0] + 1) : start,
-      undefined,
+      end,
       skipInitialState,
     );
     if (newHistory && newHistory[0] && newHistory[0].length > 0) {
-      const filteredNewHistory = newHistory[0].filter((item) => !Number.isNaN(parseFloat(item.state)));
-      const newStateHistory: [number, number][] = filteredNewHistory.map((item) => [
-        new Date(item.last_changed).getTime(),
-        parseFloat(item.state),
-      ]);
+      const newStateHistory: [number, number | null][] = newHistory[0].map((item) => {
+        const stateParsed = parseFloat(item.state);
+        return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+      });
       if (history?.data) {
         history.hours_to_show = this._config.hours_to_show;
         history.last_fetched = new Date();
