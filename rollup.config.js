@@ -7,6 +7,7 @@ import serve from 'rollup-plugin-serve';
 import json from '@rollup/plugin-json';
 // import cleanup from 'rollup-plugin-cleanup';
 
+// eslint-disable-next-line no-undef
 const dev = process.env.ROLLUP_WATCH;
 
 const serveopts = {
