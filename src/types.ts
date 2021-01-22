@@ -16,7 +16,8 @@ export interface ChartCardExternalConfig {
 export interface ChartCardSeriesExternalConfig {
   entity: string;
   name?: string;
-  type: 'line' | 'bar';
+  type: 'line' | 'bar' | 'area';
+  curve?: 'smooth' | 'straight' | 'stepline';
 }
 
 export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
@@ -27,4 +28,12 @@ export interface EntityEntryCache {
   hours_to_show: number;
   last_fetched: Date;
   data: [number, number][];
+}
+
+export interface HassHistory {
+  [index: number]: {
+    last_updated: string;
+    state: string;
+    last_changed: string;
+  }[];
 }

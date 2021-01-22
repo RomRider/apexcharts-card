@@ -1,13 +1,13 @@
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
-import { ChartCardConfig, ChartCardExternalConfig, EntityEntryCache } from './types';
+import { ChartCardConfig, ChartCardExternalConfig, EntityEntryCache, HassHistory } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import { compress, decompress, getMilli, log } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
-import { ONE_HOUR } from './const';
 import { HassEntity } from 'home-assistant-js-websocket';
+import moment from 'moment';
 
 /* eslint no-console: 0 */
 console.info(
@@ -25,7 +25,7 @@ localForage.config({
 
 localForage
   .iterate((data, key) => {
-    const value: any = key.endsWith('-raw') ? data : decompress(data);
+    const value: EntityEntryCache = key.endsWith('-raw') ? data : decompress(data);
     const start = new Date();
     start.setHours(start.getHours() - value.hours_to_show);
     if (new Date(value.last_fetched) < start) {
@@ -47,19 +47,15 @@ class ChartsCard extends LitElement {
 
   private _loaded = false;
 
-  private _stateChanged = false;
-
   private _updating = false;
 
   private _updateQueue: string[] = [];
 
-  private _interval?: NodeJS.Timeout;
-
-  private _history: (EntityEntryCache | undefined)[] = [];
+  private _history: EntityEntryCache[] = [];
 
   @property() private _config?: ChartCardConfig;
 
-  private _entities: any[] = [];
+  private _entities: HassEntity[] = [];
 
   public connectedCallback() {
     super.connectedCallback();
@@ -78,10 +74,11 @@ class ChartsCard extends LitElement {
   public set hass(hass: HomeAssistant) {
     this._hass = hass;
     if (!this._config) return;
+
     let updated = false;
     const queue: string[] = [];
     this._config.series.forEach((serie, index) => {
-      this._config!.series[index].index = index; // Required for filtered views
+      serie.index = index; // Required for filtered views
       const entityState = (hass && hass.states[serie.entity]) || undefined;
       if (entityState && this._entities[index] !== entityState) {
         this._entities[index] = entityState;
@@ -90,16 +87,13 @@ class ChartsCard extends LitElement {
       }
     });
     if (updated) {
-      this._stateChanged = true;
       this._entities = [...this._entities];
       if (!this._updating) {
-        // setTimeout(
-        //   () => {
         this._updateQueue = [...queue, ...this._updateQueue];
-        this._updateData();
-        //   },
-        //   this.initial ? 0 : 1000,
-        // );
+        // give time to HA's recorder component to write the data in the history
+        setTimeout(() => {
+          this._updateData();
+        }, 1000);
       } else {
         this._updateQueue = [...queue, ...this._updateQueue];
       }
@@ -130,12 +124,11 @@ class ChartsCard extends LitElement {
   }
 
   private async _initialLoad() {
-    this._loaded = true;
-
     await this.updateComplete;
 
-    if (!this._apexChart) {
-      const graph = this.shadowRoot!.querySelector('#graph');
+    if (!this._apexChart && this.shadowRoot && this._config) {
+      this._loaded = true;
+      const graph = this.shadowRoot.querySelector('#graph');
       this._apexChart = new ApexCharts(graph, {
         chart: {
           stacked: this._config?.stacked,
@@ -189,13 +182,27 @@ class ChartsCard extends LitElement {
         }),
         xaxis: {
           type: 'datetime',
-          range: getMilli(this._config!.hours_to_show),
+          range: getMilli(this._config.hours_to_show),
           labels: {
             datetimeUTC: false,
           },
         },
+        tooltip: {
+          x: {
+            formatter:
+              this._config.hours_to_show < 24
+                ? function (val) {
+                    return moment(new Date(val)).format('HH:mm:ss');
+                  }
+                : function (val) {
+                    return moment(new Date(val)).format('MMM Do, HH:mm:ss');
+                  },
+          },
+        },
         stroke: {
-          curve: 'smooth',
+          curve: this._config.series.map((serie) => {
+            return serie.curve || 'smooth';
+          }),
           lineCap: 'round',
         },
         noData: {
@@ -211,30 +218,39 @@ class ChartsCard extends LitElement {
     return data ? (compressed ? decompress(data) : data) : undefined;
   }
 
-  private async _setCache(key: string, data: EntityEntryCache, compressed: boolean): Promise<any> {
+  private async _setCache(
+    key: string,
+    data: EntityEntryCache,
+    compressed: boolean,
+  ): Promise<string | EntityEntryCache> {
     return compressed ? localForage.setItem(key, compress(data)) : localForage.setItem(`${key}-raw`, data);
   }
 
   private async _updateData() {
+    if (!this._config) return;
     this._updating = true;
     const config = this._config;
 
     // const end = this.getEndDate();
     const end = new Date();
     const start = new Date(end);
-    start.setTime(start.getTime() - getMilli(config!.hours_to_show));
+    start.setTime(start.getTime() - getMilli(config.hours_to_show));
 
     try {
-      const promise = this._entities.map((entity, i) => this._updateEntity(entity, i, start, end));
+      const promise = this._entities.map((entity, i) => this._updateEntity(entity, i, start));
       await Promise.all(promise);
       const graphData = {
         series: this._history.map((history) => {
           return {
-            data: history!.data,
+            data: history?.data,
           };
         }),
         subtitle: {
           text: this._entities[0].state,
+        },
+        xaxis: {
+          // min: end.get
+          max: end.getTime(),
         },
       };
       this._apexChart?.updateOptions(graphData, false, false);
@@ -242,37 +258,29 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
-    // this._setNextUpdate();
   }
 
-  private _setNextUpdate() {
-    // if (!this._config?.update_interval) {
-    // const interval = 1 / this.config.points_per_hour;
-    const interval = 1 / 60;
-    this._interval && clearInterval(this._interval);
-    this._interval = setInterval(() => {
-      if (!this._updating) this._updateData();
-    }, interval * ONE_HOUR);
-    // }
-  }
-
-  private async _updateEntity(entity: HassEntity, index: number, start: Date, end: Date): Promise<any> {
-    if (!entity || !this._updateQueue.includes(`${entity.entity_id}-${index}`)) return;
+  private async _updateEntity(entity: HassEntity, index: number, start: Date): Promise<EntityEntryCache | undefined> {
+    if (!this._config || !entity || !this._updateQueue.includes(`${entity.entity_id}-${index}`)) return;
     this._updateQueue = this._updateQueue.filter((entry) => entry !== `${entity.entity_id}-${index}`);
 
     let skipInitialState = false;
 
-    let history = this._config?.cache ? await this._getCache(entity.entity_id, this._config?.useCompress) : undefined;
+    let history = this._config?.cache
+      ? await this._getCache(`${entity.entity_id}_${this._config.hours_to_show}`, this._config?.useCompress)
+      : undefined;
     // const history = undefined;
     if (history && history.hours_to_show === this._config?.hours_to_show) {
       // stateHistory = history.data;
 
       const currDataIndex = history.data.findIndex((item) => new Date(item[0]).getTime() > start.getTime());
-      if (currDataIndex > 4) {
-        // >4 so that the graph animates nicely
-        history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
+      if (currDataIndex !== -1) {
         // skip initial state when fetching recent/not-cached data
         skipInitialState = true;
+      }
+      if (currDataIndex > 4) {
+        // >4 so that the graph has some more history
+        history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
       } else if (currDataIndex === -1) {
         // there were no states which could be used in current graph so clearing
         history.data = [];
@@ -280,45 +288,52 @@ class ChartsCard extends LitElement {
     } else {
       history = undefined;
     }
-
-    let newHistory = await this._fetchRecent(
+    const newHistory = await this._fetchRecent(
       entity.entity_id,
       // if data in cache, get data from last data's time + 1ms
       history && history.data.length !== 0 ? new Date(history.data.slice(-1)[0][0] + 1) : start,
-      end,
+      undefined,
       skipInitialState,
     );
-    if (newHistory[0] && newHistory[0].length > 0) {
-      newHistory = newHistory[0].filter((item) => !Number.isNaN(parseFloat(item.state)));
-      const newStateHistory: [number, number][] = newHistory.map((item) => [
+    if (newHistory && newHistory[0] && newHistory[0].length > 0) {
+      const filteredNewHistory = newHistory[0].filter((item) => !Number.isNaN(parseFloat(item.state)));
+      const newStateHistory: [number, number][] = filteredNewHistory.map((item) => [
         new Date(item.last_changed).getTime(),
         parseFloat(item.state),
       ]);
       if (history?.data) {
-        history.hours_to_show = this._config!.hours_to_show;
+        history.hours_to_show = this._config.hours_to_show;
         history.last_fetched = new Date();
         history.data.push(...newStateHistory);
       } else {
         history = {
-          hours_to_show: this._config!.hours_to_show,
+          hours_to_show: this._config.hours_to_show,
           last_fetched: new Date(),
           data: newStateHistory,
         };
       }
 
       if (this._config?.cache) {
-        this._setCache(entity.entity_id, history, this._config.useCompress).catch((err) => {
-          log(err);
-          localForage.clear();
-        });
+        this._setCache(`${entity.entity_id}_${this._config.hours_to_show}`, history, this._config.useCompress).catch(
+          (err) => {
+            log(err);
+            localForage.clear();
+          },
+        );
       }
     }
 
-    if (history?.data.length === 0) return undefined;
+    if (!history || history.data.length === 0) return undefined;
     this._history[index] = history;
+    return history;
   }
 
-  private async _fetchRecent(entityId: string, start: Date, end: Date, skipInitialState: boolean): Promise<any> {
+  private async _fetchRecent(
+    entityId: string,
+    start: Date | undefined,
+    end: Date | undefined,
+    skipInitialState: boolean,
+  ): Promise<HassHistory | undefined> {
     let url = 'history/period';
     if (start) url += `/${start.toISOString()}`;
     url += `?filter_entity_id=${entityId}`;
