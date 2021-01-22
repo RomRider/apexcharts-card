@@ -64,13 +64,13 @@ export const styles: CSSResult = css`
   }
 
   .apexcharts-tooltip.apexcharts-active {
-    opacity: 1;
+    opacity: 0.96;
     transition: 0.15s ease all;
   }
 
   .apexcharts-tooltip.apexcharts-theme-light {
     border: 1px solid #e3e3e3;
-    background: rgba(255, 255, 255, 0.96);
+    background: var(--card-background-color);
   }
 
   .apexcharts-tooltip.apexcharts-theme-dark {
@@ -89,7 +89,7 @@ export const styles: CSSResult = css`
   }
 
   .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-    background: #eceff1;
+    background: var(--primary-background-color);
     border-bottom: 1px solid #ddd;
   }
 
