@@ -5,6 +5,14 @@ export const styles: CSSResult = css`
     display: block;
   }
 
+  ha-card {
+    overflow: hidden;
+    height: 100%;
+  }
+  #wrapper {
+    overflow: hidden;
+    height: 100%;
+  }
   #graph {
     height: 100%;
   }

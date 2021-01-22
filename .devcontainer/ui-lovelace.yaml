@@ -1,6 +1,36 @@
 views:
   - title: Main
     cards:
+      - type: grid
+        title: Test Grid Square
+        square: true
+        columns: 2
+        cards:
+          - type: custom:apexcharts-card
+            stacked: true
+            series:
+              - entity: sensor.random_0_1000
+                name: test1
+                type: area
+                curve: straight
+              - entity: sensor.random_0_1000
+                name: test2
+                type: area
+            hours_to_show: 0.20
+            cache: true
+            layout: minimal
+          - type: custom:apexcharts-card
+            stacked: true
+            series:
+              - entity: sensor.random_0_1000
+                name: test1
+                type: bar
+              - entity: sensor.random_0_1000
+                name: test2
+                type: bar
+            hours_to_show: 0.25
+            cache: true
+
       - type: custom:apexcharts-card
         stacked: true
         series:
@@ -13,6 +43,7 @@ views:
             type: area
         hours_to_show: 0.20
         cache: true
+        layout: minimal
 
       - type: custom:apexcharts-card
         stacked: true

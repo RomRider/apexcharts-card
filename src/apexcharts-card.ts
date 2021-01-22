@@ -7,7 +7,7 @@ import { compress, decompress, getMilli, log } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
-import moment from 'moment';
+import { getLayoutConfig } from './apex-layouts';
 
 /* eslint no-console: 0 */
 console.info(
@@ -121,7 +121,9 @@ class ChartsCard extends LitElement {
 
     return html`
       <ha-card>
-        <div id="graph"></div>
+        <div id="wrapper">
+          <div id="graph"></div>
+        </div>
       </ha-card>
     `;
   }
@@ -132,86 +134,7 @@ class ChartsCard extends LitElement {
     if (!this._apexChart && this.shadowRoot && this._config) {
       this._loaded = true;
       const graph = this.shadowRoot.querySelector('#graph');
-      this._apexChart = new ApexCharts(graph, {
-        chart: {
-          stacked: this._config?.stacked,
-          type: 'line',
-          foreColor: 'var(--primary-text-color)',
-          // animations: {
-          //   enabled: true,
-          //   easing: 'linear',
-          //   dynamicAnimation: {
-          //     speed: 1000,
-          //   },
-          // },
-          zoom: {
-            enabled: false,
-          },
-          toolbar: {
-            show: false,
-          },
-        },
-        title: {
-          text: this._config?.series[0].name || this._config?.series[0].entity,
-          align: 'left',
-          floating: false,
-          // offsetX: 10,
-          style: {
-            fontSize: '20px',
-            fontWeight: '500',
-            fontFamily: 'var(--paper-font-body1_-_font-family)',
-            // color:  '#263238'
-          },
-        },
-        subtitle: {
-          text: undefined,
-          align: 'right',
-          floating: true,
-          offsetY: 0,
-          margin: 0,
-          style: {
-            fontSize: '40px',
-            fontWeight: '300',
-            fontFamily: 'var(--paper-font-body1_-_font-family)',
-            // color:  '#9699a2'
-          },
-        },
-        series: this._config?.series.map((serie) => {
-          return {
-            name: serie.name || serie.entity,
-            type: serie.type || 'line',
-            data: [],
-          };
-        }),
-        xaxis: {
-          type: 'datetime',
-          range: getMilli(this._config.hours_to_show),
-          labels: {
-            datetimeUTC: false,
-          },
-        },
-        tooltip: {
-          x: {
-            formatter:
-              this._config.hours_to_show < 24
-                ? function (val) {
-                    return moment(new Date(val)).format('HH:mm:ss');
-                  }
-                : function (val) {
-                    return moment(new Date(val)).format('MMM Do, HH:mm:ss');
-                  },
-          },
-        },
-        stroke: {
-          curve: this._config.series.map((serie) => {
-            return serie.curve || 'smooth';
-          }),
-          lineCap: 'round',
-        },
-        noData: {
-          text: 'Loading...',
-        },
-      });
+      this._apexChart = new ApexCharts(graph, getLayoutConfig(this._config));
       this._apexChart.render();
     }
   }
@@ -245,9 +168,10 @@ class ChartsCard extends LitElement {
       const graphData = {
         series: this._history.map((history, index) => {
           return {
-            data: this._config?.series[index].extend_to_end
-              ? [...history?.data, ...[[end.getTime(), history?.data.slice(-1)[0][1]]]]
-              : history?.data,
+            data:
+              this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'bar'
+                ? [...history?.data, ...[[end.getTime(), history?.data.slice(-1)[0][1]]]]
+                : history?.data,
           };
         }),
         subtitle: {

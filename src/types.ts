@@ -11,6 +11,7 @@ export interface ChartCardExternalConfig {
   hours_to_show?: number;
   cache?: boolean;
   stacked?: boolean;
+  layout?: string;
 }
 
 export interface ChartCardSeriesExternalConfig {
