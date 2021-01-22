@@ -180,7 +180,7 @@ class ChartsCard extends LitElement {
           return {
             name: serie.name || serie.entity,
             type: serie.type || 'line',
-            data: [[]],
+            data: [],
           };
         }),
         xaxis: {

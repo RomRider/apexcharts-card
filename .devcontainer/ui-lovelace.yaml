@@ -30,3 +30,8 @@ views:
         series:
           - entity: sensor.humidity
             # extend_to_end: true
+      - type: custom:apexcharts-card
+        hours_to_show: 0.25
+        series:
+          - entity: sensor.non_existent
+            # extend_to_end: true
