@@ -28,7 +28,8 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
 });
 
 export const ChartCardHeaderExternalConfig = t.iface([], {
-  "display": t.opt("boolean"),
+  "show": t.opt("boolean"),
+  "floating": t.opt("boolean"),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {

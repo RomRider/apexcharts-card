@@ -20,7 +20,7 @@ views:
             cache: true
             layout: minimal
             header:
-              display: false
+              show: false
           - type: custom:apexcharts-card
             stacked: true
             series:
@@ -47,6 +47,9 @@ views:
         hours_to_show: 0.20
         cache: true
         layout: minimal
+        header:
+          floating: true
+
 
       - type: custom:apexcharts-card
         stacked: true

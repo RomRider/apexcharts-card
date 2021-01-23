@@ -27,21 +27,27 @@ export const styles: CSSResult = css`
     overflow: visible !important;
   }
 
-  .header {
+  #header {
     padding-top: 10px;
     padding-left: 10px;
     grid-area: header;
   }
-  .title > .state {
+  #header.floating {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  #header__title > #state {
     font-size: 1.8em;
     font-weight: 500;
   }
-  .title > .uom {
+  #header__title > #uom {
     font-size: 1em;
     font-weight: 400;
     opacity: 0.8;
   }
-  .subtitble {
+  #header__subtitle {
     font-size: 0.8em;
     font-weight: 300;
   }

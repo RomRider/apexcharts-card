@@ -102,7 +102,7 @@ class ChartsCard extends LitElement {
 
   public setConfig(config: ChartCardExternalConfig) {
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
-    ChartCardExternalConfig.check(config);
+    ChartCardExternalConfig.strictCheck(config);
 
     this._config = mergeDeep(
       {
@@ -110,7 +110,7 @@ class ChartsCard extends LitElement {
         cache: true,
         useCompress: false,
         show: { loading: true },
-        header: { display: true },
+        header: { show: true },
       },
       JSON.parse(JSON.stringify(config)),
     );
@@ -147,6 +147,10 @@ class ChartsCard extends LitElement {
     const spinnerClass: ClassInfo = {
       'lds-ring': this._config.show?.loading && this._updating ? true : false,
     };
+    const wrapperClasses: ClassInfo = {
+      wrapper: true,
+      'with-header': this._config.header?.show || true,
+    };
 
     return html`
       <ha-card>
@@ -158,8 +162,8 @@ class ChartsCard extends LitElement {
             <div></div>
           </div>
         </div>
-        <div class="wrapper ${this._config.header?.display ? 'with-header' : ''}">
-          ${this._config.header?.display ? this._renderHeader() : html``}
+        <div class=${classMap(wrapperClasses)}>
+          ${this._config.header?.show ? this._renderHeader() : html``}
           <div id="graph-wrapper">
             <div id="graph"></div>
           </div>
@@ -184,13 +188,16 @@ class ChartsCard extends LitElement {
   }
 
   private _renderHeader(): TemplateResult {
+    const classes: ClassInfo = {
+      floating: this._config?.header?.floating || false,
+    };
     return html`
-      <div class="header">
-        <div class="title">
-          <span class="state">${this._entities[0].state}</span>
-          <span class="uom">${computeUom(0, this._config, this._entities)}</span>
+      <div id="header" class=${classMap(classes)}>
+        <div id="header__title">
+          <span id="state">${this._entities[0].state}</span>
+          <span id="uom">${computeUom(0, this._config, this._entities)}</span>
         </div>
-        <div class="subtitble">${computeName(0, this._config, this._entities)}</div>
+        <div id="header__subtitle">${computeName(0, this._config, this._entities)}</div>
       </div>
     `;
   }

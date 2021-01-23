@@ -23,5 +23,6 @@ export interface ChartCardSeriesExternalConfig {
 }
 
 export interface ChartCardHeaderExternalConfig {
-  display?: boolean;
+  show?: boolean;
+  floating?: boolean;
 }
