@@ -44,8 +44,6 @@ views:
           - entity: sensor.random_0_1000
             name: Ram Free
             type: area
-          - entity: sensor.humidity
-            type: area
         hours_to_show: 0.20
         cache: true
         layout: minimal

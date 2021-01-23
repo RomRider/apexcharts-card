@@ -1,7 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import moment from 'moment';
 import { ChartCardConfig } from './types';
-import { computeName, computeUom, getMilli, mergeDeep } from './utils';
+import { computeName, computeUom, mergeDeep } from './utils';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
@@ -23,13 +23,13 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     series: config?.series.map((serie) => {
       return {
         name: serie.name || serie.entity,
-        type: serie.type || 'line',
+        type: serie.type,
         data: [],
       };
     }),
     xaxis: {
       type: 'datetime',
-      range: getMilli(config.hours_to_show),
+      // range: getMilli(config.hours_to_show),
       labels: {
         datetimeUTC: false,
       },
