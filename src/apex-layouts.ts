@@ -1,7 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import moment from 'moment';
 import { ChartCardConfig } from './types';
-import { getMilli, mergeDeep } from './utils';
+import { computeName, computeUom, getMilli, mergeDeep } from './utils';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
@@ -51,15 +51,16 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     legend: {
-      formatter: function (seriesName, opts, conf = config, hass2 = hass) {
+      formatter: function (_, opts, conf = config, hass2 = hass) {
         return [
-          seriesName,
+          computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]),
           ' - ',
-          `<strong>${opts.w.globals.series[opts.seriesIndex].slice(-1)}${
-            conf.series[opts.seriesIndex].unit ||
-            hass2?.states[conf.series[opts.seriesIndex].entity].attributes.unit_of_measurement ||
-            ''
-          }</strong>`,
+          `<strong>${opts.w.globals.series[opts.seriesIndex].slice(-1)}${computeUom(
+            opts.seriesIndex,
+            conf,
+            undefined,
+            hass2?.states[conf.series[opts.seriesIndex].entity],
+          )}</strong>`,
         ];
       },
     },

@@ -1,4 +1,6 @@
+import { HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
+import { ChartCardConfig } from './types';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -50,4 +52,32 @@ export function mergeDeep(target: any, source: any): any {
   });
 
   return target;
+}
+
+export function computeName(
+  index: number,
+  config: ChartCardConfig | undefined,
+  entities: HassEntity[] | undefined[] | undefined = undefined,
+  entity: HassEntity | undefined = undefined,
+): string {
+  if (entity) {
+    return config?.series[index].name || entity?.attributes?.friendly_name || entity.entity_id || '';
+  } else {
+    return (
+      config?.series[index].name || entities?.[index]?.attributes?.friendly_name || entities?.[index]?.entity_id || ''
+    );
+  }
+}
+
+export function computeUom(
+  index: number,
+  config: ChartCardConfig | undefined,
+  entities: HassEntity[] | undefined[] | undefined = undefined,
+  entity: HassEntity | undefined = undefined,
+): string {
+  if (entity) {
+    return config?.series[index].unit || entity.attributes?.unit_of_measurement || '';
+  } else {
+    return config?.series[index].unit || entities?.[index]?.attributes?.unit_of_measurement || '';
+  }
 }

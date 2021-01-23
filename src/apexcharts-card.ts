@@ -3,7 +3,7 @@ import { ChartCardConfig, ChartCardExternalConfig, EntityEntryCache, HassHistory
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
-import { compress, decompress, getMilli, log } from './utils';
+import { compress, computeName, computeUom, decompress, getMilli, log } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -155,23 +155,11 @@ class ChartsCard extends LitElement {
       <div class="header">
         <div class="title">
           <span class="state">${this._entities[0].state}</span>
-          <span class="uom">${this._computeUom(0)}</span>
+          <span class="uom">${computeUom(0, this._config, this._entities)}</span>
         </div>
-        <div class="subtitble">${this._computeName(0)}</div>
+        <div class="subtitble">${computeName(0, this._config, this._entities)}</div>
       </div>
     `;
-  }
-
-  private _computeName(index: number): string {
-    return (
-      this._config?.series[index].name ||
-      this._entities[index].attributes.friendly_name ||
-      this._entities[index].entity_id
-    );
-  }
-
-  private _computeUom(index: number): string {
-    return this._config?.series[index].unit || this._entities[index].attributes.unit_of_measurement || '';
   }
 
   private async _initialLoad() {
