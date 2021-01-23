@@ -1,9 +1,10 @@
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
+import { ClassInfo, classMap } from 'lit-html/directives/class-map';
 import { ChartCardConfig, EntityEntryCache } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
-import { computeName, computeUom, decompress, getMilli, log } from './utils';
+import { computeName, computeUom, decompress, getMilli, log, mergeDeep } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -49,7 +50,7 @@ class ChartsCard extends LitElement {
 
   private _loaded = false;
 
-  private _updating = false;
+  @property() private _updating = false;
 
   private _graphs: (GraphEntry | undefined)[] | undefined;
 
@@ -103,13 +104,16 @@ class ChartsCard extends LitElement {
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
     ChartCardExternalConfig.check(config);
 
-    this._config = {
-      hours_to_show: 24,
-      cache: true,
-      useCompress: false,
-      header: { display: true },
-      ...JSON.parse(JSON.stringify(config)),
-    };
+    this._config = mergeDeep(
+      {
+        hours_to_show: 24,
+        cache: true,
+        useCompress: false,
+        show: { loading: true },
+        header: { display: true },
+      },
+      JSON.parse(JSON.stringify(config)),
+    );
 
     if (this._config) {
       this._graphs = this._config.series.map((serie, index) => {
@@ -140,8 +144,20 @@ class ChartsCard extends LitElement {
       return this.renderWarnings();
     }
 
+    const spinnerClass: ClassInfo = {
+      'lds-ring': this._config.show?.loading && this._updating ? true : false,
+    };
+
     return html`
       <ha-card>
+        <div id="spinner-wrapper">
+          <div id="spinner" class=${classMap(spinnerClass)}>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
         <div class="wrapper ${this._config.header?.display ? 'with-header' : ''}">
           ${this._config.header?.display ? this._renderHeader() : html``}
           <div id="graph-wrapper">

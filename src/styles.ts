@@ -7,6 +7,7 @@ export const styles: CSSResult = css`
 
   ha-card {
     overflow: hidden;
+    position: relative;
   }
 
   .wrapper {
@@ -703,5 +704,59 @@ export const styles: CSSResult = css`
   .contract-trigger:before {
     width: 200%;
     height: 200%;
+  }
+
+  /* spinner */
+  #spinner-wrapper {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 20px;
+    width: 20px;
+    opacity: 0.5;
+  }
+
+  #spinner {
+    position: relative;
+  }
+
+  .lds-ring,
+  .lds-ring div {
+    box-sizing: border-box;
+  }
+  .lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+  }
+  .lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: 2px;
+    border: 2px solid var(--primary-text-color);
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: var(--primary-text-color) transparent transparent transparent;
+  }
+  .lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+  .lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;

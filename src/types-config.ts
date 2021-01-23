@@ -2,6 +2,9 @@ export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
   series: ChartCardSeriesExternalConfig[];
   hours_to_show?: number;
+  show?: {
+    loading?: boolean;
+  };
   cache?: boolean;
   stacked?: boolean;
   layout?: string;
