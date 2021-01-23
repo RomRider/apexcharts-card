@@ -4,10 +4,11 @@
   "description": "A Home Assistant Lovelace card using ApexCharts to render graphs",
   "main": "src/apexcharts-card.ts",
   "scripts": {
-    "build": "npm run lint && npm run rollup",
+    "build": "npm run build:types-check && npm run lint && npm run rollup",
+    "build:types-check": "ts-interface-builder src/types-config.ts",
     "rollup": "rollup -c",
     "lint": "eslint src/*.ts",
-    "watch": "rollup -c --watch"
+    "watch": "npm run build:types-check && rollup -c --watch"
   },
   "repository": {
     "type": "git",
