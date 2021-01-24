@@ -1,5 +1,5 @@
 import { ApexOptions } from 'apexcharts';
-import { ChartCardExternalConfig, ChartCardSeriesExternalConfig, GroupByFunc } from './types-config';
+import { ChartCardExternalConfig, ChartCardSeriesExternalConfig, GroupByFill, GroupByFunc } from './types-config';
 
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
@@ -14,6 +14,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
   group_by: {
     duration: string;
     func: GroupByFunc;
+    fill: GroupByFill;
   };
 }
 
@@ -23,7 +24,7 @@ export interface EntityEntryCache {
   data: EntityCachePoints;
 }
 
-export type EntityCachePoints = Array<[number, number | null] | undefined>;
+export type EntityCachePoints = Array<[number, number | null]>;
 
 export type HassHistory = Array<[HassHistoryEntry] | undefined>;
 

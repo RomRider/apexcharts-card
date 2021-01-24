@@ -23,10 +23,13 @@ export interface ChartCardSeriesExternalConfig {
   group_by?: {
     duration?: string;
     func?: GroupByFunc;
+    fill?: GroupByFill;
   };
 }
 
-export type GroupByFunc = 'raw' | 'avg';
+export type GroupByFill = 'null' | 'last' | 'zero';
+
+export type GroupByFunc = 'raw' | 'avg' | 'min' | 'max' | 'last' | 'first' | 'sum';
 
 export interface ChartCardHeaderExternalConfig {
   show?: boolean;

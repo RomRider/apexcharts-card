@@ -69,11 +69,40 @@ views:
             curve: straight
 
       - type: custom:apexcharts-card
-        hours_to_show: 24
+        hours_to_show: 48
         series:
-          - entity: sensor.humidity
+          - entity: sensor.random0_100
+            name: AVG
             curve: smooth
             type: area
             group_by:
-              duration: 5h
+              duration: 1h
               func: avg
+          - entity: sensor.random0_100
+            curve: smooth
+            name: MIN
+            type: area
+            group_by:
+              duration: 1h
+              func: min
+          - entity: sensor.random0_100
+            curve: smooth
+            name: MAX
+            type: area
+            group_by:
+              duration: 1h
+              func: max
+          - entity: sensor.random0_100
+            curve: smooth
+            name: LAST
+            type: area
+            group_by:
+              duration: 3h
+              func: last
+          - entity: sensor.random0_100
+            curve: smooth
+            name: FIRST
+            type: area
+            group_by:
+              duration: 3h
+              func: first

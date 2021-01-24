@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { moment } from './const';
+import { DEFAULT_COLORS, moment } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep } from './utils';
 
@@ -17,6 +17,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         show: false,
       },
     },
+    colors: DEFAULT_COLORS,
     grid: {
       strokeDashArray: 3,
     },
@@ -63,12 +64,18 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         return [
           computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]),
           ' - ',
-          `<strong>${opts.w.globals.series[opts.seriesIndex].slice(-1)}${computeUom(
-            opts.seriesIndex,
-            conf,
-            undefined,
-            hass2?.states[conf.series[opts.seriesIndex].entity],
-          )}</strong>`,
+          `<strong>${
+            opts.w.globals.series[opts.seriesIndex].slice(-1).length !== 0
+              ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0].toFixed(1)
+              : opts.w.globals.series[opts.seriesIndex].slice(-1)
+          }
+            ${computeUom(
+              opts.seriesIndex,
+              conf,
+              undefined,
+              hass2?.states[conf.series[opts.seriesIndex].entity],
+            )}</strong>
+          `,
         ];
       },
     },

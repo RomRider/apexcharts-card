@@ -43,6 +43,11 @@ export default class GraphEntry {
   constructor(entity: string, index: number, hoursToShow: number, cache: boolean, config: ChartCardSeriesConfig) {
     const aggregateFuncMap = {
       avg: this._average,
+      max: this._maximum,
+      min: this._minimum,
+      first: this._first,
+      last: this._last,
+      sum: this._sum,
     };
     this._index = index;
     this._cache = cache;
@@ -197,34 +202,100 @@ export default class GraphEntry {
     const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
     const buckets: HistoryBuckets = [];
-    ranges.forEach((range) => {
-      buckets.push({ timestamp: range.valueOf(), data: [] });
+    ranges.forEach((range, index) => {
+      buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
+    let lastNotNullValue: number | null = null;
     this._history?.data.forEach((entry) => {
-      buckets.forEach((bucket, index) => {
-        if (bucket.timestamp > entry![0] && index > 0) {
-          buckets[index - 1].data.push(entry);
+      let properEntry = entry;
+      // Fill null values
+      if (properEntry[1] === null) {
+        if (this._config.group_by.fill === 'last') {
+          properEntry = [entry[0], lastNotNullValue];
+        } else if (this._config.group_by.fill === 'zero') {
+          properEntry = [entry[0], 0];
         }
+      } else {
+        lastNotNullValue = properEntry[1];
+      }
+
+      buckets.some((bucket, index) => {
+        if (bucket.timestamp > properEntry![0] && index > 0) {
+          buckets[index - 1].data.push(properEntry);
+          return true;
+        }
+        return false;
       });
+    });
+    let lastNonNullBucketValue: number | null = null;
+    buckets.forEach((bucket) => {
+      if (bucket.data.length === 0) {
+        if (this._config.group_by.fill === 'last') {
+          bucket.data[0] = [bucket.timestamp, lastNonNullBucketValue];
+        } else if (this._config.group_by.fill === 'zero') {
+          bucket.data[0] = [bucket.timestamp, 0];
+        } else if (this._config.group_by.fill === 'null') {
+          bucket.data[0] = [bucket.timestamp, null];
+        }
+      } else {
+        lastNonNullBucketValue = bucket.data.slice(-1)[0][1];
+      }
     });
     buckets.pop();
     return buckets;
   }
 
+  private _sum(items: EntityCachePoints): number {
+    if (items.length === 0) return 0;
+    let lastIndex = 0;
+    return items.reduce((sum, entry, index) => {
+      let val = 0;
+      if (entry && entry[1] === null) {
+        val = items[lastIndex][1]!;
+      } else {
+        val = entry[1]!;
+        lastIndex = index;
+      }
+      return sum + val;
+    }, 0);
+  }
+
   private _average(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
-    let lastIndex = 0;
-    return (
-      items.reduce((sum, entry, index) => {
-        let val = 0;
-        if (entry && entry[1] === null) {
-          val = items[lastIndex]![1]!;
-        } else {
-          val = entry![1]!;
-          lastIndex = index;
-        }
-        return sum + val;
-      }, 0) / items.length
-    );
+    return this._sum(items) / items.length;
+  }
+
+  private _minimum(items: EntityCachePoints): number | null {
+    let min: number | null = null;
+    items.forEach((item) => {
+      if (item[1] !== null)
+        if (min === null) min = item[1];
+        else min = Math.min(item[1], min);
+    });
+    return min;
+  }
+
+  private _maximum(items: EntityCachePoints): number | null {
+    let max: number | null = null;
+    items.forEach((item) => {
+      if (item[1] !== null)
+        if (max === null) max = item[1];
+        else max = Math.max(item[1], max);
+    });
+    return max;
+  }
+
+  private _last(items: EntityCachePoints): number | null {
+    if (items.length === 0) return null;
+    return items.slice(-1)[0][1];
+  }
+
+  private _first(items: EntityCachePoints): number | null {
+    if (items.length === 0) return null;
+    return items[0][1];
+  }
+
+  private _filterNulls(items: EntityCachePoints): EntityCachePoints {
+    return items.filter((item) => item[1] !== null);
   }
 }

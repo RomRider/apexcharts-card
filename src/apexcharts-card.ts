@@ -13,7 +13,13 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_DURATION, DEFAULT_FUNC, DEFAULT_HOURS_TO_SHOW, DEFAULT_SERIE_TYPE } from './const';
+import {
+  DEFAULT_DURATION,
+  DEFAULT_FUNC,
+  DEFAULT_GROUP_BY_FILL,
+  DEFAULT_HOURS_TO_SHOW,
+  DEFAULT_SERIE_TYPE,
+} from './const';
 import parse from 'parse-duration';
 
 /* eslint no-console: 0 */
@@ -122,10 +128,11 @@ class ChartsCard extends LitElement {
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
         serie.type = serie.type || DEFAULT_SERIE_TYPE;
         if (!serie.group_by) {
-          serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC };
+          serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
         } else {
           serie.group_by.duration = serie.group_by.duration || DEFAULT_DURATION;
           serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
+          serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
         }
         if (!parse(serie.group_by.duration)) {
           throw `Can't parse 'group_by' duration: '${serie.group_by.duration}'`;

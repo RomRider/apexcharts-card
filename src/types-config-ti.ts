@@ -28,10 +28,13 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),
+    "fill": t.opt("GroupByFill"),
   })),
 });
 
-export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'));
+export const GroupByFill = t.union(t.lit('null'), t.lit('last'), t.lit('zero'));
+
+export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.lit('max'), t.lit('last'), t.lit('first'), t.lit('sum'));
 
 export const ChartCardHeaderExternalConfig = t.iface([], {
   "show": t.opt("boolean"),
@@ -41,6 +44,7 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardSeriesExternalConfig,
+  GroupByFill,
   GroupByFunc,
   ChartCardHeaderExternalConfig,
 };
