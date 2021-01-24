@@ -62,8 +62,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     legend: {
       formatter: function (_, opts, conf = config, hass2 = hass) {
         return [
-          computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]),
-          ' - ',
+          `${computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity])}:`,
           `<strong>${
             opts.w.globals.series[opts.seriesIndex].slice(-1).length !== 0
               ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0].toFixed(1)
