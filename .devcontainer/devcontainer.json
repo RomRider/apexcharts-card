@@ -15,7 +15,8 @@
     "redhat.vscode-yaml",
     "yzhang.markdown-all-in-one",
     "esbenp.prettier-vscode",
-    "bierner.lit-html"
+    "bierner.lit-html",
+    "cschleiden.vscode-github-actions",
   ],
   "settings": {
     "files.eol": "\n",
