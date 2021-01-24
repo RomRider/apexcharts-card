@@ -29,7 +29,7 @@ export interface ChartCardSeriesExternalConfig {
 
 export type GroupByFill = 'null' | 'last' | 'zero';
 
-export type GroupByFunc = 'raw' | 'avg' | 'min' | 'max' | 'last' | 'first' | 'sum';
+export type GroupByFunc = 'raw' | 'avg' | 'min' | 'max' | 'last' | 'first' | 'sum' | 'median' | 'delta';
 
 export interface ChartCardHeaderExternalConfig {
   show?: boolean;

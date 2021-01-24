@@ -34,7 +34,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
 
 export const GroupByFill = t.union(t.lit('null'), t.lit('last'), t.lit('zero'));
 
-export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.lit('max'), t.lit('last'), t.lit('first'), t.lit('sum'));
+export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.lit('max'), t.lit('last'), t.lit('first'), t.lit('sum'), t.lit('median'), t.lit('delta'));
 
 export const ChartCardHeaderExternalConfig = t.iface([], {
   "show": t.opt("boolean"),

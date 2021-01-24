@@ -48,6 +48,8 @@ export default class GraphEntry {
       first: this._first,
       last: this._last,
       sum: this._sum,
+      median: this._median,
+      delta: this._delta,
     };
     this._index = index;
     this._cache = cache;
@@ -177,7 +179,7 @@ export default class GraphEntry {
     this._history = history;
     if (this._config.group_by.func !== 'raw') {
       this._computedHistory = this._dataBucketer().map((bucket) => {
-        return [(new Date(bucket.timestamp) as any) as number, this._func(bucket.data)];
+        return [(new Date(bucket.timestamp) as unknown) as number, this._func(bucket.data)];
       });
     }
     this._updating = false;
@@ -293,6 +295,20 @@ export default class GraphEntry {
   private _first(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
     return items[0][1];
+  }
+
+  private _median(items: EntityCachePoints) {
+    const itemsDup = this._filterNulls([...items]).sort((a, b) => a[1]! - b[1]!);
+    const mid = Math.floor((itemsDup.length - 1) / 2);
+    if (itemsDup.length % 2 === 1) return itemsDup[mid];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return (itemsDup[mid][1]! + itemsDup[mid + 1][1]!) / 2;
+  }
+
+  private _delta(items: EntityCachePoints): number | null {
+    const max = this._maximum(items);
+    const min = this._minimum(items);
+    return max === null || min === null ? null : max - min;
   }
 
   private _filterNulls(items: EntityCachePoints): EntityCachePoints {
