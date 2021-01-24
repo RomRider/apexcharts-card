@@ -66,20 +66,13 @@ views:
         hours_to_show: 200
         series:
           - entity: sensor.humidity
-          # - entity: sensor.random0_100
-          #   type: bar
-            # extend_to_end: true
-      # - type: custom:apexcharts-card
-      #   hours_to_show: 0.25
-      #   series:
-      #     - entity: sensor.non_existent
-      #       # extend_to_end: true
-      # - type: custom:apexcharts-card
-      #   series:
-      #     - entity: sensor.random0_100
-      #       type: bubble
-      #     - entity: sensor.random0_100
-      #       type: bubble
-      #   apex_config:
-      #     chart:
-      #       type: bubble
+
+      - type: custom:apexcharts-card
+        hours_to_show: 24
+        series:
+          - entity: sensor.humidity
+            curve: smooth
+            type: area
+            group_by:
+              duration: 5h
+              func: avg

@@ -13,6 +13,8 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
+import { DEFAULT_DURATION, DEFAULT_FUNC, DEFAULT_HOURS_TO_SHOW, DEFAULT_SERIE_TYPE } from './const';
+import parse from 'parse-duration';
 
 /* eslint no-console: 0 */
 console.info(
@@ -106,7 +108,7 @@ class ChartsCard extends LitElement {
 
     this._config = mergeDeep(
       {
-        hours_to_show: 24,
+        hours_to_show: DEFAULT_HOURS_TO_SHOW,
         cache: true,
         useCompress: false,
         show: { loading: true },
@@ -118,7 +120,16 @@ class ChartsCard extends LitElement {
     if (this._config) {
       this._graphs = this._config.series.map((serie, index) => {
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
-        serie.type = serie.type || 'line';
+        serie.type = serie.type || DEFAULT_SERIE_TYPE;
+        if (!serie.group_by) {
+          serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC };
+        } else {
+          serie.group_by.duration = serie.group_by.duration || DEFAULT_DURATION;
+          serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
+        }
+        if (!parse(serie.group_by.duration)) {
+          throw `Can't parse 'group_by' duration: '${serie.group_by.duration}'`;
+        }
         if (serie.entity) {
           return new GraphEntry(
             serie.entity,
@@ -127,6 +138,7 @@ class ChartsCard extends LitElement {
             this._config!.hours_to_show,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._config!.cache,
+            serie,
           );
         }
         return undefined;

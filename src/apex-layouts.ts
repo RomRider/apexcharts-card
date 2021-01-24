@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import moment from 'moment';
+import { moment } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep } from './utils';
 
@@ -20,9 +20,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     grid: {
       strokeDashArray: 3,
     },
-    series: config?.series.map((serie) => {
+    series: config?.series.map((serie, index) => {
       return {
-        name: serie.name || serie.entity,
+        name: computeName(index, config, hass?.states),
         type: serie.type,
         data: [],
       };
@@ -33,6 +33,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       labels: {
         datetimeUTC: false,
       },
+    },
+    yaxis: {
+      decimalsInFloat: 1,
     },
     tooltip: {
       x: {
@@ -68,7 +71,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       curve: config.series.map((serie) => {
         return serie.curve || 'smooth';
       }),
-      lineCap: 'round',
+      lineCap: 'butt',
     },
     noData: {
       text: 'Loading...',

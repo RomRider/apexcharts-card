@@ -1,11 +1,16 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { EntityCachePoints, EntityEntryCache, HassHistory } from './types';
+import { ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HassHistory, HistoryBuckets } from './types';
 import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
+import { DateRange } from 'moment-range';
+import { DEFAULT_HOURS_TO_SHOW, moment } from './const';
+import parse from 'parse-duration';
 
 export default class GraphEntry {
-  private _history: EntityEntryCache | undefined;
+  private _history?: EntityEntryCache;
+
+  private _computedHistory?: EntityCachePoints;
 
   private _hass?: HomeAssistant;
 
@@ -23,12 +28,33 @@ export default class GraphEntry {
 
   private _index: number;
 
-  constructor(entity: string, index: number, hoursToShow = 24, cache: boolean) {
+  private _config: ChartCardSeriesConfig;
+
+  private _timeRange: DateRange;
+
+  private _func: (item: EntityCachePoints) => number;
+
+  private _realStart: Date;
+
+  private _realEnd: Date;
+
+  constructor(entity: string, index: number, hoursToShow: number, cache: boolean, config: ChartCardSeriesConfig) {
+    const aggregateFuncMap = {
+      avg: this._average,
+    };
     this._index = index;
     this._cache = cache;
     this._entityID = entity;
     this._history = undefined;
     this._hoursToShow = hoursToShow;
+    this._config = config;
+    const now = new Date();
+    const now2 = new Date(now);
+    this._func = aggregateFuncMap[config.group_by.func];
+    now2.setHours(now2.getHours() - DEFAULT_HOURS_TO_SHOW);
+    this._timeRange = moment.range(now, now2);
+    this._realEnd = new Date();
+    this._realStart = new Date();
   }
 
   set hass(hass: HomeAssistant) {
@@ -37,11 +63,19 @@ export default class GraphEntry {
   }
 
   get history(): EntityCachePoints {
-    return this._history?.data || [];
+    return this._computedHistory || this._history?.data || [];
   }
 
   get index(): number {
     return this._index;
+  }
+
+  get start(): Date {
+    return this._realStart;
+  }
+
+  get end(): Date {
+    return this._realEnd;
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
@@ -58,8 +92,19 @@ export default class GraphEntry {
   }
 
   public async _updateHistory(start: Date, end: Date): Promise<boolean> {
+    this._realStart = start;
+    this._realEnd = end;
+
+    let startHistory = start;
+    if (this._config.group_by.func !== 'raw') {
+      const dur = parse(this._config.group_by.duration)!;
+      const range = end.getTime() - start.getTime();
+      const nbBuckets = Math.abs(range / dur) + (range % dur > 0 ? 1 : 0);
+      startHistory = new Date(end.getTime() - nbBuckets * dur);
+    }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
+    this._timeRange = moment.range(startHistory, end);
 
     let skipInitialState = false;
 
@@ -88,7 +133,7 @@ export default class GraphEntry {
       history && history.data && history.data.length !== 0 && history.data.slice(-1)[0]
         ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           new Date(history.data.slice(-1)[0]![0] + 1)
-        : start,
+        : startHistory,
       end,
       skipInitialState,
     );
@@ -121,6 +166,11 @@ export default class GraphEntry {
 
     if (!history || history.data.length === 0) return false;
     this._history = history;
+    if (this._config.group_by.func !== 'raw') {
+      this._computedHistory = this._dataBucketer().map((bucket) => {
+        return [bucket.timestamp, this._func(bucket.data)];
+      });
+    }
     this._updating = false;
     return true;
   }
@@ -137,5 +187,42 @@ export default class GraphEntry {
     if (skipInitialState) url += '&skip_initial_state';
     url += '&minimal_response';
     return this._hass?.callApi('GET', url);
+  }
+
+  private _dataBucketer(): HistoryBuckets {
+    const groupBy = parse(this._config.group_by.duration);
+    // groupBy is valid, it has been tester during init;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: groupBy! })).reverse();
+    // const res: EntityCachePoints[] = [[]];
+    const buckets: HistoryBuckets = [];
+    ranges.forEach((range) => {
+      buckets.push({ timestamp: range.valueOf(), data: [] });
+    });
+    this._history?.data.forEach((entry) => {
+      buckets.forEach((bucket, index) => {
+        if (bucket.timestamp > entry![0] && index > 0) {
+          buckets[index - 1].data.push(entry);
+        }
+      });
+    });
+    return buckets;
+  }
+
+  private _average(items: EntityCachePoints): number | null {
+    if (items.length === 0) return null;
+    let lastIndex = 0;
+    return (
+      items.reduce((sum, entry, index) => {
+        let val = 0;
+        if (entry && entry[1] === null) {
+          val = items[lastIndex]![1]!;
+        } else {
+          val = entry![1]!;
+          lastIndex = index;
+        }
+        return sum + val;
+      }, 0) / items.length
+    );
   }
 }

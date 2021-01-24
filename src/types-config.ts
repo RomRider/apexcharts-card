@@ -20,7 +20,13 @@ export interface ChartCardSeriesExternalConfig {
   curve?: 'smooth' | 'straight' | 'stepline';
   extend_to_end?: boolean;
   unit?: string;
+  group_by?: {
+    duration?: string;
+    func?: GroupByFunc;
+  };
 }
+
+export type GroupByFunc = 'raw' | 'avg';
 
 export interface ChartCardHeaderExternalConfig {
   show?: boolean;

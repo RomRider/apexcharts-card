@@ -25,7 +25,13 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
   "extend_to_end": t.opt("boolean"),
   "unit": t.opt("string"),
+  "group_by": t.opt(t.iface([], {
+    "duration": t.opt("string"),
+    "func": t.opt("GroupByFunc"),
+  })),
 });
+
+export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'));
 
 export const ChartCardHeaderExternalConfig = t.iface([], {
   "show": t.opt("boolean"),
@@ -35,6 +41,7 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardSeriesExternalConfig,
+  GroupByFunc,
   ChartCardHeaderExternalConfig,
 };
 export default exportedTypeSuite;

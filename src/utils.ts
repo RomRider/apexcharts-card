@@ -1,4 +1,4 @@
-import { HassEntity } from 'home-assistant-js-websocket';
+import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
 import { ChartCardConfig } from './types';
 
@@ -57,7 +57,7 @@ export function mergeDeep(target: any, source: any): any {
 export function computeName(
   index: number,
   config: ChartCardConfig | undefined,
-  entities: HassEntity[] | undefined[] | undefined = undefined,
+  entities: (HassEntity | undefined)[] | HassEntities | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
   if (entity) {
