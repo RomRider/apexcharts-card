@@ -52,7 +52,7 @@ views:
 
 
       - type: custom:apexcharts-card
-        stacked: true
+        stacked: false
         series:
           - entity: sensor.random_0_1000
             name: test1
@@ -66,6 +66,7 @@ views:
         hours_to_show: 200
         series:
           - entity: sensor.humidity
+            curve: straight
 
       - type: custom:apexcharts-card
         hours_to_show: 24

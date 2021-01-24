@@ -7,7 +7,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
   const def = {
     chart: {
       stacked: config?.stacked,
-      type: 'line',
+      // type: 'line',
       foreColor: 'var(--primary-text-color)',
       width: '100%',
       zoom: {
@@ -20,6 +20,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     grid: {
       strokeDashArray: 3,
     },
+    // plotOptions: {
+    //   bar: {
+    //     distributed: true,
+    //   },
+    // },
     series: config?.series.map((serie, index) => {
       return {
         name: computeName(index, config, hass?.states),
@@ -72,6 +77,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         return serie.curve || 'smooth';
       }),
       lineCap: 'butt',
+    },
+    markers: {
+      showNullDataPoints: false,
     },
     noData: {
       text: 'Loading...',

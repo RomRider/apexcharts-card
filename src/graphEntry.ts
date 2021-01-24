@@ -38,6 +38,8 @@ export default class GraphEntry {
 
   private _realEnd: Date;
 
+  private _groupByDurationMs: number;
+
   constructor(entity: string, index: number, hoursToShow: number, cache: boolean, config: ChartCardSeriesConfig) {
     const aggregateFuncMap = {
       avg: this._average,
@@ -55,6 +57,9 @@ export default class GraphEntry {
     this._timeRange = moment.range(now, now2);
     this._realEnd = new Date();
     this._realStart = new Date();
+    // Valid because tested during init;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this._groupByDurationMs = parse(this._config.group_by.duration)!;
   }
 
   set hass(hass: HomeAssistant) {
@@ -97,10 +102,9 @@ export default class GraphEntry {
 
     let startHistory = start;
     if (this._config.group_by.func !== 'raw') {
-      const dur = parse(this._config.group_by.duration)!;
       const range = end.getTime() - start.getTime();
-      const nbBuckets = Math.abs(range / dur) + (range % dur > 0 ? 1 : 0);
-      startHistory = new Date(end.getTime() - nbBuckets * dur);
+      const nbBuckets = Math.abs(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
+      startHistory = new Date(end.getTime() - nbBuckets * this._groupByDurationMs);
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
@@ -168,7 +172,7 @@ export default class GraphEntry {
     this._history = history;
     if (this._config.group_by.func !== 'raw') {
       this._computedHistory = this._dataBucketer().map((bucket) => {
-        return [bucket.timestamp, this._func(bucket.data)];
+        return [(new Date(bucket.timestamp) as any) as number, this._func(bucket.data)];
       });
     }
     this._updating = false;
@@ -190,10 +194,7 @@ export default class GraphEntry {
   }
 
   private _dataBucketer(): HistoryBuckets {
-    const groupBy = parse(this._config.group_by.duration);
-    // groupBy is valid, it has been tester during init;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: groupBy! })).reverse();
+    const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
     const buckets: HistoryBuckets = [];
     ranges.forEach((range) => {
@@ -206,6 +207,7 @@ export default class GraphEntry {
         }
       });
     });
+    buckets.pop();
     return buckets;
   }
 
