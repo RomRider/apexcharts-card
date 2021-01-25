@@ -1,37 +1,21 @@
 views:
   - title: Main
     cards:
-      - type: grid
-        title: Test Grid Square
-        square: true
-        columns: 2
-        cards:
-          - type: custom:apexcharts-card
-            stacked: true
-            series:
-              - entity: sensor.random_0_1000
-                name: test1
-                type: area
-                curve: straight
-              - entity: sensor.random_0_1000
-                name: test2
-                type: area
-            hours_to_show: 0.20
-            cache: true
-            layout: minimal
-            header:
-              show: false
-          - type: custom:apexcharts-card
-            stacked: true
-            series:
-              - entity: sensor.random_0_1000
-                name: test1
-                type: column
-              - entity: sensor.random_0_1000
-                name: test2
-                type: column
-            hours_to_show: 0.25
-            cache: true
+      - type: custom:apexcharts-card
+        stacked: true
+        series:
+          - entity: sensor.random_0_1000
+            name: Sensor 1
+            type: area
+            curve: straight
+          - entity: sensor.random_0_1000
+            name: Sensor 2
+            type: area
+        hours_to_show: 0.20
+        cache: true
+        layout: minimal
+        header:
+          show: false
 
       - type: custom:apexcharts-card
         stacked: true
@@ -68,72 +52,76 @@ views:
             curve: straight
 
       - type: custom:apexcharts-card
-        hours_to_show: 48
+        hours_to_show: 1
+        header:
+          show: false
         series:
           - entity: sensor.random0_100
             name: AVG
             curve: smooth
-            type: area
+            type: line
             group_by:
-              duration: 1h
+              duration: 10min
               func: avg
           - entity: sensor.random0_100
             curve: smooth
             name: MIN
-            type: area
+            type: line
             group_by:
-              duration: 1h
+              duration: 10min
               func: min
           - entity: sensor.random0_100
             curve: smooth
             name: MAX
-            type: area
+            type: line
             group_by:
-              duration: 1h
+              duration: 10min
               func: max
           - entity: sensor.random0_100
             curve: smooth
             name: LAST
-            type: area
+            type: line
             group_by:
-              duration: 3h
+              duration: 10min
               func: last
           - entity: sensor.random0_100
             curve: smooth
             name: FIRST
-            type: area
+            type: line
             group_by:
-              duration: 3h
+              duration: 10min
               func: first
 
       - type: custom:apexcharts-card
+        hours_to_show: 4
         series:
           - entity: sensor.humidity
-            type: area
-            name: Office Humidity
-            group_by:
-              func: avg
-              duration: 1h
-          - entity: sensor.random0_100
             type: area
             name: Outside Humidity
             group_by:
               func: avg
               duration: 1h
+          - entity: sensor.random0_100
+            type: area
+            name: Office Humidity
+            group_by:
+              func: avg
+              duration: 1h
 
       - type: custom:apexcharts-card
+        hours_to_show: 6
         header:
           show: false
         series:
           - entity: sensor.humidity
             type: line
-            name: Office Humidity
-            group_by:
-              func: avg
-              duration: 1h
-          - entity: sensor.random0_100
-            type: column
             name: Outside Humidity
             group_by:
               func: avg
-              duration: 1h
+              duration: 30min
+          - entity: sensor.random0_100
+            type: column
+            name: Office Humidity
+            group_by:
+              func: avg
+              duration: 30min

@@ -30,6 +30,9 @@ However, some things might be broken :grin:
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
 - [Examples](#examples)
+  - [Simple graph](#simple-graph)
+  - [Multiple Types of Graphs](#multiple-types-of-graphs)
+  - [Aggregating data](#aggregating-data)
 
 ## Installation
 
@@ -87,7 +90,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
-| :white_check_mark: `series` | object | | v1.0.0 | See [series](#series-options) |
+| :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
 | `hours_to_show` | number | `24` | v1.0.0 | The span of the graph in hours (Use `0.25` for 15min for eg.) |
 | `show` | object | | v1.0.0 | See [show](#show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
@@ -154,7 +157,7 @@ Some options might now work in the context of this card.
 
 ```yaml
 type: custom:apexcharts-card
-entities:
+series:
   - ...
 apex_config:
   dataLabels:
@@ -166,6 +169,10 @@ apex_config:
 ### Layouts
 
 For now, only `minimal` is supported: It will remove the grid, the axis and display the legend at the top. But you can use the `apex_config` to do whatever you want.
+
+* `minimal`
+
+  ![minimal](docs/minimal.png)
 
 For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](src/apex-layouts.ts)
 
@@ -191,4 +198,81 @@ Not ordered by priority:
 
 ## Examples
 
-TBD.
+### Simple graph
+
+```yaml
+type: custom:apexcharts-card
+series:
+  - entity: sensor.temperature
+```
+
+### Multiple Types of Graphs
+
+![multi-graph](docs/multi-graph.png)
+
+```yaml
+type: custom:apexcharts-card
+hours_to_show: 6
+header:
+  show: false
+series:
+  - entity: sensor.humidity
+    type: line
+    name: Outside Humidity
+    group_by:
+      func: avg
+      duration: 30min
+  - entity: sensor.random0_100
+    type: column
+    name: Office Humidity
+    group_by:
+      func: avg
+      duration: 30min
+```
+
+### Aggregating data
+
+![aggregating_data](docs/aggregate_func.png)
+
+```yaml
+type: custom:apexcharts-card
+hours_to_show: 1
+header:
+  show: false
+series:
+  - entity: sensor.random0_100
+    name: AVG
+    curve: smooth
+    type: line
+    group_by:
+      duration: 10min
+      func: avg
+  - entity: sensor.random0_100
+    curve: smooth
+    name: MIN
+    type: line
+    group_by:
+      duration: 10min
+      func: min
+  - entity: sensor.random0_100
+    curve: smooth
+    name: MAX
+    type: line
+    group_by:
+      duration: 10min
+      func: max
+  - entity: sensor.random0_100
+    curve: smooth
+    name: LAST
+    type: line
+    group_by:
+      duration: 10min
+      func: last
+  - entity: sensor.random0_100
+    curve: smooth
+    name: FIRST
+    type: line
+    group_by:
+      duration: 10min
+      func: first
+```
