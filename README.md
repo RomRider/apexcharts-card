@@ -179,6 +179,7 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 
 Not ordered by priority:
 
+* [ ] Support more types of charts (pie, radial, polar area at least)
 * [ ] Support for `binary_sensors`
 * [ ] Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)
 * [ ] Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"
