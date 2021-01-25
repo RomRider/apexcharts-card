@@ -106,3 +106,35 @@ views:
             group_by:
               duration: 3h
               func: first
+
+      - type: custom:apexcharts-card
+        series:
+          - entity: sensor.humidity
+            type: area
+            name: Office Humidity
+            group_by:
+              func: avg
+              duration: 1h
+          - entity: sensor.random0_100
+            type: area
+            name: Outside Humidity
+            group_by:
+              func: avg
+              duration: 1h
+
+      - type: custom:apexcharts-card
+        header:
+          show: false
+        series:
+          - entity: sensor.humidity
+            type: line
+            name: Office Humidity
+            group_by:
+              func: avg
+              duration: 1h
+          - entity: sensor.random0_100
+            type: bar
+            name: Outside Humidity
+            group_by:
+              func: avg
+              duration: 1h
