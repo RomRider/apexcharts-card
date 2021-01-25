@@ -16,7 +16,7 @@ export interface ChartCardExternalConfig {
 export interface ChartCardSeriesExternalConfig {
   entity: string;
   name?: string;
-  type?: 'line' | 'bar' | 'area';
+  type?: 'line' | 'column' | 'area';
   curve?: 'smooth' | 'straight' | 'stepline';
   extend_to_end?: boolean;
   unit?: string;

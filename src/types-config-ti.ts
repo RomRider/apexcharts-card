@@ -21,7 +21,7 @@ export const ChartCardExternalConfig = t.iface([], {
 export const ChartCardSeriesExternalConfig = t.iface([], {
   "entity": "string",
   "name": t.opt("string"),
-  "type": t.opt(t.union(t.lit('line'), t.lit('bar'), t.lit('area'))),
+  "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
   "extend_to_end": t.opt("boolean"),
   "unit": t.opt("string"),

@@ -26,10 +26,10 @@ views:
             series:
               - entity: sensor.random_0_1000
                 name: test1
-                type: bar
+                type: column
               - entity: sensor.random_0_1000
                 name: test2
-                type: bar
+                type: column
             hours_to_show: 0.25
             cache: true
 
@@ -50,16 +50,15 @@ views:
         header:
           floating: true
 
-
       - type: custom:apexcharts-card
         stacked: false
         series:
           - entity: sensor.random_0_1000
             name: test1
-            type: bar
+            type: column
           - entity: sensor.random_0_1000
             name: test2
-            type: bar
+            type: column
         hours_to_show: 0.25
         cache: true
       - type: custom:apexcharts-card
@@ -133,7 +132,7 @@ views:
               func: avg
               duration: 1h
           - entity: sensor.random0_100
-            type: bar
+            type: column
             name: Outside Humidity
             group_by:
               func: avg

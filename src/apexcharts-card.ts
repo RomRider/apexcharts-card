@@ -250,7 +250,7 @@ class ChartsCard extends LitElement {
           const index = graph.index;
           return {
             data:
-              this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'bar'
+              this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column'
                 ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   [...graph.history, ...[[end.getTime(), graph.history.slice(-1)[0]![1]]]]
                 : graph.history,
