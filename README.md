@@ -51,7 +51,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v0.0.1/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.0.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -62,7 +62,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=0.0.1
+  - url: /local/apexcharts-card.js?v=1.0.0
     type: module
 ```
 
@@ -86,15 +86,15 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `type` | string | | NEXT_VERSION | `custom:apexcharts-card` |
-| :white_check_mark: `series` | object | | NEXT_VERSION | See [series](#series-options) |
-| `hours_to_show` | number | `24` | NEXT_VERSION | The span of the graph in hours (Use `0.25` for 15min for eg.) |
-| `show` | object | | NEXT_VERSION | See [show](#show-options) |
-| `cache` | boolean | `true` | NEXT_VERSION | Use in-browser data caching to reduce the load on Home Assistant's server |
-| `stacked` | boolean | `false` | NEXT_VERSION | Enable if you want the data to be stacked on the graph |
-| `layout` | string | | NEXT_VERSION | See [layouts](#layouts) |
-| `header` | string | | NEXT_VERSION | See [header](#header-options) |
-| `apex_config`| object | | NEXT_VERSION | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
+| :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
+| :white_check_mark: `series` | object | | v1.0.0 | See [series](#series-options) |
+| `hours_to_show` | number | `24` | v1.0.0 | The span of the graph in hours (Use `0.25` for 15min for eg.) |
+| `show` | object | | v1.0.0 | See [show](#show-options) |
+| `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
+| `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
+| `layout` | string | | v1.0.0 | See [layouts](#layouts) |
+| `header` | string | | v1.0.0 | See [header](#header-options) |
+| `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
 
 
@@ -102,49 +102,49 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `entity` | string | | NEXT_VERSION | The `entity_id` of the sensor to display |
-| `name` | string | | NEXT_VERSION | Override the name of the entity |
-| `type` | string | `line` | NEXT_VERSION | `line`, `area` or `bar` are supported for now |
-| `curve` | string | `smooth` | NEXT_VERSION | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
-| `extend_to_end` | boolean | `true` | NEXT_VERSION | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
-| `unit` | string | | NEXT_VERSION | Override the unit of the sensor |
-| `group_by` | object | | NEXT_VERSION | See [group_by](#group_by-options) |
+| :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
+| `name` | string | | v1.0.0 | Override the name of the entity |
+| `type` | string | `line` | v1.0.0 | `line`, `area` or `bar` are supported for now |
+| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
+| `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
+| `unit` | string | | v1.0.0 | Override the unit of the sensor |
+| `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 
 
 ### `show` Options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `loading` | boolean | `true` | NEXT_VERSION | Displays a spinning icon while the data is loading/updating |
+| `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
 
 ### `header` Options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `show` | boolean | `true` | NEXT_VERSION | Show or hide the header |
-| `floating` | boolean | `false` | NEXT_VERSION | Makes the header float above the graph. Positionning will be supported later |
+| `show` | boolean | `true` | v1.0.0 | Show or hide the header |
+| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 
 ### `group_by` Options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `func` | string | `raw` | NEXT_VERSION | See [func](#func-options) |
-| `duration` | string | `1h` | NEXT_VERSION | If `func` is **not** `raw` only. It build buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
-| `fill` | string | `last` | NEXT_VERSION | If `func` is **not** `raw` only. If there is any missing value in the states history, `last` will replace it will the last non-empty state, `zero` will fill missing values with `0`, `null` will fill missing values with `null`
+| `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
+| `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It build buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
+| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the states history, `last` will replace it will the last non-empty state, `zero` will fill missing values with `0`, `null` will fill missing values with `null`
 
 ### `func` Options
 
 | Name | Since | Description |
 | ---- | :---: | ----------- |
-| `raw` | NEXT_VERSION | Displays all the state history as known by Home Assistant |
-| `avg` | NEXT_VERSION | Will return the average of all the states in each bucket |
-| `min` | NEXT_VERSION | Will return the smallest state of each bucket |
-| `max` | NEXT_VERSION | Will return the biggest state of each bucket |
-| `last` | NEXT_VERSION | Will return the last state of each bucket |
-| `first` | NEXT_VERSION | Will return the first state of each bucket |
-| `sum` | NEXT_VERSION | Will return the sum of all the states in each bucket |
-| `median` | NEXT_VERSION | Will return the median of all the states in each bucket |
-| `delta` | NEXT_VERSION | Will return the delta between the biggest and smallest state in each bucket |
+| `raw` | v1.0.0 | Displays all the state history as known by Home Assistant |
+| `avg` | v1.0.0 | Will return the average of all the states in each bucket |
+| `min` | v1.0.0 | Will return the smallest state of each bucket |
+| `max` | v1.0.0 | Will return the biggest state of each bucket |
+| `last` | v1.0.0 | Will return the last state of each bucket |
+| `first` | v1.0.0 | Will return the first state of each bucket |
+| `sum` | v1.0.0 | Will return the sum of all the states in each bucket |
+| `median` | v1.0.0 | Will return the median of all the states in each bucket |
+| `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
 
 ### Apex Charts Options Example
 
