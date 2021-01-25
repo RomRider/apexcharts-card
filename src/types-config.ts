@@ -1,5 +1,6 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  update_interval?: string;
   series: ChartCardSeriesExternalConfig[];
   hours_to_show?: number;
   show?: {

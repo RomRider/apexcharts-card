@@ -2,6 +2,7 @@ views:
   - title: Main
     cards:
       - type: custom:apexcharts-card
+        update_interval: 5sec
         stacked: true
         series:
           - entity: sensor.random_0_1000

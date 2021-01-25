@@ -66,10 +66,36 @@ class ChartsCard extends LitElement {
 
   @property() private _entities: HassEntity[] = [];
 
+  private _interval?: number | null;
+
+  private _intervalTimeout?: NodeJS.Timeout;
+
   public connectedCallback() {
     super.connectedCallback();
     if (this._config && this._hass && !this._loaded) {
       this._initialLoad();
+    }
+    if (this._config?.update_interval) {
+      window.requestAnimationFrame(() => {
+        this._updateOnInterval();
+      });
+      // Valid because setConfig has been done.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this._intervalTimeout = setInterval(() => this._updateOnInterval(), this._interval!);
+    }
+  }
+
+  disconnectedCallback() {
+    if (this._intervalTimeout) {
+      clearInterval(this._intervalTimeout);
+    }
+    super.disconnectedCallback();
+  }
+
+  private _updateOnInterval(): void {
+    if (!this._updating) {
+      this._updating = true;
+      this._updateData();
     }
   }
 
@@ -98,12 +124,12 @@ class ChartsCard extends LitElement {
     });
     if (updated) {
       this._entities = [...this._entities];
-      if (!this._updating) {
+      if (!this._updating && !this._config.update_interval) {
         this._updating = true;
         // give time to HA's recorder component to write the data in the history
         setTimeout(() => {
           this._updateData();
-        }, 1000);
+        }, 1500);
       }
     }
   }
@@ -111,6 +137,12 @@ class ChartsCard extends LitElement {
   public setConfig(config: ChartCardExternalConfig) {
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
     ChartCardExternalConfig.strictCheck(config);
+    if (config.update_interval) {
+      this._interval = parse(config.update_interval);
+      if (this._interval === null) {
+        throw new Error(`'update_interval: ${config.update_interval}' is not a valid interval of time`);
+      }
+    }
 
     this._config = mergeDeep(
       {
