@@ -21,11 +21,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     grid: {
       strokeDashArray: 3,
     },
-    // plotOptions: {
-    //   bar: {
-    //     distributed: true,
-    //   },
-    // },
+    fill: {
+      opacity: config.series.map((serie) => {
+        return serie.type === 'area' ? 0.7 : 1;
+      }),
+    },
     series: config?.series.map((serie, index) => {
       return {
         name: computeName(index, config, hass?.states),
