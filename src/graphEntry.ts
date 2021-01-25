@@ -6,6 +6,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
 import { DEFAULT_HOURS_TO_SHOW, moment } from './const';
 import parse from 'parse-duration';
+import SparkMD5 from 'spark-md5';
 
 export default class GraphEntry {
   private _history?: EntityEntryCache;
@@ -40,6 +41,8 @@ export default class GraphEntry {
 
   private _groupByDurationMs: number;
 
+  private _md5Config: string;
+
   constructor(entity: string, index: number, hoursToShow: number, cache: boolean, config: ChartCardSeriesConfig) {
     const aggregateFuncMap = {
       avg: this._average,
@@ -67,6 +70,7 @@ export default class GraphEntry {
     // Valid because tested during init;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._groupByDurationMs = parse(this._config.group_by.duration)!;
+    this._md5Config = SparkMD5.hash(`${this._hoursToShow}${JSON.stringify(this._config)}`);
   }
 
   set hass(hass: HomeAssistant) {
@@ -91,7 +95,9 @@ export default class GraphEntry {
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
-    const data: EntityEntryCache | undefined | null = await localForage.getItem(key + (compressed ? '' : '-raw'));
+    const data: EntityEntryCache | undefined | null = await localForage.getItem(
+      `${key}_${this._md5Config}${compressed ? '' : '-raw'}`,
+    );
     return data ? (compressed ? decompress(data) : data) : undefined;
   }
 
@@ -100,7 +106,9 @@ export default class GraphEntry {
     data: EntityEntryCache,
     compressed: boolean,
   ): Promise<string | EntityEntryCache> {
-    return compressed ? localForage.setItem(key, compress(data)) : localForage.setItem(`${key}-raw`, data);
+    return compressed
+      ? localForage.setItem(`${key}_${this._md5Config}`, compress(data))
+      : localForage.setItem(`${key}_${this._md5Config}-raw`, data);
   }
 
   public async _updateHistory(start: Date, end: Date): Promise<boolean> {
@@ -119,9 +127,7 @@ export default class GraphEntry {
 
     let skipInitialState = false;
 
-    let history = this._cache
-      ? await this._getCache(`${this._entityID}_${this._hoursToShow}`, this._useCompress)
-      : undefined;
+    let history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
 
     if (history && history.hours_to_show === this._hoursToShow) {
       const currDataIndex = history.data.findIndex((item) => item && new Date(item[0]).getTime() > start.getTime());
@@ -168,7 +174,7 @@ export default class GraphEntry {
       }
 
       if (this._cache) {
-        this._setCache(`${this._entityID}_${this._hoursToShow}`, history, this._useCompress).catch((err) => {
+        this._setCache(this._entityID, history, this._useCompress).catch((err) => {
           log(err);
           localForage.clear();
         });
