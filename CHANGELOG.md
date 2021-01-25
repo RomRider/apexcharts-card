@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/RomRider/apexcharts-card/compare/v1.0.1...v1.0.2) (2021-01-25)
+
+
+### Bug Fixes
+
+* `bar` should be `column` ([ff188ee](https://github.com/RomRider/apexcharts-card/commit/ff188ee54ba4a3652dc2a6efaccd5d4d950251ba))
+
 ## [1.0.1](https://github.com/RomRider/apexcharts-card/compare/v1.0.0...v1.0.1) (2021-01-25)
 
 
