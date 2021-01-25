@@ -8,7 +8,8 @@
     "build:types-check": "ts-interface-builder src/types-config.ts",
     "rollup": "rollup -c",
     "lint": "eslint src/*.ts",
-    "watch": "npm run build:types-check && rollup -c --watch"
+    "watch": "npm run build:types-check && rollup -c --watch",
+    "postversion": "npm run build"
   },
   "repository": {
     "type": "git",
