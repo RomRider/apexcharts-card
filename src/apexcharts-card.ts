@@ -135,7 +135,7 @@ class ChartsCard extends LitElement {
           serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
         }
         if (!parse(serie.group_by.duration)) {
-          throw `Can't parse 'group_by' duration: '${serie.group_by.duration}'`;
+          throw new Error(`Can't parse 'series[${index}].group_by.duration': '${serie.group_by.duration}'`);
         }
         if (serie.entity) {
           return new GraphEntry(
