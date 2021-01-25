@@ -60,13 +60,18 @@ export function computeName(
   entities: (HassEntity | undefined)[] | HassEntities | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
+  if (!config || (!entities && !entity)) return '';
   if (entity) {
-    return config?.series[index].name || entity?.attributes?.friendly_name || entity.entity_id || '';
-  } else {
+    return config.series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
+  } else if (entities) {
     return (
-      config?.series[index].name || entities?.[index]?.attributes?.friendly_name || entities?.[index]?.entity_id || ''
+      config.series[index].name ||
+      entities[config.series[index].entity]?.attributes?.friendly_name ||
+      entities[entities[config.series[index].entity]]?.entity_id ||
+      ''
     );
   }
+  return '';
 }
 
 export function computeUom(
@@ -75,9 +80,11 @@ export function computeUom(
   entities: HassEntity[] | undefined[] | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
+  if (!config || (!entities && !entity)) return '';
   if (entity) {
-    return config?.series[index].unit || entity.attributes?.unit_of_measurement || '';
-  } else {
-    return config?.series[index].unit || entities?.[index]?.attributes?.unit_of_measurement || '';
+    return config.series[index].unit || entity.attributes?.unit_of_measurement || '';
+  } else if (entities) {
+    return config.series[index].unit || entities[config.series[index].entity]?.attributes?.unit_of_measurement || '';
   }
+  return '';
 }
