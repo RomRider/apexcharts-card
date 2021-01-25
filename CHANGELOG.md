@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/RomRider/apexcharts-card/compare/v1.0.0...v1.0.1) (2021-01-25)
+
+
+### Bug Fixes
+
+* Not releasing file ([e1dc473](https://github.com/RomRider/apexcharts-card/commit/e1dc47312f53468990586af2643f7afeeca32275))
+
 # 1.0.0 (2021-01-25)
 
 
