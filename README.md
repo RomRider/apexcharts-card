@@ -4,7 +4,7 @@
 
 This is higly customizable graph card for [Home-Assistant](https://www.home-assistant.io)'s Lovelace UI.<br/>
 
-It is based on [ApexCharts.js](https://apexcharts.js) and offers most of the features of the library.
+It is based on [ApexCharts.js](https://apexcharts.com) and offers most of the features of the library.
 
 It is also inspired by the great [`mini-graph-card`](https://github.com/kalkih/mini-graph-card) by [@kalkih](https://github.com/kalkih)
 
