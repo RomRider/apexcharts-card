@@ -1,6 +1,6 @@
 # ApexCharts Card by [@RomRider](https://github.com/RomRider) <!-- omit in toc -->
 
-![Header](docs/Header.png)
+![Header](https://github.com/RomRider/apexcharts-card/raw/master/docs/Header.png)
 
 This is higly customizable graph card for [Home-Assistant](https://www.home-assistant.io)'s Lovelace UI.<br/>
 
@@ -129,8 +129,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
-| `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It build buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
-| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the states history, `last` will replace it will the last non-empty state, `zero` will fill missing values with `0`, `null` will fill missing values with `null`
+| `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
+| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the states history, `last` will replace it the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`
 
 ### `func` Options
 
@@ -167,11 +167,11 @@ apex_config:
 
 For now, only `minimal` is supported: It will remove the grid, the axis and display the legend at the top. But you can use the `apex_config` to do whatever you want.
 
-For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](blob/master/src/apex-layouts.ts)
+For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](src/apex-layouts.ts)
 
 ## Known issues
 
-* Sometimes, is `smoothing` is used alongside `area` and there is missing data in the chart, the background will be glitchy. See [apexcharts.js/#2180](https://github.com/apexcharts/apexcharts.js/issues/2180)
+* Sometimes, if `smoothing` is used alongside `area` and there is missing data in the chart, the background will be glitchy. See [apexcharts.js/#2180](https://github.com/apexcharts/apexcharts.js/issues/2180)
 * `binary_sensor` is not yet supported.
 * Bars will span left and right of the data point. Not so great if you use `func` to aggregate your data. See [apexcharts.js/#1688](https://github.com/apexcharts/apexcharts.js/issues/1688)
 
