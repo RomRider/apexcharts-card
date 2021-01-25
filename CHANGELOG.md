@@ -1,3 +1,27 @@
+## [1.1.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.0.2...v1.1.0-dev.1) (2021-01-25)
+
+
+### Features
+
+* Add `update_interval` config option ([357db9a](https://github.com/RomRider/apexcharts-card/commit/357db9a60cf7e1e41fca742f481222f293490ae4)), closes [#2](https://github.com/RomRider/apexcharts-card/issues/2)
+
+
+### Bug Fixes
+
+* Error was not displayed if duration couldn't be parsed ([2e2212f](https://github.com/RomRider/apexcharts-card/commit/2e2212f54d57cda08fc91c7c767d4e032e680db5))
+* Name and units displayed ([fe5526b](https://github.com/RomRider/apexcharts-card/commit/fe5526b976e394d50c066588faaebd423b8ec966))
+
+
+### Documentation
+
+* Add examples and fix documentation ([c71b76a](https://github.com/RomRider/apexcharts-card/commit/c71b76ae5e9352cbab8b247a3908dbfded1ba7e6))
+* Fix typos and broken links ([7789b8f](https://github.com/RomRider/apexcharts-card/commit/7789b8fd76b9c4f0139577090dfd8b4a0e88ce47))
+
+
+### Chores
+
+* **changelog:** Add doc and chores sections ([58d7f5f](https://github.com/RomRider/apexcharts-card/commit/58d7f5f37842525a7b61d017feef2cadafdf56bd))
+
 ## [1.0.2](https://github.com/RomRider/apexcharts-card/compare/v1.0.1...v1.0.2) (2021-01-25)
 
 
