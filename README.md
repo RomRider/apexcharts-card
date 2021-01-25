@@ -1,4 +1,4 @@
-# ApexCharts Card by @RomRider <!-- omit in toc -->
+# ApexCharts Card by [@RomRider](https://github.com/RomRider) <!-- omit in toc -->
 
 ![Header](docs/Header.png)
 
@@ -6,7 +6,7 @@ This is higly customizable graph card for [Home-Assistant](https://www.home-assi
 
 It is based on [ApexCharts.js](https://apexcharts.js) and offers most of the features of the library.
 
-It is also inspired by the great [`mini-graph-card`](https://github.com/kalkih/mini-graph-card) by @kalkih
+It is also inspired by the great [`mini-graph-card`](https://github.com/kalkih/mini-graph-card) by [@kalkih](https://github.com/kalkih)
 
 
 However, some things might be broken :grin:
@@ -27,7 +27,9 @@ However, some things might be broken :grin:
   - [`func` Options](#func-options)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
-  - [Examples](#examples)
+- [Known issues](#known-issues)
+- [Roadmap](#roadmap)
+- [Examples](#examples)
 
 ## Installation
 
@@ -80,12 +82,12 @@ Else, if you prefer the graphical editor, use the menu to add the resource:
 The card stricly validates all the options available (but not for the `apex_config` object). If there is an error in your configuration, it will tell you where and display a red error card.
 
 
-[x] **means required**.
+:white_check_mark: **means required**.
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| <ul><li>[x] `type`</li></ul> | string | | NEXT_VERSION | `custom:apexcharts-card` |
-| <ul><li>[x] `series`</li></ul> | object | | NEXT_VERSION | See [series](#series-options) |
+| :white_check_mark: `type` | string | | NEXT_VERSION | `custom:apexcharts-card` |
+| :white_check_mark: `series` | object | | NEXT_VERSION | See [series](#series-options) |
 | `hours_to_show` | number | `24` | NEXT_VERSION | The span of the graph in hours (Use `0.25` for 15min for eg.) |
 | `show` | object | | NEXT_VERSION | See [show](#show-options) |
 | `cache` | boolean | `true` | NEXT_VERSION | Use in-browser data caching to reduce the load on Home Assistant's server |
@@ -100,7 +102,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| <ul><li>[x] `entity`</li></ul> | string | | NEXT_VERSION | The `entity_id` of the sensor to display |
+| :white_check_mark: `entity` | string | | NEXT_VERSION | The `entity_id` of the sensor to display |
 | `name` | string | | NEXT_VERSION | Override the name of the entity |
 | `type` | string | `line` | NEXT_VERSION | `line`, `area` or `bar` are supported for now |
 | `curve` | string | `smooth` | NEXT_VERSION | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
@@ -167,6 +169,25 @@ For now, only `minimal` is supported: It will remove the grid, the axis and disp
 
 For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](blob/master/src/apex-layouts.ts)
 
-### Examples
+## Known issues
+
+* Sometimes, is `smoothing` is used alongside `area` and there is missing data in the chart, the background will be glitchy. See [apexcharts.js/#2180](https://github.com/apexcharts/apexcharts.js/issues/2180)
+* `binary_sensor` is not yet supported.
+* Bars will span left and right of the data point. Not so great if you use `func` to aggregate your data. See [apexcharts.js/#1688](https://github.com/apexcharts/apexcharts.js/issues/1688)
+
+## Roadmap
+
+Not ordered by priority:
+
+* [ ] Support for `binary_sensors`
+* [ ] Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)
+* [ ] Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"
+* [ ] Support for any number of Y-axis
+* [ ] Support for logarithmic
+* [ ] Support for state mapping for non-numerical state sensors
+* [ ] Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)
+* [ ] Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)
+
+## Examples
 
 TBD.
