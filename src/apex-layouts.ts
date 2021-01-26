@@ -56,8 +56,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
               },
       },
       y: {
-        formatter: function (_, opts, conf = config, hass2 = hass) {
-          let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
+        formatter: function (value, opts, conf = config, hass2 = hass) {
           if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
             value = (value as number).toFixed(1);
           }
