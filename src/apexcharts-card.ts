@@ -155,7 +155,6 @@ class ChartsCard extends LitElement {
         cache: true,
         useCompress: false,
         show: { loading: true },
-        header: { show: true },
       },
       JSON.parse(JSON.stringify(config)),
     );
