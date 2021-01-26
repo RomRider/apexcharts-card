@@ -1,6 +1,7 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
 import { ChartCardConfig } from './types';
+import { TinyColor } from '@ctrl/tinycolor';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -87,4 +88,19 @@ export function computeUom(
     return config.series[index].unit || entities[config.series[index].entity]?.attributes?.unit_of_measurement || '';
   }
   return '';
+}
+
+export function computeColors(colors: string[] | undefined): string[] {
+  if (!colors) return [];
+  return colors.map((color) => {
+    if (color[0] === '#') {
+      return color;
+    } else if (color.substring(0, 3) === 'var') {
+      return new TinyColor(
+        window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
+      ).toHexString();
+    } else {
+      return new TinyColor(color).toHexString();
+    }
+  });
 }

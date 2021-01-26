@@ -11,7 +11,7 @@ export const DEFAULT_FUNC = 'raw';
 export const DEFAULT_GROUP_BY_FILL = 'last';
 
 export const DEFAULT_COLORS = [
-  '#ff9800',
+  'var(--accent-color)',
   '#3498db',
   '#e74c3c',
   '#9b59b6',
