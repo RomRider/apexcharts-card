@@ -4,7 +4,7 @@ import { ChartCardConfig, EntityEntryCache } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
-import { computeName, computeUom, decompress, getMilli, log, mergeDeep } from './utils';
+import { computeColors, computeName, computeUom, decompress, getMilli, log, mergeDeep } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -14,6 +14,7 @@ import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
+  DEFAULT_COLORS,
   DEFAULT_DURATION,
   DEFAULT_FUNC,
   DEFAULT_GROUP_BY_FILL,
@@ -69,6 +70,8 @@ class ChartsCard extends LitElement {
   private _interval?: number | null;
 
   private _intervalTimeout?: NodeJS.Timeout;
+
+  private _colors?: string[];
 
   public connectedCallback() {
     super.connectedCallback();
@@ -156,7 +159,12 @@ class ChartsCard extends LitElement {
     );
 
     if (this._config) {
+      this._colors = [...DEFAULT_COLORS];
       this._graphs = this._config.series.map((serie, index) => {
+        if (serie.color) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this._colors![index] = serie.color;
+        }
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
         serie.type = serie.type || DEFAULT_SERIE_TYPE;
         if (!serie.group_by) {
@@ -292,6 +300,7 @@ class ChartsCard extends LitElement {
           min: start.getTime(),
           max: end.getTime(),
         },
+        colors: computeColors(this._colors),
       };
       this._apexChart?.updateOptions(graphData, false, false);
     } catch (err) {

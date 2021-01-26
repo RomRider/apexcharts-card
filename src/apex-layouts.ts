@@ -1,5 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { DEFAULT_COLORS, moment } from './const';
+import { moment } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep } from './utils';
 
@@ -17,7 +17,6 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         show: false,
       },
     },
-    colors: DEFAULT_COLORS,
     grid: {
       strokeDashArray: 3,
     },

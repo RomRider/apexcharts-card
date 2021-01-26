@@ -9,6 +9,7 @@ views:
             name: Sensor 1
             type: area
             curve: straight
+            color: yellow
           - entity: sensor.random_0_1000
             name: Sensor 2
             type: area
