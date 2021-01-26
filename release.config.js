@@ -12,7 +12,7 @@ module.exports = {
             { type: 'fix', section: 'Bug Fixes' },
             { type: 'doc', hidden: false, section: 'Documentation' },
             { type: 'docs', hidden: false, section: 'Documentation' },
-            { type: 'chore', hidden: false, section: 'Chores' },
+            { type: 'chore', hidden: true, section: 'Chores' },
           ],
         },
       },
@@ -43,6 +43,6 @@ module.exports = {
       },
     ],
   ],
-  preset: 'angular',
+  preset: 'conventionalcommits',
   branches: [{ name: 'master' }, { name: 'dev', prerelease: true }],
 };
