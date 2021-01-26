@@ -1,3 +1,21 @@
+## [1.1.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2021-01-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace `hours_to_show` with `graph_span`. Takes a time string instead of a number of hours.
+
+### Features
+
+* Replace `hours_to_show` with `graph_span`. Takes a time string instead of a number of hours. ([e7ed408](https://github.com/RomRider/apexcharts-card/commit/e7ed40892e8e041ffdb62a6efc9fc2050b715b73))
+* **color:** Define your own `color` option for each `serie` ([#7](https://github.com/RomRider/apexcharts-card/issues/7)) ([3a15db2](https://github.com/RomRider/apexcharts-card/commit/3a15db2b79eb0377b244387e8895eb871e2e35d2)), closes [#4](https://github.com/RomRider/apexcharts-card/issues/4)
+* **header:** More header options and title support ([#8](https://github.com/RomRider/apexcharts-card/issues/8)) ([2cbd769](https://github.com/RomRider/apexcharts-card/commit/2cbd769f9229b5c49d32a1aa42b0cc5ccaff914d)), closes [#5](https://github.com/RomRider/apexcharts-card/issues/5)
+
+
+### Bug Fixes
+
+* **tooltip:** Values where following the selected point ([0145ca2](https://github.com/RomRider/apexcharts-card/commit/0145ca2c455cf263bf6ab7a983300c8fb4ea6fb9))
+
 ## [1.1.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.0.2...v1.1.0-dev.1) (2021-01-25)
 
 
