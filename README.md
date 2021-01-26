@@ -54,7 +54,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.0.2/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.1.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -65,7 +65,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.0.2
+  - url: /local/apexcharts-card.js?v=1.1.0
     type: module
 ```
 
@@ -91,8 +91,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `update_interval` | string | | NEXT_VERSION | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `graph_span` | string | `24h` | NEXT_VERSION | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
+| `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
+| `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `show` | object | | v1.0.0 | See [show](#show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
@@ -108,7 +108,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
 | `name` | string | | v1.0.0 | Override the name of the entity |
-| `color` | string | | NEXT_VERSION | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
+| `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
@@ -128,8 +128,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
-| `show_states` | boolean | `false` | NEXT_VERSION | Show or hide the states in the header |
-| `colorize_states` | boolean | `false` | NEXT_VERSION | Colorize the states based on the color of the serie |
+| `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
+| `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
 
 ### `group_by` Options
 

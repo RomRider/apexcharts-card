@@ -1,3 +1,37 @@
+## [1.1.0](https://github.com/RomRider/apexcharts-card/compare/v1.0.2...v1.1.0) (2021-01-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace `hours_to_show` with `graph_span`. Takes a time string instead of a number of hours.
+
+### Features
+
+* Replace `hours_to_show` with `graph_span`. Takes a time string instead of a number of hours. ([e7ed408](https://github.com/RomRider/apexcharts-card/commit/e7ed40892e8e041ffdb62a6efc9fc2050b715b73))
+* **color:** Define your own `color` option for each `serie` ([#7](https://github.com/RomRider/apexcharts-card/issues/7)) ([3a15db2](https://github.com/RomRider/apexcharts-card/commit/3a15db2b79eb0377b244387e8895eb871e2e35d2)), closes [#4](https://github.com/RomRider/apexcharts-card/issues/4)
+* **header:** More header options and title support ([#8](https://github.com/RomRider/apexcharts-card/issues/8)) ([2cbd769](https://github.com/RomRider/apexcharts-card/commit/2cbd769f9229b5c49d32a1aa42b0cc5ccaff914d)), closes [#5](https://github.com/RomRider/apexcharts-card/issues/5)
+* Add `update_interval` config option ([357db9a](https://github.com/RomRider/apexcharts-card/commit/357db9a60cf7e1e41fca742f481222f293490ae4)), closes [#2](https://github.com/RomRider/apexcharts-card/issues/2)
+
+
+### Bug Fixes
+
+* **tooltip:** Values where following the selected point ([0145ca2](https://github.com/RomRider/apexcharts-card/commit/0145ca2c455cf263bf6ab7a983300c8fb4ea6fb9))
+* Error was not displayed if duration couldn't be parsed ([2e2212f](https://github.com/RomRider/apexcharts-card/commit/2e2212f54d57cda08fc91c7c767d4e032e680db5))
+* Name and units displayed ([fe5526b](https://github.com/RomRider/apexcharts-card/commit/fe5526b976e394d50c066588faaebd423b8ec966))
+
+
+### Documentation
+
+* Add examples and fix documentation ([c71b76a](https://github.com/RomRider/apexcharts-card/commit/c71b76ae5e9352cbab8b247a3908dbfded1ba7e6))
+* Fix typos and broken links ([7789b8f](https://github.com/RomRider/apexcharts-card/commit/7789b8fd76b9c4f0139577090dfd8b4a0e88ce47))
+
+
+### Chores
+
+* **changelog:** Add doc and chores sections ([58d7f5f](https://github.com/RomRider/apexcharts-card/commit/58d7f5f37842525a7b61d017feef2cadafdf56bd))
+* **release:** 1.1.0-dev.1 [skip ci] ([e15f7b9](https://github.com/RomRider/apexcharts-card/commit/e15f7b94a6ca366354ee516a95123d9e8ef3db62)), closes [#2](https://github.com/RomRider/apexcharts-card/issues/2)
+* **release:** 1.1.0-dev.2 [skip ci] ([f01afd7](https://github.com/RomRider/apexcharts-card/commit/f01afd77a0e1dde79869f23225c44b49027a8a37)), closes [#4](https://github.com/RomRider/apexcharts-card/issues/4) [#5](https://github.com/RomRider/apexcharts-card/issues/5)
+
 ## [1.1.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2021-01-26)
 
 
