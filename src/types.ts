@@ -3,7 +3,7 @@ import { ChartCardExternalConfig, ChartCardSeriesExternalConfig, GroupByFill, Gr
 
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
-  hours_to_show: number;
+  graph_span: string;
   cache: boolean;
   useCompress: boolean;
   apex_config?: ApexOptions;
@@ -19,7 +19,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
 }
 
 export interface EntityEntryCache {
-  hours_to_show: number;
+  span: number;
   last_fetched: Date;
   data: EntityCachePoints;
 }

@@ -92,7 +92,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
 | `update_interval` | string | | NEXT_VERSION | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `hours_to_show` | number | `24` | v1.0.0 | The span of the graph in hours (Use `0.25` for 15min for eg.) |
+| `graph_span` | string | `24h` | NEXT_VERSION | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `show` | object | | v1.0.0 | See [show](#show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
@@ -216,7 +216,7 @@ series:
 
 ```yaml
 type: custom:apexcharts-card
-hours_to_show: 6
+graph_span: 6h
 header:
   show: false
 series:
@@ -240,7 +240,7 @@ series:
 
 ```yaml
 type: custom:apexcharts-card
-hours_to_show: 1
+graph_span: 1h
 header:
   show: false
 series:

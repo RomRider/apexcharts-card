@@ -1,5 +1,6 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { moment } from './const';
+import parse from 'parse-duration';
+import { HOUR_24, moment } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep } from './utils';
 
@@ -45,7 +46,8 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     tooltip: {
       x: {
         formatter:
-          config.hours_to_show < 24
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          parse(config.graph_span!)! < HOUR_24
             ? function (val) {
                 return moment(new Date(val)).format('HH:mm:ss');
               }

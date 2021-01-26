@@ -4,7 +4,7 @@ import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
-import { DEFAULT_HOURS_TO_SHOW, moment } from './const';
+import { HOUR_24, moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
 
@@ -23,7 +23,9 @@ export default class GraphEntry {
 
   private _cache = true;
 
-  private _hoursToShow: number;
+  // private _hoursToShow: number;
+
+  private _graphSpan: number;
 
   private _useCompress = false;
 
@@ -43,7 +45,7 @@ export default class GraphEntry {
 
   private _md5Config: string;
 
-  constructor(entity: string, index: number, hoursToShow: number, cache: boolean, config: ChartCardSeriesConfig) {
+  constructor(entity: string, index: number, graphSpan: number, cache: boolean, config: ChartCardSeriesConfig) {
     const aggregateFuncMap = {
       avg: this._average,
       max: this._maximum,
@@ -58,19 +60,19 @@ export default class GraphEntry {
     this._cache = cache;
     this._entityID = entity;
     this._history = undefined;
-    this._hoursToShow = hoursToShow;
+    this._graphSpan = graphSpan;
     this._config = config;
     const now = new Date();
     const now2 = new Date(now);
     this._func = aggregateFuncMap[config.group_by.func];
-    now2.setHours(now2.getHours() - DEFAULT_HOURS_TO_SHOW);
+    now2.setTime(now2.getTime() - HOUR_24);
     this._timeRange = moment.range(now, now2);
     this._realEnd = new Date();
     this._realStart = new Date();
     // Valid because tested during init;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._groupByDurationMs = parse(this._config.group_by.duration)!;
-    this._md5Config = SparkMD5.hash(`${this._hoursToShow}${JSON.stringify(this._config)}`);
+    this._md5Config = SparkMD5.hash(`${this._graphSpan}${JSON.stringify(this._config)}`);
   }
 
   set hass(hass: HomeAssistant) {
@@ -129,7 +131,7 @@ export default class GraphEntry {
 
     let history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
 
-    if (history && history.hours_to_show === this._hoursToShow) {
+    if (history && history.span === this._graphSpan) {
       const currDataIndex = history.data.findIndex((item) => item && new Date(item[0]).getTime() > start.getTime());
       if (currDataIndex !== -1) {
         // skip initial state when fetching recent/not-cached data
@@ -160,14 +162,14 @@ export default class GraphEntry {
         return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
       });
       if (history?.data.length) {
-        history.hours_to_show = this._hoursToShow;
+        history.span = this._graphSpan;
         history.last_fetched = new Date();
         if (history.data.length !== 0) {
           history.data.push(...newStateHistory);
         }
       } else {
         history = {
-          hours_to_show: this._hoursToShow,
+          span: this._graphSpan,
           last_fetched: new Date(),
           data: newStateHistory,
         };

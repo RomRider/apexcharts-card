@@ -18,8 +18,9 @@ import {
   DEFAULT_DURATION,
   DEFAULT_FUNC,
   DEFAULT_GROUP_BY_FILL,
-  DEFAULT_HOURS_TO_SHOW,
+  DEFAULT_GRAPH_SPAN,
   DEFAULT_SERIE_TYPE,
+  HOUR_24,
 } from './const';
 import parse from 'parse-duration';
 
@@ -41,9 +42,13 @@ localForage
   .iterate((data, key) => {
     const value: EntityEntryCache = key.endsWith('-raw') ? data : decompress(data);
     const start = new Date();
-    start.setHours(start.getHours() - value.hours_to_show);
-    if (new Date(value.last_fetched) < start) {
+    if (value.span === undefined) {
       localForage.removeItem(key);
+    } else {
+      start.setTime(start.getTime() - value.span);
+      if (new Date(value.last_fetched) < start) {
+        localForage.removeItem(key);
+      }
     }
   })
   .catch((err) => {
@@ -72,6 +77,8 @@ class ChartsCard extends LitElement {
   private _intervalTimeout?: NodeJS.Timeout;
 
   private _colors?: string[];
+
+  private _graphSpan: number | null = HOUR_24;
 
   @property({ attribute: false }) private _lastState: (number | string | null)[] = [];
 
@@ -148,10 +155,16 @@ class ChartsCard extends LitElement {
         throw new Error(`'update_interval: ${config.update_interval}' is not a valid interval of time`);
       }
     }
+    if (config.graph_span) {
+      this._graphSpan = parse(config.graph_span);
+      if (this._graphSpan === null) {
+        throw new Error(`'graph_span: ${config.update_interval}' is not a valid range of time`);
+      }
+    }
 
     this._config = mergeDeep(
       {
-        hours_to_show: DEFAULT_HOURS_TO_SHOW,
+        graph_span: DEFAULT_GRAPH_SPAN,
         cache: true,
         useCompress: false,
         show: { loading: true },
@@ -183,7 +196,7 @@ class ChartsCard extends LitElement {
             serie.entity,
             index,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._config!.hours_to_show,
+            this._graphSpan!,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._config!.cache,
             serie,
@@ -301,7 +314,9 @@ class ChartsCard extends LitElement {
     // const end = this.getEndDate();
     const end = new Date();
     const start = new Date(end);
-    start.setTime(start.getTime() - getMilli(config.hours_to_show));
+    // validated during Init
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    start.setTime(start.getTime() - this._graphSpan!);
 
     try {
       const promise = this._graphs.map((graph) => graph?._updateHistory(start, end));
