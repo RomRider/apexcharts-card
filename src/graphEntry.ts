@@ -230,6 +230,7 @@ export default class GraphEntry {
       }
 
       buckets.some((bucket, index) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (bucket.timestamp > properEntry![0] && index > 0) {
           buckets[index - 1].data.push(properEntry);
           return true;
@@ -261,8 +262,10 @@ export default class GraphEntry {
     return items.reduce((sum, entry, index) => {
       let val = 0;
       if (entry && entry[1] === null) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         val = items[lastIndex][1]!;
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         val = entry[1]!;
         lastIndex = index;
       }
@@ -306,6 +309,7 @@ export default class GraphEntry {
   }
 
   private _median(items: EntityCachePoints) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const itemsDup = this._filterNulls([...items]).sort((a, b) => a[1]! - b[1]!);
     const mid = Math.floor((itemsDup.length - 1) / 2);
     if (itemsDup.length % 2 === 1) return itemsDup[mid];

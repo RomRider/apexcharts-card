@@ -4,7 +4,7 @@ import { ChartCardConfig, EntityEntryCache } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
-import { computeColors, computeName, computeUom, decompress, getMilli, log, mergeDeep } from './utils';
+import { computeColors, computeName, computeUom, decompress, log, mergeDeep } from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -309,7 +309,6 @@ class ChartsCard extends LitElement {
 
   private async _updateData() {
     if (!this._config || !this._graphs) return;
-    const config = this._config;
 
     // const end = this.getEndDate();
     const end = new Date();
