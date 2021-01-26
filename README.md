@@ -126,8 +126,10 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `show` | boolean | `true` | v1.0.0 | Show or hide the header |
+| `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
+| `show_states` | boolean | `false` | NEXT_VERSION | Show or hide the states in the header |
+| `colorize_states` | boolean | `false` | NEXT_VERSION | Colorize the states based on the color of the serie |
 
 ### `group_by` Options
 

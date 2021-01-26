@@ -67,8 +67,8 @@ export function computeName(
   } else if (entities) {
     return (
       config.series[index].name ||
-      entities[config.series[index].entity]?.attributes?.friendly_name ||
-      entities[entities[config.series[index].entity]]?.entity_id ||
+      entities[index]?.attributes?.friendly_name ||
+      entities[entities[index]]?.entity_id ||
       ''
     );
   }
@@ -85,7 +85,7 @@ export function computeUom(
   if (entity) {
     return config.series[index].unit || entity.attributes?.unit_of_measurement || '';
   } else if (entities) {
-    return config.series[index].unit || entities[config.series[index].entity]?.attributes?.unit_of_measurement || '';
+    return config.series[index].unit || entities[index]?.attributes?.unit_of_measurement || '';
   }
   return '';
 }
@@ -93,14 +93,18 @@ export function computeUom(
 export function computeColors(colors: string[] | undefined): string[] {
   if (!colors) return [];
   return colors.map((color) => {
-    if (color[0] === '#') {
-      return color;
-    } else if (color.substring(0, 3) === 'var') {
-      return new TinyColor(
-        window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
-      ).toHexString();
-    } else {
-      return new TinyColor(color).toHexString();
-    }
+    return computeColor(color);
   });
+}
+
+export function computeColor(color: string): string {
+  if (color[0] === '#') {
+    return color;
+  } else if (color.substring(0, 3) === 'var') {
+    return new TinyColor(
+      window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
+    ).toHexString();
+  } else {
+    return new TinyColor(color).toHexString();
+  }
 }

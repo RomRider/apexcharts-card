@@ -36,4 +36,7 @@ export type GroupByFunc = 'raw' | 'avg' | 'min' | 'max' | 'last' | 'first' | 'su
 export interface ChartCardHeaderExternalConfig {
   show?: boolean;
   floating?: boolean;
+  title?: string;
+  show_states?: boolean;
+  colorize_states?: boolean;
 }

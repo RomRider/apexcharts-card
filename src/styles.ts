@@ -12,7 +12,7 @@ export const styles: CSSResult = css`
 
   .wrapper {
     display: grid;
-    grid-template-areas: "header" "graph";
+    grid-template-areas: 'header' 'graph';
     grid-template-columns: 1fr;
     grid-template-rows: min-content 1fr;
   }
@@ -28,28 +28,58 @@ export const styles: CSSResult = css`
   }
 
   #header {
-    padding-top: 10px;
-    padding-left: 10px;
+    padding: 8px 16px 0px;
     grid-area: header;
   }
   #header.floating {
     position: absolute;
     top: 0px;
     left: 0px;
+    right: 0px;
   }
 
-  #header__title > #state {
+  #header__title {
+    color: var(--secondary-text-color);
+    font-size: 16px;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-bottom: 5px;
+  }
+
+  #header__states {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row wrap;
+    margin: -5px;
+  }
+
+  #header__states > * {
+    margin: 5px;
+  }
+
+  #states__state {
+    flex: 0 0 10%;
+  }
+
+  #state__value > #state {
     font-size: 1.8em;
     font-weight: 500;
   }
-  #header__title > #uom {
+
+  #state__value > #uom {
     font-size: 1em;
     font-weight: 400;
     opacity: 0.8;
   }
-  #header__subtitle {
+
+  #state__name {
     font-size: 0.8em;
     font-weight: 300;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   /* Apex Charts Default CSS */
@@ -318,7 +348,7 @@ export const styles: CSSResult = css`
     opacity: 0;
     padding: 4px 10px;
     pointer-events: none;
-    color: var(--primary-text-color)
+    color: var(--primary-text-color);
     font-size: 13px;
     text-align: center;
     border-radius: 2px;

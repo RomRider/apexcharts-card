@@ -59,19 +59,21 @@ class ChartsCard extends LitElement {
 
   private _loaded = false;
 
-  @property() private _updating = false;
+  @property({ type: Boolean }) private _updating = false;
 
   private _graphs: (GraphEntry | undefined)[] | undefined;
 
-  @property() private _config?: ChartCardConfig;
+  @property({ attribute: false }) private _config?: ChartCardConfig;
 
-  @property() private _entities: HassEntity[] = [];
+  private _entities: HassEntity[] = [];
 
   private _interval?: number | null;
 
   private _intervalTimeout?: NodeJS.Timeout;
 
   private _colors?: string[];
+
+  @property({ attribute: false }) private _lastState: (number | string | null)[] = [];
 
   public connectedCallback() {
     super.connectedCallback();
@@ -153,7 +155,6 @@ class ChartsCard extends LitElement {
         cache: true,
         useCompress: false,
         show: { loading: true },
-        header: { show: true },
       },
       JSON.parse(JSON.stringify(config)),
     );
@@ -252,11 +253,32 @@ class ChartsCard extends LitElement {
     };
     return html`
       <div id="header" class=${classMap(classes)}>
-        <div id="header__title">
-          <span id="state">${this._entities[0].state}</span>
-          <span id="uom">${computeUom(0, this._config, this._entities)}</span>
-        </div>
-        <div id="header__subtitle">${computeName(0, this._config, this._entities)}</div>
+        ${this._config?.header?.title ? html`<div id="header__title">${this._config.header.title}</div>` : html``}
+        ${this._config?.header?.show_states ? this._renderStates() : html``}
+      </div>
+    `;
+  }
+
+  private _renderStates(): TemplateResult {
+    return html`
+      <div id="header__states">
+        ${this._config?.series.map((_, index) => {
+          return html`
+            <div id="states__state">
+              <div id="state__value">
+                <span
+                  id="state"
+                  style="${this._colors && this._colors.length > 0
+                    ? `color: ${this._colors[index % this._colors?.length]};`
+                    : ''}"
+                  >${this._lastState?.[index] === 0 ? 0 : this._lastState?.[index] || 'N/A'}</span
+                >
+                <span id="uom">${computeUom(index, this._config, this._entities)}</span>
+              </div>
+              <div id="state__name">${computeName(index, this._config, this._entities)}</div>
+            </div>
+          `;
+        })}
       </div>
     `;
   }
@@ -288,6 +310,16 @@ class ChartsCard extends LitElement {
         series: this._graphs.map((graph) => {
           if (!graph || graph.history.length === 0) return { data: [] };
           const index = graph.index;
+          if (graph.history.length > 0) {
+            this._lastState[index] = graph.history[graph.history.length - 1][1];
+            if (
+              this._lastState[index] !== null &&
+              typeof this._lastState[index] === 'number' &&
+              !Number.isInteger(this._lastState[index])
+            ) {
+              this._lastState[index] = (this._lastState[index] as number).toFixed(1);
+            }
+          }
           return {
             data:
               this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column'
@@ -302,6 +334,7 @@ class ChartsCard extends LitElement {
         },
         colors: computeColors(this._colors),
       };
+      this._lastState = [...this._lastState];
       this._apexChart?.updateOptions(graphData, false, false);
     } catch (err) {
       log(err);

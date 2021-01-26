@@ -56,7 +56,10 @@ views:
       - type: custom:apexcharts-card
         hours_to_show: 1
         header:
-          show: false
+          title: Test Aggregate
+          show: true
+          show_states: true
+          colorize_states: true
         series:
           - entity: sensor.random0_100
             name: AVG
@@ -96,6 +99,8 @@ views:
 
       - type: custom:apexcharts-card
         hours_to_show: 4
+        header:
+          title: Test
         series:
           - entity: sensor.humidity
             type: area
@@ -109,6 +114,9 @@ views:
             group_by:
               func: avg
               duration: 1h
+      - type: sensor
+        entity: sensor.humidity
+        graph: line
 
       - type: custom:apexcharts-card
         hours_to_show: 6
