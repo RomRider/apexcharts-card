@@ -41,6 +41,9 @@ export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.l
 export const ChartCardHeaderExternalConfig = t.iface([], {
   "show": t.opt("boolean"),
   "floating": t.opt("boolean"),
+  "title": t.opt("string"),
+  "show_states": t.opt("boolean"),
+  "colorize_states": t.opt("boolean"),
 });
 
 const exportedTypeSuite: t.ITypeSuite = {

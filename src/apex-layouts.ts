@@ -27,7 +27,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     series: config?.series.map((serie, index) => {
       return {
-        name: computeName(index, config, hass?.states),
+        name: computeName(index, config, undefined, hass?.states[serie.entity]),
         type: serie.type,
         data: [],
       };
@@ -53,6 +53,21 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
                 return moment(new Date(val)).format('MMM Do, HH:mm:ss');
               },
       },
+      y: {
+        formatter: function (_, opts, conf = config, hass2 = hass) {
+          let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
+          if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+            value = (value as number).toFixed(1);
+          }
+          const uom = computeUom(
+            opts.seriesIndex,
+            conf,
+            undefined,
+            hass2?.states[conf.series[opts.seriesIndex].entity],
+          );
+          return [`<strong>${value} ${uom}</strong>`];
+        },
+      },
       fixed: {
         enabled: true,
         postion: 'topRight',
@@ -60,21 +75,14 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     legend: {
       formatter: function (_, opts, conf = config, hass2 = hass) {
-        return [
-          `${computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity])}:`,
-          `<strong>${
-            opts.w.globals.series[opts.seriesIndex].slice(-1).length !== 0
-              ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0].toFixed(1)
-              : opts.w.globals.series[opts.seriesIndex].slice(-1)
-          }
-            ${computeUom(
-              opts.seriesIndex,
-              conf,
-              undefined,
-              hass2?.states[conf.series[opts.seriesIndex].entity],
-            )}</strong>
-          `,
-        ];
+        const name =
+          computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]) + ':';
+        let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
+        if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+          value = (value as number).toFixed(1);
+        }
+        const uom = computeUom(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]);
+        return [name, `<strong>${value} ${uom}</strong>`];
       },
     },
     stroke: {
