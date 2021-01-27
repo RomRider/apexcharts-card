@@ -40,9 +40,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         datetimeUTC: false,
       },
     },
-    yaxis: {
-      decimalsInFloat: 1,
-    },
+    yaxis: Array.isArray(config.apex_config?.yaxis)
+      ? undefined
+      : {
+          decimalsInFloat: 1,
+        },
     tooltip: {
       x: {
         formatter:
