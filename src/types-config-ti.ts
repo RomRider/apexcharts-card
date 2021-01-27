@@ -34,6 +34,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
   "extend_to_end": t.opt("boolean"),
   "unit": t.opt("string"),
+  "invert": t.opt("boolean"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),
