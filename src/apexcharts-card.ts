@@ -92,6 +92,8 @@ class ChartsCard extends LitElement {
 
   @property({ attribute: false }) private _lastState: (number | string | null)[] = [];
 
+  private _dataLoaded = false;
+
   public connectedCallback() {
     super.connectedCallback();
     if (this._config && this._hass && !this._loaded) {
@@ -128,6 +130,13 @@ class ChartsCard extends LitElement {
     }
   }
 
+  private _firstDataLoad() {
+    if (this._updating || this._dataLoaded || !this._apexChart || !this._config || !this._hass) return;
+    this._dataLoaded = true;
+    this._updating = true;
+    this._updateData();
+  }
+
   public set hass(hass: HomeAssistant) {
     this._hass = hass;
     if (!this._config || !this._graphs) return;
@@ -147,11 +156,15 @@ class ChartsCard extends LitElement {
     if (updated) {
       this._entities = [...this._entities];
       if (!this._updating && !this._config.update_interval) {
-        this._updating = true;
-        // give time to HA's recorder component to write the data in the history
-        setTimeout(() => {
-          this._updateData();
-        }, 1500);
+        if (!this._dataLoaded) {
+          this._firstDataLoad();
+        } else {
+          this._updating = true;
+          // give time to HA's recorder component to write the data in the history
+          setTimeout(() => {
+            this._updateData();
+          }, 1500);
+        }
       }
     }
   }
@@ -312,11 +325,12 @@ class ChartsCard extends LitElement {
       const graph = this.shadowRoot.querySelector('#graph');
       this._apexChart = new ApexCharts(graph, getLayoutConfig(this._config, this._hass));
       this._apexChart.render();
+      this._firstDataLoad();
     }
   }
 
   private async _updateData() {
-    if (!this._config || !this._graphs) return;
+    if (!this._config || !this._apexChart || !this._graphs) return;
 
     const { start, end } = this._getSpanDates();
     try {
