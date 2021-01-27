@@ -155,3 +155,23 @@ views:
             group_by:
               func: avg
               fill: 'null'
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Last 8h
+        graph_span: 8h
+        span:
+          end: hour
+        apex_config:
+          dataLabels:
+            enabled: true
+            dropShadow:
+              enabled: true
+        series:
+          - entity: sensor.random0_100
+            extend_to_end: false
+            type: column
+            group_by:
+              func: avg
+              fill: 'null'
