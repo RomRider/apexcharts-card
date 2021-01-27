@@ -93,7 +93,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           value = (value as number).toFixed(1);
         }
         const uom = computeUom(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]);
-        return [name, `<strong>${value} ${uom}</strong>`];
+        return [name, value === undefined ? `<strong>N/A ${uom}</strong>` : `<strong>${value} ${uom}</strong>`];
       },
     },
     stroke: {
