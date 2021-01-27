@@ -1,3 +1,17 @@
+## [1.2.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2021-01-27)
+
+
+### Features
+
+* **cache:** Invalidate cache on every new card version ([#12](https://github.com/RomRider/apexcharts-card/issues/12)) ([b1799d9](https://github.com/RomRider/apexcharts-card/commit/b1799d96af2f7d1e5efb6fed6c0a2d8686164386))
+* **span:** Add `end` as an option to end the graph at the end of the day, minute, etc... ([#11](https://github.com/RomRider/apexcharts-card/issues/11)) ([1d0aca8](https://github.com/RomRider/apexcharts-card/commit/1d0aca8c11eb602385c6a855ddc52b2f2c2b8367))
+
+
+### Bug Fixes
+
+* **colorize_states:** Parameter was not applied ([28bb2e2](https://github.com/RomRider/apexcharts-card/commit/28bb2e268c6b3eacde6e3f397bc57724fc13c174))
+* **datalabels:** Truncate floats to 1 digit after the decimal point ([f5f744f](https://github.com/RomRider/apexcharts-card/commit/f5f744f88e8c7a7b67971b884ef6f805070da21b))
+
 ## [1.2.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.1.0...v1.2.0-dev.1) (2021-01-27)
 
 
