@@ -169,6 +169,9 @@ class ChartsCard extends LitElement {
     if (config.span?.offset) {
       this._offset = validateOffset(config.span.offset, 'span.offset');
     }
+    if (config.span?.end && config.span?.start) {
+      throw new Error(`span: Only one of 'start' or 'end' is allowed.`);
+    }
 
     this._config = mergeDeep(
       {
@@ -358,14 +361,17 @@ class ChartsCard extends LitElement {
 
   private _getSpanDates(): { start: Date; end: Date } {
     let end = new Date();
-    let start = new Date(end);
-    start.setTime(start.getTime() - this._graphSpan);
+    let start = new Date(end.getTime() - this._graphSpan + 1);
     // Span
     if (this._config?.span?.start) {
       // Just Span
       const startM = moment().startOf(this._config.span.start);
       start = startM.toDate();
       end = new Date(start.getTime() + this._graphSpan);
+    } else if (this._config?.span?.end) {
+      const endM = moment().endOf(this._config.span.end);
+      end = new Date(endM.toDate().getTime() + 1);
+      start = new Date(end.getTime() - this._graphSpan + 1);
     }
     if (this._offset) {
       end.setTime(end.getTime() + this._offset);

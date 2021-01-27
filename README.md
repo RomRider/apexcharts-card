@@ -160,18 +160,22 @@ The card stricly validates all the options available (but not for the `apex_conf
 | Name | Since | Description |
 | ---- | :---: | ----------- |
 | `start` | NEXT_VERSION | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
+| `end` | NEXT_VERSION | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year` |
 | `offset` | NEXT_VERSION | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... |
 
 Span enables you to:
 * Offset the graph by an amount of time
-* Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year`
+* `start`: Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year`. In this case, `graph_span` should be in most cases `<=` to 1 unit of the unit defined in start.
+* `end`: Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year`
 * Combined with `group_by` in a serie, the group will begin at the tick of the `start` unit (+/- `offset` if defined)
+* Only one of `start` or `end` is supported at the same time
 
 ```yaml
 graph_span: If start is defined, it should be <= to 1 unit of the one defined in `start`
 span:
   start: minute, day, hour, week, month or year
-  offset: Needs to start with a + or - followed by a timerange like 1day, 12h, 10min, ...
+  end: minute, day, hour, week, month or year
+  offset: To offset in the past, prefix with `-` Timerange like 1day, 12h, 10min, -12h, -1d, ...
 ```
 
 Eg:
@@ -197,6 +201,13 @@ Eg:
   span:
     start: day
     offset: +6h
+  ```
+* Display the last 7 days, the end of the graph is the end of the current day
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 7d
+  span:
+    end: day
   ```
 
 ### Apex Charts Options Example

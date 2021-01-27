@@ -22,6 +22,7 @@ export const ChartCardExternalConfig = t.iface([], {
 
 export const ChartCardSpanExtConfig = t.iface([], {
   "start": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
+  "end": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
   "offset": t.opt("string"),
 });
 

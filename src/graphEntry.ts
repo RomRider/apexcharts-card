@@ -124,7 +124,7 @@ export default class GraphEntry {
     this._realStart = start;
     this._realEnd = end;
 
-    let startHistory = start;
+    let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
       const nbBuckets = Math.abs(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
@@ -194,7 +194,7 @@ export default class GraphEntry {
     this._history = history;
     if (this._config.group_by.func !== 'raw') {
       this._computedHistory = this._dataBucketer().map((bucket) => {
-        return [(new Date(bucket.timestamp) as unknown) as number, this._func(bucket.data)];
+        return [bucket.timestamp, this._func(bucket.data)];
       });
     }
     this._updating = false;
