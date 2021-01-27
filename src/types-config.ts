@@ -16,7 +16,7 @@ export interface ChartCardExternalConfig {
 }
 
 export interface ChartCardSpanExtConfig {
-  start?: 'minute' | 'hour' | 'day' | 'week' | 'month';
+  start?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
   offset?: string;
 }
 export interface ChartCardSeriesExternalConfig {
