@@ -1,3 +1,10 @@
+## [1.2.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.1.0...v1.2.0-dev.1) (2021-01-27)
+
+
+### Features
+
+* **span:** Display the graph from the start of the hour, day, month,… with an offset or not ([#10](https://github.com/RomRider/apexcharts-card/issues/10)) ([bb6e88c](https://github.com/RomRider/apexcharts-card/commit/bb6e88c6766262b96d7b66414db26d6f9f83b1c8))
+
 ## [1.1.0](https://github.com/RomRider/apexcharts-card/compare/v1.0.2...v1.1.0) (2021-01-26)
 
 
