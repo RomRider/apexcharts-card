@@ -35,6 +35,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "extend_to_end": t.opt("boolean"),
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
+  "data_generator": t.opt("string"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),

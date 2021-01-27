@@ -151,6 +151,10 @@ class ChartsCard extends LitElement {
       if (entityState && this._entities[index] !== entityState) {
         this._entities[index] = entityState;
         updated = true;
+        if (this._graphs && this._graphs[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this._graphs[index]!.hass = this._hass!;
+        }
       }
     });
     if (updated) {

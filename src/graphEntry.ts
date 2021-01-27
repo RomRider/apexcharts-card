@@ -122,9 +122,6 @@ export default class GraphEntry {
   }
 
   public async _updateHistory(start: Date, end: Date): Promise<boolean> {
-    this._realStart = start;
-    this._realEnd = end;
-
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
@@ -134,62 +131,70 @@ export default class GraphEntry {
     if (!this._entityState || this._updating) return false;
     this._updating = true;
     this._timeRange = moment.range(startHistory, end);
+    let history: EntityEntryCache | undefined = undefined;
 
-    let skipInitialState = false;
-
-    let history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
-
-    if (history && history.span === this._graphSpan) {
-      const currDataIndex = history.data.findIndex((item) => item && new Date(item[0]).getTime() > start.getTime());
-      if (currDataIndex !== -1) {
-        // skip initial state when fetching recent/not-cached data
-        skipInitialState = true;
-      }
-      if (currDataIndex > 4) {
-        // >4 so that the graph has some more history
-        history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
-      } else if (currDataIndex === -1) {
-        // there was no state which could be used in current graph so clearing
-        history.data = [];
-      }
+    if (this._config.data_generator) {
+      this._history = this._generateData(start, end);
     } else {
-      history = undefined;
-    }
-    const newHistory = await this._fetchRecent(
-      // if data in cache, get data from last data's time + 1ms
-      history && history.data && history.data.length !== 0 && history.data.slice(-1)[0]
-        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          new Date(history.data.slice(-1)[0]![0] + 1)
-        : startHistory,
-      end,
-      skipInitialState,
-    );
-    if (newHistory && newHistory[0] && newHistory[0].length > 0) {
-      const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
-        const stateParsed = parseFloat(item.state);
-        return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
-      });
-      if (history?.data.length) {
-        history.span = this._graphSpan;
-        history.last_fetched = new Date();
-        history.card_version = pjson.version;
-        if (history.data.length !== 0) {
-          history.data.push(...newStateHistory);
+      this._realStart = start;
+      this._realEnd = end;
+
+      let skipInitialState = false;
+
+      history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
+
+      if (history && history.span === this._graphSpan) {
+        const currDataIndex = history.data.findIndex((item) => item && new Date(item[0]).getTime() > start.getTime());
+        if (currDataIndex !== -1) {
+          // skip initial state when fetching recent/not-cached data
+          skipInitialState = true;
+        }
+        if (currDataIndex > 4) {
+          // >4 so that the graph has some more history
+          history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
+        } else if (currDataIndex === -1) {
+          // there was no state which could be used in current graph so clearing
+          history.data = [];
         }
       } else {
-        history = {
-          span: this._graphSpan,
-          card_version: pjson.version,
-          last_fetched: new Date(),
-          data: newStateHistory,
-        };
+        history = undefined;
       }
-
-      if (this._cache) {
-        this._setCache(this._entityID, history, this._useCompress).catch((err) => {
-          log(err);
-          localForage.clear();
+      const newHistory = await this._fetchRecent(
+        // if data in cache, get data from last data's time + 1ms
+        history && history.data && history.data.length !== 0 && history.data.slice(-1)[0]
+          ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            new Date(history.data.slice(-1)[0]![0] + 1)
+          : startHistory,
+        end,
+        skipInitialState,
+      );
+      if (newHistory && newHistory[0] && newHistory[0].length > 0) {
+        const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
+          const stateParsed = parseFloat(item.state);
+          return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
         });
+        if (history?.data.length) {
+          history.span = this._graphSpan;
+          history.last_fetched = new Date();
+          history.card_version = pjson.version;
+          if (history.data.length !== 0) {
+            history.data.push(...newStateHistory);
+          }
+        } else {
+          history = {
+            span: this._graphSpan,
+            card_version: pjson.version,
+            last_fetched: new Date(),
+            data: newStateHistory,
+          };
+        }
+
+        if (this._cache) {
+          this._setCache(this._entityID, history, this._useCompress).catch((err) => {
+            log(err);
+            localForage.clear();
+          });
+        }
       }
     }
 
@@ -216,6 +221,37 @@ export default class GraphEntry {
     if (skipInitialState) url += '&skip_initial_state';
     url += '&minimal_response';
     return this._hass?.callApi('GET', url);
+  }
+
+  private _generateData(start: Date, end: Date): EntityEntryCache {
+    let data;
+    try {
+      data = new Function(
+        'entity',
+        'start',
+        'end',
+        'hass',
+        'moment',
+        `'use strict'; ${this._config.data_generator}`,
+      ).call(this, this._entityState, start, end, this._hass, moment);
+    } catch (e) {
+      const funcTrimmed =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this._config.data_generator!.length <= 100
+          ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this._config.data_generator!.trim()
+          : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `${this._config.data_generator!.trim().substring(0, 98)}...`;
+      e.message = `${e.name}: ${e.message} in '${funcTrimmed}'`;
+      e.name = 'Error';
+      throw e;
+    }
+    return {
+      span: 0,
+      card_version: pjson.version,
+      last_fetched: new Date(),
+      data,
+    };
   }
 
   private _dataBucketer(): HistoryBuckets {

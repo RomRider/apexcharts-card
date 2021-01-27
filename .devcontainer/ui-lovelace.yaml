@@ -182,3 +182,15 @@ views:
             group_by:
               func: avg
               fill: 'null'
+
+      - type: custom:apexcharts-card
+        span:
+          start: day
+        series:
+          - entity: sensor.pvpc
+            data_generator: |
+              return [...Array(22).keys()].map((hour) => {
+                const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';
+                const value = entity.attributes[attr];
+                return [moment().startOf('day').hours(hour).valueOf(), value];
+              })
