@@ -143,6 +143,11 @@ views:
         graph_span: 24h
         span:
           start: day
+        apex_config:
+          dataLabels:
+            enabled: true
+            dropShadow:
+              enabled: true
         series:
           - entity: sensor.random0_100
             extend_to_end: false

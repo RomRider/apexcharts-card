@@ -74,6 +74,16 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         postion: 'topRight',
       },
     },
+    dataLabels: {
+      formatter: function (value, _) {
+        let lValue = value;
+        if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+          lValue = (value as number).toFixed(1);
+        }
+        if (lValue === null) return;
+        return lValue;
+      },
+    },
     legend: {
       formatter: function (_, opts, conf = config, hass2 = hass) {
         const name =
