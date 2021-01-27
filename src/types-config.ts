@@ -28,6 +28,7 @@ export interface ChartCardSeriesExternalConfig {
   curve?: 'smooth' | 'straight' | 'stepline';
   extend_to_end?: boolean;
   unit?: string;
+  invert?: boolean;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;

@@ -172,6 +172,13 @@ views:
           - entity: sensor.random0_100
             extend_to_end: false
             type: column
+            invert: true
+            group_by:
+              func: avg
+              fill: 'null'
+          - entity: sensor.random0_100
+            extend_to_end: false
+            type: column
             group_by:
               func: avg
               fill: 'null'

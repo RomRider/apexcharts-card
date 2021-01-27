@@ -116,6 +116,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
+| `invert` | boolean | `false` | NEXT_VERSION | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 
 
 ### `show` Options

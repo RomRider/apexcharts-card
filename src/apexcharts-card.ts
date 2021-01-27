@@ -336,13 +336,14 @@ class ChartsCard extends LitElement {
               this._lastState[index] = (this._lastState[index] as number).toFixed(1);
             }
           }
-          return {
-            data:
-              this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column'
-                ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  [...graph.history, ...[[end.getTime(), graph.history.slice(-1)[0]![1]]]]
-                : graph.history,
-          };
+          let data: (number | null)[][] = [];
+          if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            data = [...graph.history, ...[[end.getTime(), graph.history.slice(-1)[0]![1]]]];
+          } else {
+            data = graph.history;
+          }
+          return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
         }),
         xaxis: {
           min: start.getTime(),
@@ -356,6 +357,13 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _invertData(data: (number | null)[][]): (number | null)[][] {
+    return data.map((item) => {
+      if (item[1] === null) return item;
+      return [item[0], -item[1]];
+    });
   }
 
   private _getSpanDates(): { start: Date; end: Date } {
