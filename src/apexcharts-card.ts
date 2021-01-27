@@ -98,6 +98,10 @@ class ChartsCard extends LitElement {
     super.connectedCallback();
     if (this._config && this._hass && !this._loaded) {
       this._initialLoad();
+    } else if (this._config && this._hass && this._apexChart && !this._config.update_interval) {
+      window.requestAnimationFrame(() => {
+        this._updateOnInterval();
+      });
     }
     if (this._config?.update_interval) {
       window.requestAnimationFrame(() => {
@@ -113,6 +117,7 @@ class ChartsCard extends LitElement {
     if (this._intervalTimeout) {
       clearInterval(this._intervalTimeout);
     }
+    this._updating = false;
     super.disconnectedCallback();
   }
 
