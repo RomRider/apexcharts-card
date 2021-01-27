@@ -287,7 +287,7 @@ class ChartsCard extends LitElement {
               <div id="state__value">
                 <span
                   id="state"
-                  style="${this._colors && this._colors.length > 0
+                  style="${this._config?.header?.colorize_states && this._colors && this._colors.length > 0
                     ? `color: ${this._colors[index % this._colors?.length]};`
                     : ''}"
                   >${this._lastState?.[index] === 0 ? 0 : this._lastState?.[index] || 'N/A'}</span
