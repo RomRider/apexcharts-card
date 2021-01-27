@@ -1,3 +1,11 @@
+## [1.2.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.4...v1.2.0-dev.5) (2021-01-27)
+
+
+### Bug Fixes
+
+* **yaxis:** apex_config.yaxis was not taken into account properly ([ce04230](https://github.com/RomRider/apexcharts-card/commit/ce04230acb84dc10cdfe754dde0e642e8911c577))
+* Sometimes the graph was empty when changing tabs ([9232044](https://github.com/RomRider/apexcharts-card/commit/923204499466045f5245b90e5c189309ba403533))
+
 ## [1.2.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.3...v1.2.0-dev.4) (2021-01-27)
 
 
