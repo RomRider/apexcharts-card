@@ -50,14 +50,13 @@ localForage.config({
 localForage
   .iterate((data, key) => {
     const value: EntityEntryCache = key.endsWith('-raw') ? data : decompress(data);
-    const start = new Date();
-    if (value.span === undefined) {
+    if (value.card_version !== pjson.version) {
       localForage.removeItem(key);
-    } else {
-      start.setTime(start.getTime() - value.span);
-      if (new Date(value.last_fetched) < start) {
-        localForage.removeItem(key);
-      }
+    }
+    const start = new Date();
+    start.setTime(start.getTime() - value.span);
+    if (new Date(value.last_fetched) < start) {
+      localForage.removeItem(key);
     }
   })
   .catch((err) => {

@@ -8,6 +8,7 @@ import { HOUR_24, moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
 import { ChartCardSpanExtConfig } from './types-config';
+import * as pjson from '../package.json';
 
 export default class GraphEntry {
   private _history?: EntityEntryCache;
@@ -171,12 +172,14 @@ export default class GraphEntry {
       if (history?.data.length) {
         history.span = this._graphSpan;
         history.last_fetched = new Date();
+        history.card_version = pjson.version;
         if (history.data.length !== 0) {
           history.data.push(...newStateHistory);
         }
       } else {
         history = {
           span: this._graphSpan,
+          card_version: pjson.version,
           last_fetched: new Date(),
           data: newStateHistory,
         };
