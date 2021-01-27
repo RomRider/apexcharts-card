@@ -47,7 +47,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       x: {
         formatter:
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          parse(config.graph_span!)! < HOUR_24
+          parse(config.graph_span!)! < HOUR_24 && !config.span?.offset
             ? function (val) {
                 return moment(new Date(val)).format('HH:mm:ss');
               }

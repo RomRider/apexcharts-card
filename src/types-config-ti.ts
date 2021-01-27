@@ -9,6 +9,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "update_interval": t.opt("string"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
+  "span": t.opt("ChartCardSpanExtConfig"),
   "show": t.opt(t.iface([], {
     "loading": t.opt("boolean"),
   })),
@@ -17,6 +18,11 @@ export const ChartCardExternalConfig = t.iface([], {
   "layout": t.opt("string"),
   "apex_config": t.opt("any"),
   "header": t.opt("ChartCardHeaderExternalConfig"),
+});
+
+export const ChartCardSpanExtConfig = t.iface([], {
+  "start": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
+  "offset": t.opt("string"),
 });
 
 export const ChartCardSeriesExternalConfig = t.iface([], {
@@ -48,6 +54,7 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
 
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
+  ChartCardSpanExtConfig,
   ChartCardSeriesExternalConfig,
   GroupByFill,
   GroupByFunc,

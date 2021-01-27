@@ -135,3 +135,18 @@ views:
             group_by:
               func: avg
               duration: 30min
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Start of day
+        graph_span: 24h
+        span:
+          start: day
+        series:
+          - entity: sensor.random0_100
+            extend_to_end: false
+            type: column
+            group_by:
+              func: avg
+              fill: 'null'

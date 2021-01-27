@@ -2,6 +2,7 @@ import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
 import { ChartCardConfig } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
+import parse from 'parse-duration';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -107,4 +108,19 @@ export function computeColor(color: string): string {
   } else {
     return new TinyColor(color).toHexString();
   }
+}
+
+export function validateInterval(interval: string, prefix: string): number {
+  const parsed = parse(interval);
+  if (parsed === null) {
+    throw new Error(`'${prefix}: ${interval}' is not a valid range of time`);
+  }
+  return parsed;
+}
+
+export function validateOffset(interval: string, prefix: string): number {
+  if (interval[0] !== '+' && interval[0] !== '-') {
+    throw new Error(`'${prefix}: ${interval}' should start with a '+' or a '-'`);
+  }
+  return validateInterval(interval, prefix);
 }
