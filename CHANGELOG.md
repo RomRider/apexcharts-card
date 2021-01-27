@@ -1,3 +1,10 @@
+## [1.2.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.2...v1.2.0-dev.3) (2021-01-27)
+
+
+### Features
+
+* **invert:** Negates/Inverts the data for a serie ([#13](https://github.com/RomRider/apexcharts-card/issues/13)) ([ab793c5](https://github.com/RomRider/apexcharts-card/commit/ab793c5073902f7a88b6aa18c133d43a0afdcf4e))
+
 ## [1.2.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2021-01-27)
 
 
