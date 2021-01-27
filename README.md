@@ -25,6 +25,7 @@ However, some things might be broken :grin:
   - [`header` Options](#header-options)
   - [`group_by` Options](#group_by-options)
   - [`func` Options](#func-options)
+  - [`span` Options](#span-options)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
 - [Known issues](#known-issues)
@@ -93,6 +94,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
+| `span` | object | | NEXT_VERSION | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
@@ -153,6 +155,50 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `median` | v1.0.0 | Will return the median of all the states in each bucket |
 | `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
 
+### `span` Options
+
+| Name | Since | Description |
+| ---- | :---: | ----------- |
+| `start` | NEXT_VERSION | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
+| `offset` | NEXT_VERSION | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... |
+
+Span enables you to:
+* Offset the graph by an amount of time
+* Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year`
+* Combined with `group_by` in a serie, the group will begin at the tick of the `start` unit (+/- `offset` if defined)
+
+```yaml
+graph_span: If start is defined, it should be <= to 1 unit of the one defined in `start`
+span:
+  start: minute, day, hour, week, month or year
+  offset: Needs to start with a + or - followed by a timerange like 1day, 12h, 10min, ...
+```
+
+Eg:
+* Display 24h from the start of the current day (00:00 -> 23:59)
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 24h
+  span:
+    start: day
+  ```
+* Display 24h from the start of the previous day (00:00 -> 23:59, -1 day)
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 24h
+  span:
+    start: day
+    offset: -1d
+  ```
+* Display 12h between 06:00 and 18:00 of the current day
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 12h
+  span:
+    start: day
+    offset: +6h
+  ```
+
 ### Apex Charts Options Example
 
 This is how you could change some options from ApexCharts as described on the [`Options (Reference)` menu entry](https://apexcharts.com/docs/installation/).
@@ -192,8 +238,8 @@ Not ordered by priority:
 
 * [ ] Support more types of charts (pie, radial, polar area at least)
 * [ ] Support for `binary_sensors`
-* [ ] Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)
-* [ ] Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"
+* [X] ~~Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)~~
+* [X] ~~Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"~~
 * [ ] Support for any number of Y-axis
 * [ ] Support for logarithmic
 * [ ] Support for state mapping for non-numerical state sensors
