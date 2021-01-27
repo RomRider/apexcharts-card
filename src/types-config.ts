@@ -3,6 +3,7 @@ export interface ChartCardExternalConfig {
   update_interval?: string;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
+  span?: ChartCardSpanExtConfig;
   show?: {
     loading?: boolean;
   };
@@ -14,6 +15,10 @@ export interface ChartCardExternalConfig {
   header?: ChartCardHeaderExternalConfig;
 }
 
+export interface ChartCardSpanExtConfig {
+  start?: 'minute' | 'hour' | 'day' | 'week' | 'month';
+  offset?: string;
+}
 export interface ChartCardSeriesExternalConfig {
   entity: string;
   name?: string;

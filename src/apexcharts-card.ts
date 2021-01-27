@@ -4,7 +4,16 @@ import { ChartCardConfig, EntityEntryCache } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
-import { computeColors, computeName, computeUom, decompress, log, mergeDeep } from './utils';
+import {
+  computeColors,
+  computeName,
+  computeUom,
+  decompress,
+  log,
+  mergeDeep,
+  validateInterval,
+  validateOffset,
+} from './utils';
 import ApexCharts from 'apexcharts';
 import { styles } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -13,6 +22,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
+import { moment } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -22,7 +32,6 @@ import {
   DEFAULT_SERIE_TYPE,
   HOUR_24,
 } from './const';
-import parse from 'parse-duration';
 
 /* eslint no-console: 0 */
 console.info(
@@ -72,13 +81,15 @@ class ChartsCard extends LitElement {
 
   private _entities: HassEntity[] = [];
 
-  private _interval?: number | null;
+  private _interval?: number;
 
   private _intervalTimeout?: NodeJS.Timeout;
 
   private _colors?: string[];
 
-  private _graphSpan: number | null = HOUR_24;
+  private _graphSpan: number = HOUR_24;
+
+  private _offset = 0;
 
   @property({ attribute: false }) private _lastState: (number | string | null)[] = [];
 
@@ -150,16 +161,13 @@ class ChartsCard extends LitElement {
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
     ChartCardExternalConfig.strictCheck(config);
     if (config.update_interval) {
-      this._interval = parse(config.update_interval);
-      if (this._interval === null) {
-        throw new Error(`'update_interval: ${config.update_interval}' is not a valid interval of time`);
-      }
+      this._interval = validateInterval(config.update_interval, 'update_interval');
     }
     if (config.graph_span) {
-      this._graphSpan = parse(config.graph_span);
-      if (this._graphSpan === null) {
-        throw new Error(`'graph_span: ${config.update_interval}' is not a valid range of time`);
-      }
+      this._graphSpan = validateInterval(config.graph_span, 'graph_span');
+    }
+    if (config.span?.offset) {
+      this._offset = validateOffset(config.span.offset, 'span.offset');
     }
 
     this._config = mergeDeep(
@@ -188,18 +196,16 @@ class ChartsCard extends LitElement {
           serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
           serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
         }
-        if (!parse(serie.group_by.duration)) {
-          throw new Error(`Can't parse 'series[${index}].group_by.duration': '${serie.group_by.duration}'`);
-        }
+        validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
         if (serie.entity) {
           return new GraphEntry(
-            serie.entity,
             index,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._graphSpan!,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._config!.cache,
             serie,
+            this._config?.span,
           );
         }
         return undefined;
@@ -310,13 +316,7 @@ class ChartsCard extends LitElement {
   private async _updateData() {
     if (!this._config || !this._graphs) return;
 
-    // const end = this.getEndDate();
-    const end = new Date();
-    const start = new Date(end);
-    // validated during Init
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    start.setTime(start.getTime() - this._graphSpan!);
-
+    const { start, end } = this._getSpanDates();
     try {
       const promise = this._graphs.map((graph) => graph?._updateHistory(start, end));
       await Promise.all(promise);
@@ -354,6 +354,24 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _getSpanDates(): { start: Date; end: Date } {
+    let end = new Date();
+    let start = new Date(end);
+    start.setTime(start.getTime() - this._graphSpan);
+    // Span
+    if (this._config?.span?.start) {
+      // Just Span
+      const startM = moment().startOf(this._config.span.start);
+      start = startM.toDate();
+      end = new Date(start.getTime() + this._graphSpan);
+    }
+    if (this._offset) {
+      end.setTime(end.getTime() + this._offset);
+      start.setTime(start.getTime() + this._offset);
+    }
+    return { start, end };
   }
 
   public getCardSize(): number {

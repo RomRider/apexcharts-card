@@ -7,6 +7,7 @@ import { DateRange } from 'moment-range';
 import { HOUR_24, moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
+import { ChartCardSpanExtConfig } from './types-config';
 
 export default class GraphEntry {
   private _history?: EntityEntryCache;
@@ -45,7 +46,13 @@ export default class GraphEntry {
 
   private _md5Config: string;
 
-  constructor(entity: string, index: number, graphSpan: number, cache: boolean, config: ChartCardSeriesConfig) {
+  constructor(
+    index: number,
+    graphSpan: number,
+    cache: boolean,
+    config: ChartCardSeriesConfig,
+    span: ChartCardSpanExtConfig | undefined,
+  ) {
     const aggregateFuncMap = {
       avg: this._average,
       max: this._maximum,
@@ -58,7 +65,7 @@ export default class GraphEntry {
     };
     this._index = index;
     this._cache = cache;
-    this._entityID = entity;
+    this._entityID = config.entity;
     this._history = undefined;
     this._graphSpan = graphSpan;
     this._config = config;
@@ -72,7 +79,7 @@ export default class GraphEntry {
     // Valid because tested during init;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._groupByDurationMs = parse(this._config.group_by.duration)!;
-    this._md5Config = SparkMD5.hash(`${this._graphSpan}${JSON.stringify(this._config)}`);
+    this._md5Config = SparkMD5.hash(`${this._graphSpan}${JSON.stringify(this._config)}${JSON.stringify(span)}`);
   }
 
   set hass(hass: HomeAssistant) {
@@ -274,8 +281,9 @@ export default class GraphEntry {
   }
 
   private _average(items: EntityCachePoints): number | null {
-    if (items.length === 0) return null;
-    return this._sum(items) / items.length;
+    const nonNull = this._filterNulls(items);
+    if (nonNull.length === 0) return null;
+    return this._sum(nonNull) / nonNull.length;
   }
 
   private _minimum(items: EntityCachePoints): number | null {
