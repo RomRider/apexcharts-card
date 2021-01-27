@@ -1,3 +1,16 @@
+## [1.2.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.3...v1.2.0-dev.4) (2021-01-27)
+
+
+### Features
+
+* **data_generator:** Build your own data based on the last state and attributes of your entity ([#14](https://github.com/RomRider/apexcharts-card/issues/14)) ([18284b5](https://github.com/RomRider/apexcharts-card/commit/18284b5d6d6b8ec4598f02926ed6b3cae6fcd2f4)), closes [#6](https://github.com/RomRider/apexcharts-card/issues/6)
+
+
+### Bug Fixes
+
+* **legend:** undefined was displayed for a hidden serie ([352c016](https://github.com/RomRider/apexcharts-card/commit/352c016d2606dd9c75ec1b2bc3c1a265b1f24fef))
+* Get rid of the initial load delay ([69f151b](https://github.com/RomRider/apexcharts-card/commit/69f151b7e603ba47574dc7af33c3030f38e9b59c))
+
 ## [1.2.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.2...v1.2.0-dev.3) (2021-01-27)
 
 
