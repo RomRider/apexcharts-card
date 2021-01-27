@@ -20,6 +20,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
 
 export interface EntityEntryCache {
   span: number;
+  card_version: string;
   last_fetched: Date;
   data: EntityCachePoints;
 }
