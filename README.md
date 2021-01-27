@@ -26,6 +26,7 @@ However, some things might be broken :grin:
   - [`group_by` Options](#group_by-options)
   - [`func` Options](#func-options)
   - [`span` Options](#span-options)
+  - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
 - [Known issues](#known-issues)
@@ -117,6 +118,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | NEXT_VERSION | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
+| `data_generator` | string | | NEXT_VERSION | See [data_generator](#data_generator-option) |
 
 
 ### `show` Options
@@ -210,6 +212,80 @@ Eg:
   span:
     end: day
   ```
+
+### `data_generator` Option
+
+Before we start, to learn javascript, google is your friend or ask for help on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) :slightly_smiling_face:
+
+`data_generator` is an advanced feature. It enables you to build your own data out of the last state of a sensor. It completely bypasses the history retrieval and caching mecanism.
+
+You'll need to write a javascript function which returns a `[timestamp, value][]`:
+* `timestamp` is the timestamp of the data in ms
+* `value` is the value of the data as a number or a float, make sure you parse it if it's a string.
+
+Inside your javascript code, you'll have access to those variables:
+* `entity`: the entity object
+* `start` (Date object): the start Date object of the graph currently displayed
+* `end` (Date object): the end Date object of the graph currently displayed
+* `hass`: the complete `hass` object
+* `moment`: the [Moment.JS](https://momentjs.com/) object to help you manipulate time and dates
+
+Let's take this example:
+* My sensor (`sensor.test`) has this state as its last state:
+  ```yaml
+  FirstPeak: High
+  PeakTimes:
+    - '2021-01-27 03:43:00'
+    - '2021-01-27 10:24:00'
+    - '2021-01-27 16:02:00'
+    - '2021-01-27 22:38:00'
+    - '2021-01-28 04:21:00'
+    - '2021-01-28 11:06:00'
+    - '2021-01-28 16:40:00'
+    - '2021-01-28 23:18:00'
+    - '2021-01-29 05:00:00'
+    - '2021-01-29 11:45:00'
+    - '2021-01-29 17:19:00'
+    - '2021-01-29 23:58:00'
+    - '2021-01-30 05:39:00'
+    - '2021-01-30 12:25:00'
+    - '2021-01-30 17:59:00'
+  PeakHeights:
+    - 4.99
+    - 1.41
+    - 4.96
+    - 1.33
+    - 5.22
+    - 1.19
+    - 5.15
+    - 1.14
+    - 5.42
+    - 1.01
+    - 5.3
+    - 0.99
+    - 5.57
+    - 0.87
+    - 5.39
+  unit_of_measurement: m
+  friendly_name: Tides
+  ```
+* This is data in the future, but I want to display them so I need to build them myself using `data_generator`:
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 4d # I have 4 days worth of data in the future in the attributes
+  span:
+    start: hour # I want to display from the start of the current hours 4 days into the future
+  series:
+    - entity: sensor.test
+      data_generator: | # This is what builds the data
+        return entity.attributes.PeakTimes.map((peak, index) => {
+          return [new Date(peak), entity.attributes.PeakHeights[index]];
+        });
+  ```
+  The result of this function call would be something like: <br/>
+  `[[1611718980000, 4.99], [1611743040000, 1.41], [1611763320000, 4.96], ...]`
+
+* And this is all you need :tada:
 
 ### Apex Charts Options Example
 

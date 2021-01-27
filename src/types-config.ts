@@ -29,6 +29,7 @@ export interface ChartCardSeriesExternalConfig {
   extend_to_end?: boolean;
   unit?: string;
   invert?: boolean;
+  data_generator?: string;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;
