@@ -1,3 +1,26 @@
+## [1.2.0](https://github.com/RomRider/apexcharts-card/compare/v1.1.0...v1.2.0) (2021-01-28)
+
+
+### Features
+
+* Define your own float precision for legend, tooltip and Y axis ([7b0f30f](https://github.com/RomRider/apexcharts-card/commit/7b0f30f7456ecf6ac7d2dab6b80e8533029bc316))
+* **cache:** Invalidate cache on every new card version ([#12](https://github.com/RomRider/apexcharts-card/issues/12)) ([b1799d9](https://github.com/RomRider/apexcharts-card/commit/b1799d96af2f7d1e5efb6fed6c0a2d8686164386))
+* **data_generator:** Build your own data based on the last state and attributes of your entity ([#14](https://github.com/RomRider/apexcharts-card/issues/14)) ([18284b5](https://github.com/RomRider/apexcharts-card/commit/18284b5d6d6b8ec4598f02926ed6b3cae6fcd2f4)), closes [#6](https://github.com/RomRider/apexcharts-card/issues/6)
+* **invert:** Negates/Inverts the data for a serie ([#13](https://github.com/RomRider/apexcharts-card/issues/13)) ([ab793c5](https://github.com/RomRider/apexcharts-card/commit/ab793c5073902f7a88b6aa18c133d43a0afdcf4e))
+* **span:** Add `end` as an option to end the graph at the end of the day, minute, etc... ([#11](https://github.com/RomRider/apexcharts-card/issues/11)) ([1d0aca8](https://github.com/RomRider/apexcharts-card/commit/1d0aca8c11eb602385c6a855ddc52b2f2c2b8367))
+* **span:** Display the graph from the start of the hour, day, month,… with an offset or not ([#10](https://github.com/RomRider/apexcharts-card/issues/10)) ([bb6e88c](https://github.com/RomRider/apexcharts-card/commit/bb6e88c6766262b96d7b66414db26d6f9f83b1c8))
+
+
+### Bug Fixes
+
+* **xasis:** Better handling of graph end time if everything is `column` and `group_by` is enabled ([b5b85a6](https://github.com/RomRider/apexcharts-card/commit/b5b85a63140ddef6810abbdb3060b8f9f2f26980))
+* **yaxis:** apex_config.yaxis was not taken into account properly ([ce04230](https://github.com/RomRider/apexcharts-card/commit/ce04230acb84dc10cdfe754dde0e642e8911c577))
+* Sometimes the graph was empty when changing tabs ([9232044](https://github.com/RomRider/apexcharts-card/commit/923204499466045f5245b90e5c189309ba403533))
+* **legend:** undefined was displayed for a hidden serie ([352c016](https://github.com/RomRider/apexcharts-card/commit/352c016d2606dd9c75ec1b2bc3c1a265b1f24fef))
+* Get rid of the initial load delay ([69f151b](https://github.com/RomRider/apexcharts-card/commit/69f151b7e603ba47574dc7af33c3030f38e9b59c))
+* **colorize_states:** Parameter was not applied ([28bb2e2](https://github.com/RomRider/apexcharts-card/commit/28bb2e268c6b3eacde6e3f397bc57724fc13c174))
+* **datalabels:** Truncate floats to 1 digit after the decimal point ([f5f744f](https://github.com/RomRider/apexcharts-card/commit/f5f744f88e8c7a7b67971b884ef6f805070da21b))
+
 ## [1.2.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.5...v1.2.0-dev.6) (2021-01-28)
 
 

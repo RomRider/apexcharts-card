@@ -56,7 +56,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.1.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.2.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -67,7 +67,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.1.0
+  - url: /local/apexcharts-card.js?v=1.2.0
     type: module
 ```
 
@@ -95,13 +95,13 @@ The card stricly validates all the options available (but not for the `apex_conf
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `span` | object | | NEXT_VERSION | See [span](#span-options) |
+| `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | string | | v1.0.0 | See [header](#header-options) |
-| `y_axis_precision` | numnber | `1` | NEXT_VERSION | The float precision used to display numbers on the Y axis |
+| `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
 
@@ -117,10 +117,10 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
-| `float_precision` | number | `1` | NEXT_VERSION | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
+| `float_precision` | number | `1` | v1.2.0 | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
-| `invert` | boolean | `false` | NEXT_VERSION | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
-| `data_generator` | string | | NEXT_VERSION | See [data_generator](#data_generator-option) |
+| `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
+| `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 
 
 ### `show` Options
@@ -164,9 +164,9 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Since | Description |
 | ---- | :---: | ----------- |
-| `start` | NEXT_VERSION | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
-| `end` | NEXT_VERSION | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year` |
-| `offset` | NEXT_VERSION | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... |
+| `start` | v1.2.0 | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
+| `end` | v1.2.0 | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year` |
+| `offset` | v1.2.0 | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... |
 
 Span enables you to:
 * Offset the graph by an amount of time
