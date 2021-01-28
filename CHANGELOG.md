@@ -1,3 +1,15 @@
+## [1.2.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.5...v1.2.0-dev.6) (2021-01-28)
+
+
+### Features
+
+* Define your own float precision for legend, tooltip and Y axis ([7b0f30f](https://github.com/RomRider/apexcharts-card/commit/7b0f30f7456ecf6ac7d2dab6b80e8533029bc316))
+
+
+### Bug Fixes
+
+* **xasis:** Better handling of graph end time if everything is `column` and `group_by` is enabled ([b5b85a6](https://github.com/RomRider/apexcharts-card/commit/b5b85a63140ddef6810abbdb3060b8f9f2f26980))
+
 ## [1.2.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.2.0-dev.4...v1.2.0-dev.5) (2021-01-27)
 
 
