@@ -10,6 +10,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
   "span": t.opt("ChartCardSpanExtConfig"),
+  "y_axis_precision": t.opt("number"),
   "show": t.opt(t.iface([], {
     "loading": t.opt("boolean"),
   })),
@@ -36,6 +37,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
+  "float_precision": t.opt("number"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),

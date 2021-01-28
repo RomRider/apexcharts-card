@@ -4,6 +4,7 @@ export interface ChartCardExternalConfig {
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
   span?: ChartCardSpanExtConfig;
+  y_axis_precision?: number;
   show?: {
     loading?: boolean;
   };
@@ -30,6 +31,7 @@ export interface ChartCardSeriesExternalConfig {
   unit?: string;
   invert?: boolean;
   data_generator?: string;
+  float_precision?: number;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;

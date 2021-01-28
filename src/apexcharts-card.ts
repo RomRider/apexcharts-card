@@ -22,7 +22,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { moment } from './const';
+import { DEFAULT_FLOAT_PRECISION, moment } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -357,7 +357,12 @@ class ChartsCard extends LitElement {
               typeof this._lastState[index] === 'number' &&
               !Number.isInteger(this._lastState[index])
             ) {
-              this._lastState[index] = (this._lastState[index] as number).toFixed(1);
+              const precision =
+                this._config?.series[index].float_precision === undefined
+                  ? DEFAULT_FLOAT_PRECISION
+                  : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    this._config.series[index].float_precision!;
+              this._lastState[index] = (this._lastState[index] as number).toFixed(precision);
             }
           }
           let data: (number | null)[][] = [];

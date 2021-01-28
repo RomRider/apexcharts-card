@@ -11,6 +11,8 @@ export const DEFAULT_DURATION = '1h';
 export const DEFAULT_FUNC = 'raw';
 export const DEFAULT_GROUP_BY_FILL = 'last';
 
+export const DEFAULT_FLOAT_PRECISION = 1;
+
 export const DEFAULT_COLORS = [
   'var(--accent-color)',
   '#3498db',

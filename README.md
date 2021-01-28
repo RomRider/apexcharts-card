@@ -101,6 +101,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | string | | v1.0.0 | See [header](#header-options) |
+| `y_axis_precision` | numnber | `1` | NEXT_VERSION | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
 
@@ -116,6 +117,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
+| `float_precision` | number | `1` | NEXT_VERSION | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | NEXT_VERSION | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | NEXT_VERSION | See [data_generator](#data_generator-option) |

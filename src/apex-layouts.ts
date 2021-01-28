@@ -1,6 +1,6 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
-import { HOUR_24, moment } from './const';
+import { DEFAULT_FLOAT_PRECISION, HOUR_24, moment } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep } from './utils';
 
@@ -43,7 +43,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     yaxis: Array.isArray(config.apex_config?.yaxis)
       ? undefined
       : {
-          decimalsInFloat: 1,
+          decimalsInFloat: config.y_axis_precision === undefined ? DEFAULT_FLOAT_PRECISION : config.y_axis_precision,
         },
     tooltip: {
       x: {
@@ -60,7 +60,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       y: {
         formatter: function (value, opts, conf = config, hass2 = hass) {
           if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
-            value = (value as number).toFixed(1);
+            value = (value as number).toFixed(
+              conf.series[opts.seriesIndex].float_precision === undefined
+                ? DEFAULT_FLOAT_PRECISION
+                : conf.series[opts.seriesIndex].float_precision,
+            );
           }
           const uom = computeUom(
             opts.seriesIndex,
@@ -92,7 +96,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]) + ':';
         let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
         if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
-          value = (value as number).toFixed(1);
+          value = (value as number).toFixed(
+            conf.series[opts.seriesIndex].float_precision === undefined
+              ? DEFAULT_FLOAT_PRECISION
+              : conf.series[opts.seriesIndex].float_precision,
+          );
         }
         const uom = computeUom(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]);
         return [name, value === undefined ? `<strong>N/A ${uom}</strong>` : `<strong>${value} ${uom}</strong>`];
