@@ -198,7 +198,10 @@ export default class GraphEntry {
       }
     }
 
-    if (!history || history.data.length === 0) return false;
+    if (!history || history.data.length === 0) {
+      this._updating = false;
+      return false;
+    }
     this._history = history;
     if (this._config.group_by.func !== 'raw') {
       this._computedHistory = this._dataBucketer().map((bucket) => {

@@ -32,6 +32,7 @@ import {
   DEFAULT_SERIE_TYPE,
   HOUR_24,
 } from './const';
+import parse from 'parse-duration';
 
 /* eslint no-console: 0 */
 console.info(
@@ -370,7 +371,7 @@ class ChartsCard extends LitElement {
         }),
         xaxis: {
           min: start.getTime(),
-          max: end.getTime(),
+          max: this._findEndOfChart(end),
         },
         colors: computeColors(this._colors),
       };
@@ -380,6 +381,29 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  /*
+    Makes the chart end at the last timestamp of the data when everything displayed is a
+    column and group_by is enabled for every serie
+  */
+  private _findEndOfChart(end: Date): number {
+    const localEnd = new Date(end);
+    let offsetEnd: number | undefined = 0;
+    const onlyBars = this._config?.series.reduce((acc, serie) => {
+      return acc && serie.type === 'column' && serie.group_by.func !== 'raw';
+    }, this._config?.series.length > 0);
+    if (onlyBars) {
+      offsetEnd = this._config?.series.reduce((acc, serie) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const dur = parse(serie.group_by.duration)!;
+        if (acc === -1 || dur < acc) {
+          return dur;
+        }
+        return acc;
+      }, -1);
+    }
+    return new Date(localEnd.getTime() - (offsetEnd ? offsetEnd : 0)).getTime();
   }
 
   private _invertData(data: (number | null)[][]): (number | null)[][] {

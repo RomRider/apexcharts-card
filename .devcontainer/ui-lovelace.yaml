@@ -2,6 +2,18 @@ views:
   - title: Main
     cards:
       - type: custom:apexcharts-card
+        apex_config:
+          chart:
+            toolbar:
+              show: true
+              tools:
+                zoom: true
+                zoomin: true
+                zoomout: true
+                pan: true
+                reset: true
+            zoom:
+              enabled: true
         update_interval: 5sec
         stacked: true
         series:
@@ -168,6 +180,17 @@ views:
             enabled: true
             dropShadow:
               enabled: true
+          yaxis:
+            - title:
+                text: test1
+              show: true
+              opposite: true
+              decimalsInFloat: 1
+            - title:
+                text: Test2
+              show: true
+              # opposite: true
+              decimalsInFloat: 1
         series:
           - entity: sensor.random0_100
             extend_to_end: false
@@ -175,13 +198,19 @@ views:
             invert: true
             group_by:
               func: avg
-              fill: 'null'
+              fill: 'last'
           - entity: sensor.random0_100
             extend_to_end: false
             type: column
             group_by:
               func: avg
-              fill: 'null'
+              fill: 'last'
+          - entity: sensor.random0_100
+            extend_to_end: false
+            type: column
+            group_by:
+              func: avg
+              fill: 'last'
 
       - type: custom:apexcharts-card
         span:
