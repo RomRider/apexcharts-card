@@ -14,6 +14,9 @@ export interface ChartCardExternalConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
   header?: ChartCardHeaderExternalConfig;
+  // Support to define style (card-mod or picture-entity)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  style?: any;
 }
 
 export interface ChartCardSpanExtConfig {

@@ -19,6 +19,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "layout": t.opt("string"),
   "apex_config": t.opt("any"),
   "header": t.opt("ChartCardHeaderExternalConfig"),
+  "style": t.opt("any"),
 });
 
 export const ChartCardSpanExtConfig = t.iface([], {
