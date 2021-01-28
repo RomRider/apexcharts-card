@@ -81,7 +81,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     dataLabels: {
-      formatter: function (value, _) {
+      formatter: function (value) {
         let lValue = value;
         if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
           lValue = (value as number).toFixed(1);
