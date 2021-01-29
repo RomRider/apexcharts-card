@@ -63,17 +63,17 @@ export function computeName(
   entity: HassEntity | undefined = undefined,
 ): string {
   if (!config || (!entities && !entity)) return '';
+  let name = '';
   if (entity) {
-    return config.series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
+    name = config.series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
   } else if (entities) {
-    return (
+    name =
       config.series[index].name ||
       entities[index]?.attributes?.friendly_name ||
       entities[entities[index]]?.entity_id ||
-      ''
-    );
+      '';
   }
-  return '';
+  return name + (config.series[index].offset ? ` (${config.series[index].offset})` : '');
 }
 
 export function computeUom(

@@ -35,6 +35,7 @@ However, some things might be broken :grin:
   - [Simple graph](#simple-graph)
   - [Multiple Types of Graphs](#multiple-types-of-graphs)
   - [Aggregating data](#aggregating-data)
+  - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
 
 ## Installation
 
@@ -121,6 +122,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
+| `offset` | string | | NEXT_VERSION | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
 
 
 ### `show` Options
@@ -415,4 +417,21 @@ series:
     group_by:
       duration: 10min
       func: first
+```
+
+### Compare data from today with yesterday
+
+```yaml
+type: custom:apexcharts-card
+graph_span: 1d
+span:
+  start: day
+header:
+  show: false
+series:
+  # data from today
+  - entity: sensor.temperature
+  # data from yesterday offsetted to be displayed today
+  - entity: sensor.temperature
+    offset: -1d
 ```
