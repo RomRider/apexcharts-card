@@ -35,6 +35,7 @@ export interface ChartCardSeriesExternalConfig {
   invert?: boolean;
   data_generator?: string;
   float_precision?: number;
+  offset?: string;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;

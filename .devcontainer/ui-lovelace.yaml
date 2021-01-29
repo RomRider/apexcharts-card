@@ -25,6 +25,7 @@ views:
           - entity: sensor.random_0_1000
             name: Sensor 2
             type: area
+            offset: -1d
         graph_span: 15min
         cache: true
         layout: minimal
@@ -33,6 +34,8 @@ views:
 
       - type: custom:apexcharts-card
         stacked: true
+        span:
+          offset: -1d
         series:
           - entity: sensor.random_0_1000
             name: RAM Usage
@@ -228,3 +231,22 @@ views:
                 const value = entity.attributes[attr];
                 return [moment().startOf('day').hours(hour).valueOf(), value];
               })
+
+      - type: custom:apexcharts-card
+        graph_span: 8d
+        span:
+          start: hour
+        # apex_config:
+        #   dataLabels:
+        #     enabled: true
+        header:
+          show: true
+          title: Precipitation Forecast
+        series:
+          - entity: weather.openweathermap
+            type: area
+            extend_to_end: false
+            data_generator: |
+              return entity.attributes.forecast.map((entry) => {
+                return [new Date(entry.datetime), entry.temperature];
+              });

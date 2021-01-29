@@ -95,6 +95,8 @@ class ChartsCard extends LitElement {
 
   private _dataLoaded = false;
 
+  private _seriesOffset: number[] = [];
+
   public connectedCallback() {
     super.connectedCallback();
     if (this._config && this._hass && !this._loaded) {
@@ -194,6 +196,11 @@ class ChartsCard extends LitElement {
     if (config.span?.end && config.span?.start) {
       throw new Error(`span: Only one of 'start' or 'end' is allowed.`);
     }
+    config.series.forEach((serie, index) => {
+      if (serie.offset) {
+        this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
+      }
+    });
 
     this._config = mergeDeep(
       {
@@ -231,6 +238,7 @@ class ChartsCard extends LitElement {
             this._config!.cache,
             serie,
             this._config?.span,
+            this._seriesOffset[index] || 0,
           );
         }
         return undefined;
