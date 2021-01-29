@@ -1,3 +1,11 @@
+### [1.2.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.2.0...v1.2.1-dev.1) (2021-01-29)
+
+
+### Bug Fixes
+
+* **config:** `style` was not a valid config option (card-mod/picture-element) ([0a38778](https://github.com/RomRider/apexcharts-card/commit/0a3877858c9187e7356ca4cdd2543c6f0865db99)), closes [#15](https://github.com/RomRider/apexcharts-card/issues/15)
+* **style:** Better default styling of toolbar ([4d0ef1c](https://github.com/RomRider/apexcharts-card/commit/4d0ef1c6b1c22f6c9a0e84244062dd4361ea7cca)), closes [#16](https://github.com/RomRider/apexcharts-card/issues/16)
+
 ## [1.2.0](https://github.com/RomRider/apexcharts-card/compare/v1.1.0...v1.2.0) (2021-01-28)
 
 
