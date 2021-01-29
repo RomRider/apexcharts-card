@@ -1,3 +1,10 @@
+## [1.3.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.2.1-dev.1...v1.3.0-dev.1) (2021-01-29)
+
+
+### Features
+
+* **series.offset:** Compare data from another timeframe with the current timeframe ([#19](https://github.com/RomRider/apexcharts-card/issues/19)) ([af8ba81](https://github.com/RomRider/apexcharts-card/commit/af8ba8156452054c38b4b65bb843bb16fbfdf6bd)), closes [#18](https://github.com/RomRider/apexcharts-card/issues/18)
+
 ### [1.2.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.2.0...v1.2.1-dev.1) (2021-01-29)
 
 
