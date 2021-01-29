@@ -1,6 +1,6 @@
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, EntityEntryCache } from './types';
+import { ChartCardConfig, EntityCachePoints, EntityEntryCache } from './types';
 import { HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -11,6 +11,7 @@ import {
   decompress,
   log,
   mergeDeep,
+  offsetData,
   validateInterval,
   validateOffset,
 } from './utils';
@@ -238,7 +239,6 @@ class ChartsCard extends LitElement {
             this._config!.cache,
             serie,
             this._config?.span,
-            this._seriesOffset[index] || 0,
           );
         }
         return undefined;
@@ -352,7 +352,12 @@ class ChartsCard extends LitElement {
 
     const { start, end } = this._getSpanDates();
     try {
-      const promise = this._graphs.map((graph) => graph?._updateHistory(start, end));
+      const promise = this._graphs.map((graph, index) =>
+        graph?._updateHistory(
+          this._seriesOffset[index] ? new Date(start.getTime() + this._seriesOffset[index]) : start,
+          this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]) : end,
+        ),
+      );
       await Promise.all(promise);
       const graphData = {
         series: this._graphs.map((graph) => {
@@ -373,13 +378,14 @@ class ChartsCard extends LitElement {
               this._lastState[index] = (this._lastState[index] as number).toFixed(precision);
             }
           }
-          let data: (number | null)[][] = [];
+          let data: EntityCachePoints = [];
           if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            data = [...graph.history, ...[[end.getTime(), graph.history.slice(-1)[0]![1]]]];
+            data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
           } else {
             data = graph.history;
           }
+          data = offsetData(data, this._seriesOffset[index]);
           return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
         }),
         xaxis: {
@@ -419,7 +425,7 @@ class ChartsCard extends LitElement {
     return new Date(localEnd.getTime() - (offsetEnd ? offsetEnd : 0)).getTime();
   }
 
-  private _invertData(data: (number | null)[][]): (number | null)[][] {
+  private _invertData(data: EntityCachePoints): EntityCachePoints {
     return data.map((item) => {
       if (item[1] === null) return item;
       return [item[0], -item[1]];

@@ -1,7 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HassHistory, HistoryBuckets } from './types';
 import { compress, decompress, log } from './utils';
-import localForage, { config } from 'localforage';
+import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
 import { HOUR_24, moment } from './const';
@@ -47,15 +47,12 @@ export default class GraphEntry {
 
   private _md5Config: string;
 
-  private _offset = 0;
-
   constructor(
     index: number,
     graphSpan: number,
     cache: boolean,
     config: ChartCardSeriesConfig,
     span: ChartCardSpanExtConfig | undefined,
-    offset = 0,
   ) {
     const aggregateFuncMap = {
       avg: this._average,
@@ -73,7 +70,6 @@ export default class GraphEntry {
     this._history = undefined;
     this._graphSpan = graphSpan;
     this._config = config;
-    this._offset = offset;
     const now = new Date();
     const now2 = new Date(now);
     this._func = aggregateFuncMap[config.group_by.func];
@@ -93,7 +89,7 @@ export default class GraphEntry {
   }
 
   get history(): EntityCachePoints {
-    return this._offsetData(this._computedHistory || this._history?.data || []);
+    return this._computedHistory || this._history?.data || [];
   }
 
   get index(): number {
@@ -106,17 +102,6 @@ export default class GraphEntry {
 
   get end(): Date {
     return this._realEnd;
-  }
-
-  private _offsetData(data: EntityCachePoints) {
-    if (this._offset) {
-      const lData = JSON.parse(JSON.stringify(data));
-      lData.forEach((entry) => {
-        entry[0] = entry[0] - this._offset;
-      });
-      return lData;
-    }
-    return data;
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
@@ -153,12 +138,6 @@ export default class GraphEntry {
     } else {
       this._realStart = new Date(start);
       this._realEnd = new Date(end);
-      const endHistory = new Date(end);
-
-      if (this._offset) {
-        startHistory.setTime(startHistory.getTime() + this._offset);
-        endHistory.setTime(endHistory.getTime() + this._offset);
-      }
 
       let skipInitialState = false;
 
@@ -186,7 +165,7 @@ export default class GraphEntry {
           ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             new Date(history.data.slice(-1)[0]![0] + 1)
           : startHistory,
-        endHistory,
+        end,
         skipInitialState,
       );
       if (newHistory && newHistory[0] && newHistory[0].length > 0) {

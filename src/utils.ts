@@ -1,6 +1,6 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { ChartCardConfig } from './types';
+import { ChartCardConfig, EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 
@@ -123,4 +123,15 @@ export function validateOffset(interval: string, prefix: string): number {
     throw new Error(`'${prefix}: ${interval}' should start with a '+' or a '-'`);
   }
   return validateInterval(interval, prefix);
+}
+
+export function offsetData(data: EntityCachePoints, offset: number | undefined): EntityCachePoints {
+  if (offset) {
+    const lData = JSON.parse(JSON.stringify(data));
+    lData.forEach((entry) => {
+      entry[0] = entry[0] - offset;
+    });
+    return lData;
+  }
+  return data;
 }
