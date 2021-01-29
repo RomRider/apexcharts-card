@@ -1,3 +1,10 @@
+## [1.3.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.3.0-dev.1...v1.3.0-dev.2) (2021-01-29)
+
+
+### Bug Fixes
+
+* **series.offset:** Fix bug introduced by [#19](https://github.com/RomRider/apexcharts-card/issues/19) ([f5c0d57](https://github.com/RomRider/apexcharts-card/commit/f5c0d57f17c2e799d2890b78b12b9a7dd685703f)), closes [#18](https://github.com/RomRider/apexcharts-card/issues/18)
+
 ## [1.3.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.2.1-dev.1...v1.3.0-dev.1) (2021-01-29)
 
 
