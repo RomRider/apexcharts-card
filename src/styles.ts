@@ -503,7 +503,7 @@ export const styles: CSSResult = css`
     width: 20px;
     height: 20px;
     line-height: 24px;
-    color: #6e8192;
+    color: var(--primary-text-color);
     text-align: center;
   }
 
@@ -512,7 +512,7 @@ export const styles: CSSResult = css`
   .apexcharts-zoomout-icon svg,
   .apexcharts-reset-icon svg,
   .apexcharts-menu-icon svg {
-    fill: #6e8192;
+    fill: var(--primary-text-color);
   }
 
   .apexcharts-selection-icon svg {
@@ -534,7 +534,7 @@ export const styles: CSSResult = css`
   .apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected svg,
   .apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected svg,
   .apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected svg {
-    fill: #008ffb;
+    fill: var(--primary-color);
   }
 
   .apexcharts-theme-light .apexcharts-selection-icon:not(.apexcharts-selected):hover svg,
@@ -543,7 +543,7 @@ export const styles: CSSResult = css`
   .apexcharts-theme-light .apexcharts-zoomout-icon:hover svg,
   .apexcharts-theme-light .apexcharts-reset-icon:hover svg,
   .apexcharts-theme-light .apexcharts-menu-icon:hover svg {
-    fill: #333;
+    fill: var(--primary-color);
   }
 
   .apexcharts-selection-icon,
@@ -578,17 +578,17 @@ export const styles: CSSResult = css`
   }
 
   .apexcharts-pan-icon svg {
-    fill: #fff;
-    stroke: #6e8192;
+    fill: var(--primary-text-color);
+    stroke: rgba(0, 0, 0, 0);
     stroke-width: 2;
   }
 
   .apexcharts-pan-icon.apexcharts-selected svg {
-    stroke: #008ffb;
+    fill: var(--primary-color);
   }
 
   .apexcharts-pan-icon:not(.apexcharts-selected):hover svg {
-    stroke: #333;
+    stroke: var(--primary-color);
   }
 
   .apexcharts-toolbar {
@@ -601,10 +601,11 @@ export const styles: CSSResult = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    opacity: 0.5;
   }
 
   .apexcharts-menu {
-    background: #fff;
+    background: var(--primary-background-color);
     position: absolute;
     top: 100%;
     border: 1px solid #ddd;
@@ -630,7 +631,7 @@ export const styles: CSSResult = css`
   }
 
   .apexcharts-theme-light .apexcharts-menu-item:hover {
-    background: #eee;
+    background: var(--primary-color);
   }
 
   .apexcharts-theme-dark .apexcharts-menu {
