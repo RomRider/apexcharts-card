@@ -1,5 +1,11 @@
 import { ApexOptions } from 'apexcharts';
-import { ChartCardExternalConfig, ChartCardSeriesExternalConfig, GroupByFill, GroupByFunc } from './types-config';
+import {
+  ChartCardExternalConfig,
+  ChartCardPrettyTime,
+  ChartCardSeriesExternalConfig,
+  GroupByFill,
+  GroupByFunc,
+} from './types-config';
 
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
@@ -15,6 +21,10 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     duration: string;
     func: GroupByFunc;
     fill: GroupByFill;
+  };
+  show: {
+    as_duration?: ChartCardPrettyTime;
+    legend_value: boolean;
   };
 }
 

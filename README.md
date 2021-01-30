@@ -21,7 +21,8 @@ However, some things might be broken :grin:
 - [Using the card](#using-the-card)
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
-  - [`show` Options](#show-options)
+  - [`series.show` Options](#seriesshow-options)
+  - [Main `show` Options](#main-show-options)
   - [`header` Options](#header-options)
   - [`group_by` Options](#group_by-options)
   - [`func` Options](#func-options)
@@ -97,7 +98,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
-| `show` | object | | v1.0.0 | See [show](#show-options) |
+| `show` | object | | v1.0.0 | See [show](#main-show-options) |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
@@ -123,10 +124,17 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | NEXT_VERSION | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
-| `to_duration` | string | | NEXT_VERSION | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `to_duration` is set to `minute` then it would display `5h45m` |
 
 
-### `show` Options
+### `series.show` Options
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `legend_value` | boolean | `true` | NEXT_VERSION | Show/Hide the state in the legend. Will still display the name |
+| `as_duration` | string | | NEXT_VERSION | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
+
+
+### Main `show` Options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |

@@ -63,7 +63,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             value !== null &&
             typeof value === 'number' &&
             !Number.isInteger(value) &&
-            !conf.series[opts.seriesIndex]?.as_duration
+            !conf.series[opts.seriesIndex]?.show.as_duration
           ) {
             value = (value as number).toFixed(
               conf.series[opts.seriesIndex].float_precision === undefined
@@ -77,9 +77,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             undefined,
             hass2?.states[conf.series[opts.seriesIndex].entity],
           );
-          return conf.series[opts.seriesIndex]?.as_duration
+          return conf.series[opts.seriesIndex]?.show.as_duration
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              [`<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].as_duration!)}</strong>`]
+              [`<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].show.as_duration!)}</strong>`]
             : [`<strong>${value} ${uom}</strong>`];
         },
       },
@@ -100,34 +100,50 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     legend: {
       formatter: function (_, opts, conf = config, hass2 = hass) {
-        const name =
-          computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]) + ':';
-        let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
-        if (
-          value !== null &&
-          typeof value === 'number' &&
-          !Number.isInteger(value) &&
-          !conf.series[opts.seriesIndex]?.as_duration
-        ) {
-          value = (value as number).toFixed(
-            conf.series[opts.seriesIndex].float_precision === undefined
-              ? DEFAULT_FLOAT_PRECISION
-              : conf.series[opts.seriesIndex].float_precision,
-          );
-        }
-        const uom = computeUom(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]);
-        let valueString = '';
-        if (value === undefined || value === null) {
-          valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
+        const name = computeName(
+          opts.seriesIndex,
+          conf,
+          undefined,
+          hass2?.states[conf.series[opts.seriesIndex].entity],
+        );
+        if (!conf.series[opts.seriesIndex].show.legend_value) {
+          return [name];
         } else {
-          if (conf.series[opts.seriesIndex]?.as_duration) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            valueString = `<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].as_duration!)}</strong>`;
-          } else {
-            valueString = `<strong>${value} ${uom}</strong>`;
+          let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
+          if (
+            value !== null &&
+            typeof value === 'number' &&
+            !Number.isInteger(value) &&
+            !conf.series[opts.seriesIndex]?.show.as_duration
+          ) {
+            value = (value as number).toFixed(
+              conf.series[opts.seriesIndex].float_precision === undefined
+                ? DEFAULT_FLOAT_PRECISION
+                : conf.series[opts.seriesIndex].float_precision,
+            );
           }
+          const uom = computeUom(
+            opts.seriesIndex,
+            conf,
+            undefined,
+            hass2?.states[conf.series[opts.seriesIndex].entity],
+          );
+          let valueString = '';
+          if (value === undefined || value === null) {
+            valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
+          } else {
+            if (conf.series[opts.seriesIndex]?.show.as_duration) {
+              valueString = `<strong>${prettyPrintTime(
+                value,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                conf.series[opts.seriesIndex].show.as_duration!,
+              )}</strong>`;
+            } else {
+              valueString = `<strong>${value} ${uom}</strong>`;
+            }
+          }
+          return [name + ':', valueString];
         }
-        return [name, valueString];
       },
     },
     stroke: {

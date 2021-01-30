@@ -24,7 +24,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_FLOAT_PRECISION, moment, NO_VALUE } from './const';
+import { DEFAULT_FLOAT_PRECISION, DEFAULT_SHOW_LEGEND_VALUE, moment, NO_VALUE } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -230,6 +230,12 @@ class ChartsCard extends LitElement {
           serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
           serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
         }
+        if (!serie.show) {
+          serie.show = { legend_value: DEFAULT_SHOW_LEGEND_VALUE };
+        } else {
+          serie.show.legend_value =
+            serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
+        }
         validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
         if (serie.entity) {
           return new GraphEntry(
@@ -326,8 +332,8 @@ class ChartsCard extends LitElement {
                     : ''}"
                   >${this._lastState?.[index] === 0
                     ? 0
-                    : (serie.as_duration
-                        ? prettyPrintTime(this._lastState?.[index], serie.as_duration)
+                    : (serie.show.as_duration
+                        ? prettyPrintTime(this._lastState?.[index], serie.show.as_duration)
                         : this._lastState?.[index]) || NO_VALUE}</span
                 >
                 <span id="uom">${computeUom(index, this._config, this._entities)}</span>
