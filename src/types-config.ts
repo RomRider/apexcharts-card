@@ -36,7 +36,10 @@ export interface ChartCardSeriesExternalConfig {
   data_generator?: string;
   float_precision?: number;
   offset?: string;
-  as_duration?: ChartCardPrettyTime;
+  show?: {
+    as_duration?: ChartCardPrettyTime;
+    legend_value?: boolean;
+  };
   group_by?: {
     duration?: string;
     func?: GroupByFunc;
