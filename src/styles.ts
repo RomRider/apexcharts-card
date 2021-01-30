@@ -65,17 +65,20 @@ export const styles: CSSResult = css`
 
   #state__value {
     display: table;
+    white-space: nowrap;
   }
 
   #state__value > #state {
     font-size: 1.8em;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   #state__value > #uom {
     font-size: 1em;
     font-weight: 400;
     opacity: 0.8;
+    white-space: nowrap;
   }
 
   #state__name {
