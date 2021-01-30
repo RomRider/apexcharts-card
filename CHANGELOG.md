@@ -1,3 +1,11 @@
+### [1.3.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.3.0...v1.3.1-dev.1) (2021-01-30)
+
+
+### Bug Fixes
+
+* **header:** Hide unit when `as_duration` is used ([5686931](https://github.com/RomRider/apexcharts-card/commit/56869316476d7d64abb6045e1d40e854300c0836))
+* **header:** State was sometimes multi-line ([4187104](https://github.com/RomRider/apexcharts-card/commit/4187104a04bfb2acbf600abfb84bf9bd264d7ccb))
+
 ## [1.3.0](https://github.com/RomRider/apexcharts-card/compare/v1.2.0...v1.3.0) (2021-01-30)
 
 
