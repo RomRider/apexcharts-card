@@ -9,6 +9,7 @@ import {
   computeName,
   computeUom,
   decompress,
+  getPercentFromValue,
   log,
   mergeDeep,
   offsetData,
@@ -24,7 +25,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_FLOAT_PRECISION, DEFAULT_SHOW_LEGEND_VALUE, moment, NO_VALUE } from './const';
+import { DEFAULT_FLOAT_PRECISION, DEFAULT_SHOW_LEGEND_VALUE, moment, NO_VALUE, TIMESERIES_TYPES } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -223,6 +224,7 @@ class ChartsCard extends LitElement {
         }
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
         serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
+        serie.unit = this._config?.chart_type === 'radialBar' ? '%' : serie.unit;
         if (!serie.group_by) {
           serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
         } else {
@@ -372,47 +374,71 @@ class ChartsCard extends LitElement {
         ),
       );
       await Promise.all(promise);
-      const graphData = {
-        series: this._graphs.map((graph) => {
-          if (!graph || graph.history.length === 0) return { data: [] };
-          const index = graph.index;
-          if (graph.history.length > 0) {
-            this._lastState[index] = graph.history[graph.history.length - 1][1];
-            if (
-              this._lastState[index] !== null &&
-              typeof this._lastState[index] === 'number' &&
-              !Number.isInteger(this._lastState[index])
-            ) {
-              const precision =
-                this._config?.series[index].float_precision === undefined
-                  ? DEFAULT_FLOAT_PRECISION
-                  : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    this._config.series[index].float_precision!;
-              this._lastState[index] = (this._lastState[index] as number).toFixed(precision);
+      let graphData: unknown = {};
+      if (TIMESERIES_TYPES.includes(this._config.chart_type)) {
+        graphData = {
+          series: this._graphs.map((graph, index) => {
+            if (!graph || graph.history.length === 0) return { data: [] };
+            this._lastState[index] = this._computeLastState(graph.history[graph.history.length - 1][1], index);
+            let data: EntityCachePoints = [];
+            if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+            } else {
+              data = graph.history;
             }
-          }
-          let data: EntityCachePoints = [];
-          if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
-          } else {
-            data = graph.history;
-          }
-          data = offsetData(data, this._seriesOffset[index]);
-          return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
-        }),
-        xaxis: {
-          min: start.getTime(),
-          max: this._findEndOfChart(end),
-        },
-        colors: computeColors(this._colors),
-      };
+            data = offsetData(data, this._seriesOffset[index]);
+            return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
+          }),
+          xaxis: {
+            min: start.getTime(),
+            max: this._findEndOfChart(end),
+          },
+          colors: computeColors(this._colors),
+        };
+      } else {
+        // No timeline charts
+        graphData = {
+          series: this._graphs.map((graph, index) => {
+            if (!graph || graph.history.length === 0) return;
+            const lastState = graph.history[graph.history.length - 1][1];
+            this._lastState[index] = this._computeLastState(lastState, index);
+            if (lastState === null) {
+              return;
+            } else {
+              if (this._config?.chart_type === 'radialBar') {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                return getPercentFromValue(lastState, this._config.series[index].min, this._config.series[index].max);
+              } else {
+                return lastState;
+              }
+            }
+          }),
+          colors: computeColors(this._colors),
+        };
+      }
       this._lastState = [...this._lastState];
-      this._apexChart?.updateOptions(graphData, false, false);
+      this._apexChart?.updateOptions(
+        graphData,
+        false,
+        TIMESERIES_TYPES.includes(this._config.chart_type) ? false : true,
+      );
     } catch (err) {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _computeLastState(value: number | null, index: number): string | number | null {
+    if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+      const precision =
+        this._config?.series[index].float_precision === undefined
+          ? DEFAULT_FLOAT_PRECISION
+          : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this._config.series[index].float_precision!;
+      return (value as number).toFixed(precision);
+    }
+    return value;
   }
 
   /*

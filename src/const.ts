@@ -33,3 +33,7 @@ export const DEFAULT_COLORS = [
 ];
 
 export const NO_VALUE = 'N/A';
+export const TIMESERIES_TYPES = ['line', 'scatter', undefined];
+
+export const DEFAULT_MIN = 0;
+export const DEFAULT_MAX = 100;
