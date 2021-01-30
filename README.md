@@ -46,6 +46,7 @@ However, some things might be broken :grin:
   - [Multiple Types of Graphs](#multiple-types-of-graphs)
   - [Aggregating data](#aggregating-data)
   - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
+  - [Change the line thickness](#change-the-line-thickness)
 
 ## Installation
 
@@ -468,3 +469,35 @@ series:
   - entity: sensor.temperature
     offset: -1d
 ```
+
+### Change the line thickness
+
+* Change all lines thickness
+
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 1d
+  apex_config:
+    stroke:
+      # Will affect all the series
+      width: 2
+  series:
+    - entity: sensor.temperature
+    - entity: sensor.humidity
+  ```
+
+* Selective line thickness modification
+
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 1d
+  apex_config:
+    stroke:
+      # 2 will affect sensor.temperature
+      # 4 will affect sensor.humidity
+      # You need as much values here as the number of series
+      width: [2, 4]
+  series:
+    - entity: sensor.temperature
+    - entity: sensor.humidity
+  ```
