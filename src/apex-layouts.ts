@@ -1,8 +1,8 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
-import { DEFAULT_FLOAT_PRECISION, HOUR_24, moment } from './const';
+import { DEFAULT_FLOAT_PRECISION, HOUR_24, moment, NO_VALUE } from './const';
 import { ChartCardConfig } from './types';
-import { computeName, computeUom, mergeDeep } from './utils';
+import { computeName, computeUom, mergeDeep, prettyPrintTime } from './utils';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
@@ -59,7 +59,12 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
       y: {
         formatter: function (value, opts, conf = config, hass2 = hass) {
-          if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+          if (
+            value !== null &&
+            typeof value === 'number' &&
+            !Number.isInteger(value) &&
+            !conf.series[opts.seriesIndex]?.as_duration
+          ) {
             value = (value as number).toFixed(
               conf.series[opts.seriesIndex].float_precision === undefined
                 ? DEFAULT_FLOAT_PRECISION
@@ -72,7 +77,10 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             undefined,
             hass2?.states[conf.series[opts.seriesIndex].entity],
           );
-          return [`<strong>${value} ${uom}</strong>`];
+          return conf.series[opts.seriesIndex]?.as_duration
+            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              [`<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].as_duration!)}</strong>`]
+            : [`<strong>${value} ${uom}</strong>`];
         },
       },
       fixed: {
@@ -95,7 +103,12 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         const name =
           computeName(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]) + ':';
         let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
-        if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+        if (
+          value !== null &&
+          typeof value === 'number' &&
+          !Number.isInteger(value) &&
+          !conf.series[opts.seriesIndex]?.as_duration
+        ) {
           value = (value as number).toFixed(
             conf.series[opts.seriesIndex].float_precision === undefined
               ? DEFAULT_FLOAT_PRECISION
@@ -103,7 +116,18 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           );
         }
         const uom = computeUom(opts.seriesIndex, conf, undefined, hass2?.states[conf.series[opts.seriesIndex].entity]);
-        return [name, value === undefined ? `<strong>N/A ${uom}</strong>` : `<strong>${value} ${uom}</strong>`];
+        let valueString = '';
+        if (value === undefined || value === null) {
+          valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
+        } else {
+          if (conf.series[opts.seriesIndex]?.as_duration) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            valueString = `<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].as_duration!)}</strong>`;
+          } else {
+            valueString = `<strong>${value} ${uom}</strong>`;
+          }
+        }
+        return [name, valueString];
       },
     },
     stroke: {

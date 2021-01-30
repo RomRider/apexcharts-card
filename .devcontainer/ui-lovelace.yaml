@@ -80,6 +80,15 @@ views:
             name: AVG
             curve: smooth
             type: line
+            as_duration: millisecond
+            group_by:
+              duration: 10min
+              func: avg
+          - entity: sensor.random0_100
+            name: AVG
+            curve: smooth
+            type: line
+            as_duration: minute
             group_by:
               duration: 10min
               func: avg
@@ -87,6 +96,7 @@ views:
             curve: smooth
             name: MIN
             type: line
+            as_duration: hour
             group_by:
               duration: 10min
               func: min
@@ -94,6 +104,7 @@ views:
             curve: smooth
             name: MAX
             type: line
+            as_duration: day
             group_by:
               duration: 10min
               func: max
@@ -101,6 +112,7 @@ views:
             curve: smooth
             name: LAST
             type: line
+            as_duration: month
             group_by:
               duration: 10min
               func: last
@@ -108,6 +120,7 @@ views:
             curve: smooth
             name: FIRST
             type: line
+            as_duration: year
             group_by:
               duration: 10min
               func: first

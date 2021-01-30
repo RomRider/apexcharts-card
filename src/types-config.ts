@@ -36,12 +36,15 @@ export interface ChartCardSeriesExternalConfig {
   data_generator?: string;
   float_precision?: number;
   offset?: string;
+  as_duration?: ChartCardPrettyTime;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;
     fill?: GroupByFill;
   };
 }
+
+export type ChartCardPrettyTime = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 
 export type GroupByFill = 'null' | 'last' | 'zero';
 

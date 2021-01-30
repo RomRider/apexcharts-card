@@ -12,6 +12,7 @@ import {
   log,
   mergeDeep,
   offsetData,
+  prettyPrintTime,
   validateInterval,
   validateOffset,
 } from './utils';
@@ -23,7 +24,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_FLOAT_PRECISION, moment } from './const';
+import { DEFAULT_FLOAT_PRECISION, moment, NO_VALUE } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -314,7 +315,7 @@ class ChartsCard extends LitElement {
   private _renderStates(): TemplateResult {
     return html`
       <div id="header__states">
-        ${this._config?.series.map((_, index) => {
+        ${this._config?.series.map((serie, index) => {
           return html`
             <div id="states__state">
               <div id="state__value">
@@ -323,7 +324,11 @@ class ChartsCard extends LitElement {
                   style="${this._config?.header?.colorize_states && this._colors && this._colors.length > 0
                     ? `color: ${this._colors[index % this._colors?.length]};`
                     : ''}"
-                  >${this._lastState?.[index] === 0 ? 0 : this._lastState?.[index] || 'N/A'}</span
+                  >${this._lastState?.[index] === 0
+                    ? 0
+                    : (serie.as_duration
+                        ? prettyPrintTime(this._lastState?.[index], serie.as_duration)
+                        : this._lastState?.[index]) || NO_VALUE}</span
                 >
                 <span id="uom">${computeUom(index, this._config, this._entities)}</span>
               </div>
