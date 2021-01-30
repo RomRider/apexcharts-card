@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/github/license/custom-cards/button-card.svg)](LICENSE.md)
+[![License](https://img.shields.io/github/license/custom-cards/button-card.svg)](LICENSE)
 [![HACS Supported](https://img.shields.io/badge/HACS-Supported-green.svg)](https://github.com/custom-components/hacs)
 ![Downloads](https://img.shields.io/github/downloads/RomRider/apexcharts-card/total)
 ![GitHub Activity](https://img.shields.io/github/commit-activity/y/RomRider/apexcharts-card.svg?label=commits)
