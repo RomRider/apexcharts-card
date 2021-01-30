@@ -30,3 +30,5 @@ export const DEFAULT_COLORS = [
   '#2980b9',
   '#8e44ad',
 ];
+
+export const NO_VALUE = 'N/A';

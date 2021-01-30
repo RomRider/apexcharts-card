@@ -4,7 +4,7 @@ import { ChartCardConfig, EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardPrettyTime } from './types-config';
-import { moment } from './const';
+import { moment, NO_VALUE } from './const';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -139,5 +139,6 @@ export function offsetData(data: EntityCachePoints, offset: number | undefined):
 }
 
 export function prettyPrintTime(value: string | number | null, unit: ChartCardPrettyTime): string {
+  if (value === null) return NO_VALUE;
   return moment.duration(value, unit).format('y [y] d[d] h[h] m[m] s[s] S[ms]', { trim: 'both' });
 }

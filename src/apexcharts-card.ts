@@ -24,7 +24,7 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_FLOAT_PRECISION, moment } from './const';
+import { DEFAULT_FLOAT_PRECISION, moment, NO_VALUE } from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -328,7 +328,7 @@ class ChartsCard extends LitElement {
                     ? 0
                     : (serie.as_duration
                         ? prettyPrintTime(this._lastState?.[index], serie.as_duration)
-                        : this._lastState?.[index]) || 'N/A'}</span
+                        : this._lastState?.[index]) || NO_VALUE}</span
                 >
                 <span id="uom">${computeUom(index, this._config, this._entities)}</span>
               </div>
