@@ -222,7 +222,7 @@ class ChartsCard extends LitElement {
           this._colors![index] = serie.color;
         }
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
-        serie.type = serie.type || DEFAULT_SERIE_TYPE;
+        serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
         if (!serie.group_by) {
           serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
         } else {

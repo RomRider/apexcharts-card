@@ -271,3 +271,18 @@ views:
               return entity.attributes.forecast.map((entry) => {
                 return [new Date(entry.datetime), entry.temperature];
               });
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Scatter Test
+        chart_type: scatter
+        series:
+          - entity: sensor.random0_100
+            group_by:
+              func: sum
+              duration: 20min
+          - entity: sensor.random_0_1000
+            group_by:
+              func: sum
+              duration: 20min

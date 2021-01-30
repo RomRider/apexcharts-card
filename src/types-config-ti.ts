@@ -6,6 +6,7 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
+  "chart_type": t.opt(t.lit('scatter')),
   "update_interval": t.opt("string"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),

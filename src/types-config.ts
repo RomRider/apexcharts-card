@@ -1,5 +1,6 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  chart_type?: 'scatter';
   update_interval?: string;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;

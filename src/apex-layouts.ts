@@ -1,12 +1,13 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
-import { DEFAULT_FLOAT_PRECISION, HOUR_24, moment, NO_VALUE } from './const';
+import { DEFAULT_FLOAT_PRECISION, DEFAULT_SERIE_TYPE, HOUR_24, moment, NO_VALUE } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep, prettyPrintTime } from './utils';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
     chart: {
+      type: config.chart_type || DEFAULT_SERIE_TYPE,
       stacked: config?.stacked,
       // type: 'line',
       foreColor: 'var(--primary-text-color)',
