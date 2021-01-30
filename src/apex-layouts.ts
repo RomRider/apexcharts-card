@@ -1,12 +1,13 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
-import { DEFAULT_FLOAT_PRECISION, HOUR_24, moment, NO_VALUE } from './const';
+import { DEFAULT_FLOAT_PRECISION, DEFAULT_SERIE_TYPE, HOUR_24, moment, NO_VALUE, TIMESERIES_TYPES } from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep, prettyPrintTime } from './utils';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
   const def = {
     chart: {
+      type: config.chart_type || DEFAULT_SERIE_TYPE,
       stacked: config?.stacked,
       // type: 'line',
       foreColor: 'var(--primary-text-color)',
@@ -26,20 +27,29 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         return serie.type === 'area' ? 0.7 : 1;
       }),
     },
-    series: config?.series.map((serie, index) => {
-      return {
-        name: computeName(index, config, undefined, hass?.states[serie.entity]),
-        type: serie.type,
-        data: [],
-      };
-    }),
-    xaxis: {
-      type: 'datetime',
-      // range: getMilli(config.hours_to_show),
-      labels: {
-        datetimeUTC: false,
-      },
-    },
+    series: TIMESERIES_TYPES.includes(config.chart_type)
+      ? config?.series.map((serie, index) => {
+          return {
+            name: computeName(index, config, undefined, hass?.states[serie.entity]),
+            type: serie.type,
+            data: [],
+          };
+        })
+      : [],
+    labels: TIMESERIES_TYPES.includes(config.chart_type)
+      ? []
+      : config.series.map((serie, index) => {
+          return computeName(index, config, undefined, hass?.states[serie.entity]);
+        }),
+    xaxis: TIMESERIES_TYPES.includes(config.chart_type)
+      ? {
+          type: 'datetime',
+          // range: getMilli(config.hours_to_show),
+          labels: {
+            datetimeUTC: false,
+          },
+        }
+      : {},
     yaxis: Array.isArray(config.apex_config?.yaxis)
       ? undefined
       : {
@@ -98,7 +108,19 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         return lValue;
       },
     },
+    plotOptions: {
+      radialBar:
+        config.chart_type === 'radialBar'
+          ? {
+              track: {
+                background: 'rgba(128, 128, 128, 0.2)',
+              },
+            }
+          : {},
+    },
     legend: {
+      position: 'bottom',
+      show: true,
       formatter: function (_, opts, conf = config, hass2 = hass) {
         const name = computeName(
           opts.seriesIndex,
@@ -109,7 +131,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         if (!conf.series[opts.seriesIndex].show.legend_value) {
           return [name];
         } else {
-          let value = opts.w.globals.series[opts.seriesIndex].slice(-1)[0];
+          let value = TIMESERIES_TYPES.includes(config.chart_type)
+            ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0]
+            : opts.w.globals.series[opts.seriesIndex];
           if (
             value !== null &&
             typeof value === 'number' &&
@@ -150,7 +174,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       curve: config.series.map((serie) => {
         return serie.curve || 'smooth';
       }),
-      lineCap: 'butt',
+      lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
+      colors:
+        config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
     },
     markers: {
       showNullDataPoints: false,

@@ -6,6 +6,7 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
+  "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
@@ -39,6 +40,8 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
   "float_precision": t.opt("number"),
+  "min": t.opt("number"),
+  "max": t.opt("number"),
   "offset": t.opt("string"),
   "show": t.opt(t.iface([], {
     "as_duration": t.opt("ChartCardPrettyTime"),

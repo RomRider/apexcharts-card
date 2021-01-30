@@ -1,5 +1,6 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
@@ -35,6 +36,8 @@ export interface ChartCardSeriesExternalConfig {
   invert?: boolean;
   data_generator?: string;
   float_precision?: number;
+  min?: number;
+  max?: number;
   offset?: string;
   show?: {
     as_duration?: ChartCardPrettyTime;

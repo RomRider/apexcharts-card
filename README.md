@@ -34,6 +34,7 @@ However, some things might be broken :grin:
   - [`header` Options](#header-options)
   - [`group_by` Options](#group_by-options)
   - [`func` Options](#func-options)
+  - [`chart_type` Options](#chart_type-options)
   - [`span` Options](#span-options)
   - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
@@ -103,6 +104,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
+| `chart_type` | string | `line` | NEXT_VERSION | See [chart_type](#chart_type-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
@@ -132,7 +134,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
-
+| `min` | number | `0` | NEXT_VERSION | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
+| `max` | number | `100` | NEXT_VERSION | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 
 ### `series.show` Options
 
@@ -179,6 +182,18 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `sum` | v1.0.0 | Will return the sum of all the states in each bucket |
 | `median` | v1.0.0 | Will return the median of all the states in each bucket |
 | `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
+
+### `chart_type` Options
+
+| Name | Since | Description |
+| ---- | :---: | ----------- |
+| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` |
+| `scatter` | NEXT_VERSION | Displays a cloud of points without a line between the values |
+| `pie` | NEXT_VERSION | This will display a pie chart with the last value computed of each sensor |
+| `donut` | NEXT_VERSION | This will display a donut chart with the last value computed of each sensor, same as pie but with a hole in the center |
+| `radialBar` | NEXT_VERSION | This will display a radial bar chart with the last value computed of each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires to convert the value into percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
+
+![Charts Type](docs/charts_type.png)
 
 ### `span` Options
 
@@ -346,7 +361,7 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 
 Not ordered by priority:
 
-* [ ] Support more types of charts (pie, radial, polar area at least)
+* [X] ~~Support more types of charts (pie, radial, polar area at least)~~
 * [ ] Support for `binary_sensors`
 * [X] ~~Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)~~
 * [X] ~~Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"~~

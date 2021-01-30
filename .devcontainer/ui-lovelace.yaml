@@ -1,273 +1,337 @@
 views:
   - title: Main
+    panel: true
     cards:
-      - type: custom:apexcharts-card
-        apex_config:
-          chart:
-            toolbar:
+      - type: grid
+        columns: 3
+        cards:
+          - type: custom:apexcharts-card
+            apex_config:
+              chart:
+                toolbar:
+                  show: true
+                  tools:
+                    zoom: true
+                    zoomin: true
+                    zoomout: true
+                    pan: true
+                    reset: true
+                zoom:
+                  enabled: true
+            update_interval: 5sec
+            stacked: true
+            series:
+              - entity: sensor.random_0_1000
+                name: Sensor 1
+                type: area
+                curve: straight
+                color: yellow
+              - entity: sensor.random_0_1000
+                name: Sensor 2
+                type: area
+                offset: -1d
+            graph_span: 15min
+            cache: true
+            layout: minimal
+            header:
+              show: false
+
+          - type: custom:apexcharts-card
+            stacked: true
+            span:
+              offset: -1d
+            series:
+              - entity: sensor.random_0_1000
+                name: RAM Usage
+                unit: Mb
+                type: area
+                curve: smooth
+              - entity: sensor.random_0_1000
+                name: Ram Free
+                type: area
+            graph_span: 15min
+            cache: true
+            layout: minimal
+            header:
+              floating: true
+
+          - type: custom:apexcharts-card
+            stacked: false
+            series:
+              - entity: sensor.random_0_1000
+                name: test1
+                type: column
+              - entity: sensor.random_0_1000
+                name: test2
+                type: column
+            graph_span: 20min
+            cache: true
+          - type: custom:apexcharts-card
+            graph_span: 200h
+            series:
+              - entity: sensor.humidity
+                curve: straight
+
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            header:
+              title: Test Aggregate
               show: true
-              tools:
-                zoom: true
-                zoomin: true
-                zoomout: true
-                pan: true
-                reset: true
-            zoom:
-              enabled: true
-        update_interval: 5sec
-        stacked: true
-        series:
-          - entity: sensor.random_0_1000
-            name: Sensor 1
-            type: area
-            curve: straight
-            color: yellow
-          - entity: sensor.random_0_1000
-            name: Sensor 2
-            type: area
-            offset: -1d
-        graph_span: 15min
-        cache: true
-        layout: minimal
-        header:
-          show: false
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.random0_100
+                name: AVG
+                curve: smooth
+                type: line
+                show:
+                  as_duration: millisecond
+                group_by:
+                  duration: 10min
+                  func: avg
+              - entity: sensor.random0_100
+                name: AVG
+                curve: smooth
+                type: line
+                show:
+                  as_duration: minute
+                group_by:
+                  duration: 10min
+                  func: avg
+              - entity: sensor.random0_100
+                curve: smooth
+                name: MIN
+                type: line
+                show:
+                  as_duration: hour
+                group_by:
+                  duration: 10min
+                  func: min
+              - entity: sensor.random0_100
+                curve: smooth
+                name: MAX
+                type: line
+                show:
+                  as_duration: day
+                group_by:
+                  duration: 10min
+                  func: max
+              - entity: sensor.random0_100
+                curve: smooth
+                name: LAST
+                type: line
+                show:
+                  as_duration: month
+                group_by:
+                  duration: 10min
+                  func: last
+              - entity: sensor.random0_100
+                curve: smooth
+                name: FIRST
+                type: line
+                show:
+                  as_duration: year
+                group_by:
+                  duration: 10min
+                  func: first
 
-      - type: custom:apexcharts-card
-        stacked: true
-        span:
-          offset: -1d
-        series:
-          - entity: sensor.random_0_1000
-            name: RAM Usage
-            unit: Mb
-            type: area
-            curve: smooth
-          - entity: sensor.random_0_1000
-            name: Ram Free
-            type: area
-        graph_span: 15min
-        cache: true
-        layout: minimal
-        header:
-          floating: true
+          - type: custom:apexcharts-card
+            graph_span: 4h
+            header:
+              title: Test
+            series:
+              - entity: sensor.humidity
+                type: area
+                name: Outside Humidity
+                group_by:
+                  func: avg
+                  duration: 1h
+              - entity: sensor.random0_100
+                type: area
+                name: Office Humidity
+                group_by:
+                  func: avg
+                  duration: 1h
+          - type: sensor
+            entity: sensor.humidity
+            graph: line
 
-      - type: custom:apexcharts-card
-        stacked: false
-        series:
-          - entity: sensor.random_0_1000
-            name: test1
-            type: column
-          - entity: sensor.random_0_1000
-            name: test2
-            type: column
-        graph_span: 20min
-        cache: true
-      - type: custom:apexcharts-card
-        graph_span: 200h
-        series:
-          - entity: sensor.humidity
-            curve: straight
+          - type: custom:apexcharts-card
+            graph_span: 6h
+            header:
+              show: false
+            series:
+              - entity: sensor.humidity
+                type: line
+                name: Outside Humidity
+                group_by:
+                  func: avg
+                  duration: 30min
+              - entity: sensor.random0_100
+                type: column
+                name: Office Humidity
+                group_by:
+                  func: avg
+                  duration: 30min
 
-      - type: custom:apexcharts-card
-        graph_span: 1h
-        header:
-          title: Test Aggregate
-          show: true
-          show_states: true
-          colorize_states: true
-        series:
-          - entity: sensor.random0_100
-            name: AVG
-            curve: smooth
-            type: line
-            show:
-              as_duration: millisecond
-            group_by:
-              duration: 10min
-              func: avg
-          - entity: sensor.random0_100
-            name: AVG
-            curve: smooth
-            type: line
-            show:
-              as_duration: minute
-            group_by:
-              duration: 10min
-              func: avg
-          - entity: sensor.random0_100
-            curve: smooth
-            name: MIN
-            type: line
-            show:
-              as_duration: hour
-            group_by:
-              duration: 10min
-              func: min
-          - entity: sensor.random0_100
-            curve: smooth
-            name: MAX
-            type: line
-            show:
-              as_duration: day
-            group_by:
-              duration: 10min
-              func: max
-          - entity: sensor.random0_100
-            curve: smooth
-            name: LAST
-            type: line
-            show:
-              as_duration: month
-            group_by:
-              duration: 10min
-              func: last
-          - entity: sensor.random0_100
-            curve: smooth
-            name: FIRST
-            type: line
-            show:
-              as_duration: year
-            group_by:
-              duration: 10min
-              func: first
-
-      - type: custom:apexcharts-card
-        graph_span: 4h
-        header:
-          title: Test
-        series:
-          - entity: sensor.humidity
-            type: area
-            name: Outside Humidity
-            group_by:
-              func: avg
-              duration: 1h
-          - entity: sensor.random0_100
-            type: area
-            name: Office Humidity
-            group_by:
-              func: avg
-              duration: 1h
-      - type: sensor
-        entity: sensor.humidity
-        graph: line
-
-      - type: custom:apexcharts-card
-        graph_span: 6h
-        header:
-          show: false
-        series:
-          - entity: sensor.humidity
-            type: line
-            name: Outside Humidity
-            group_by:
-              func: avg
-              duration: 30min
-          - entity: sensor.random0_100
-            type: column
-            name: Office Humidity
-            group_by:
-              func: avg
-              duration: 30min
-
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Start of day
-        graph_span: 24h
-        span:
-          start: day
-        apex_config:
-          dataLabels:
-            enabled: true
-            dropShadow:
-              enabled: true
-        series:
-          - entity: sensor.random0_100
-            extend_to_end: false
-            type: column
-            group_by:
-              func: avg
-              fill: 'null'
-
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Last 8h
-        graph_span: 8h
-        span:
-          end: hour
-        apex_config:
-          dataLabels:
-            enabled: true
-            dropShadow:
-              enabled: true
-          yaxis:
-            - title:
-                text: test1
+          - type: custom:apexcharts-card
+            header:
               show: true
-              opposite: true
-              decimalsInFloat: 1
-            - title:
-                text: Test2
+              title: Start of day
+            graph_span: 24h
+            span:
+              start: day
+            apex_config:
+              dataLabels:
+                enabled: true
+                dropShadow:
+                  enabled: true
+            series:
+              - entity: sensor.random0_100
+                extend_to_end: false
+                type: column
+                group_by:
+                  func: avg
+                  fill: 'null'
+
+          - type: custom:apexcharts-card
+            header:
               show: true
-              # opposite: true
-              decimalsInFloat: 1
-        series:
-          - entity: sensor.random0_100
-            extend_to_end: false
-            type: column
-            invert: true
-            group_by:
-              func: avg
-              fill: 'last'
-            show:
-              legend_value: false
-          - entity: sensor.random0_100
-            extend_to_end: false
-            type: column
-            group_by:
-              func: avg
-              fill: 'last'
-          - entity: sensor.random0_100
-            extend_to_end: false
-            type: column
-            group_by:
-              func: avg
-              fill: 'last'
+              title: Last 8h
+            graph_span: 8h
+            span:
+              end: hour
+            apex_config:
+              dataLabels:
+                enabled: true
+                dropShadow:
+                  enabled: true
+              yaxis:
+                - title:
+                    text: test1
+                  show: true
+                  opposite: true
+                  decimalsInFloat: 1
+                - title:
+                    text: Test2
+                  show: true
+                  # opposite: true
+                  decimalsInFloat: 1
+            series:
+              - entity: sensor.random0_100
+                extend_to_end: false
+                type: column
+                invert: true
+                group_by:
+                  func: avg
+                  fill: 'last'
+                show:
+                  legend_value: false
+              - entity: sensor.random0_100
+                extend_to_end: false
+                type: column
+                group_by:
+                  func: avg
+                  fill: 'last'
+              - entity: sensor.random0_100
+                extend_to_end: false
+                type: column
+                group_by:
+                  func: avg
+                  fill: 'last'
 
-      - type: custom:apexcharts-card
-        span:
-          start: day
-        y_axis_precision: 5
-        header:
-          show: true
-          show_states: true
-        series:
-          - entity: sensor.pvpc
-            float_precision: 5
-            data_generator: |
-              return [...Array(22).keys()].map((hour) => {
-                const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';
-                const value = entity.attributes[attr];
-                return [moment().startOf('day').hours(hour).valueOf(), value];
-              })
+          - type: custom:apexcharts-card
+            span:
+              start: day
+            y_axis_precision: 5
+            header:
+              show: true
+              show_states: true
+            series:
+              - entity: sensor.pvpc
+                float_precision: 5
+                data_generator: |
+                  return [...Array(22).keys()].map((hour) => {
+                    const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';
+                    const value = entity.attributes[attr];
+                    return [moment().startOf('day').hours(hour).valueOf(), value];
+                  })
 
-      - type: custom:apexcharts-card
-        graph_span: 8d
-        span:
-          start: hour
-        # apex_config:
-        #   dataLabels:
-        #     enabled: true
-        header:
-          show: true
-          title: Precipitation Forecast
-        series:
-          - entity: weather.openweathermap
-            type: area
-            extend_to_end: false
-            data_generator: |
-              return entity.attributes.forecast.map((entry) => {
-                return [new Date(entry.datetime), entry.temperature];
-              });
+          - type: custom:apexcharts-card
+            graph_span: 8d
+            span:
+              start: hour
+            # apex_config:
+            #   dataLabels:
+            #     enabled: true
+            header:
+              show: true
+              title: Precipitation Forecast
+            series:
+              - entity: weather.openweathermap
+                type: area
+                extend_to_end: false
+                data_generator: |
+                  return entity.attributes.forecast.map((entry) => {
+                    return [new Date(entry.datetime), entry.temperature];
+                  });
+
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: radialBar
+            chart_type: radialBar
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000
+                min: 0
+                max: 1000
+          - type: custom:apexcharts-card
+            chart_type: pie
+            header:
+              show: true
+              title: pie
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000
+          - type: custom:apexcharts-card
+            chart_type: donut
+            header:
+              show: true
+              title: donut
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000
+          - type: custom:apexcharts-card
+            chart_type: line
+            graph_span: 15m
+            header:
+              show: true
+              title: line
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: Scatter
+            chart_type: scatter
+            apex_config:
+              responsive:
+                - breakpoint: 400
+                  options:
+                    chart:
+                      height: 500px
+                - breakpoint: 5000
+                  options:
+                    chart:
+                      height: auto
+            series:
+              - entity: sensor.random0_100
+                group_by:
+                  func: sum
+                  duration: 20min
+              - entity: sensor.random_0_1000
+                group_by:
+                  func: sum
+                  duration: 20min
