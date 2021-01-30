@@ -63,6 +63,10 @@ export const styles: CSSResult = css`
     flex: 0 0 10%;
   }
 
+  #state__value {
+    display: table;
+  }
+
   #state__value > #state {
     font-size: 1.8em;
     font-weight: 500;
