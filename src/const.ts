@@ -1,6 +1,8 @@
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import momentDurationFormatSetup from 'moment-duration-format';
 
+momentDurationFormatSetup(Moment);
 export const moment = extendMoment(Moment);
 export const ONE_HOUR = 1000 * 3600;
 export const HOUR_24 = ONE_HOUR * 24;

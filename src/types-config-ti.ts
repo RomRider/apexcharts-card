@@ -40,12 +40,15 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "data_generator": t.opt("string"),
   "float_precision": t.opt("number"),
   "offset": t.opt("string"),
+  "as_duration": t.opt("ChartCardPrettyTime"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),
     "fill": t.opt("GroupByFill"),
   })),
 });
+
+export const ChartCardPrettyTime = t.union(t.lit('millisecond'), t.lit('second'), t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'));
 
 export const GroupByFill = t.union(t.lit('null'), t.lit('last'), t.lit('zero'));
 
@@ -63,6 +66,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardSpanExtConfig,
   ChartCardSeriesExternalConfig,
+  ChartCardPrettyTime,
   GroupByFill,
   GroupByFunc,
   ChartCardHeaderExternalConfig,
