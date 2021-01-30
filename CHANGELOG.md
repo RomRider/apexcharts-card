@@ -1,3 +1,20 @@
+## [1.3.0](https://github.com/RomRider/apexcharts-card/compare/v1.2.0...v1.3.0) (2021-01-30)
+
+
+### Features
+
+* **series:** Display values as a duration ([#21](https://github.com/RomRider/apexcharts-card/issues/21)) ([227f0ea](https://github.com/RomRider/apexcharts-card/commit/227f0ea0a4457b0aa7a26fd032b6cb9e28cb1c2b))
+* **series:** Hide the value of a serie in the legend ([#22](https://github.com/RomRider/apexcharts-card/issues/22)) ([1e8f748](https://github.com/RomRider/apexcharts-card/commit/1e8f748594f36ed3bbacd4305f9a5233aecbb029)), closes [#20](https://github.com/RomRider/apexcharts-card/issues/20)
+* **series.offset:** Compare data from another timeframe with the current timeframe ([#19](https://github.com/RomRider/apexcharts-card/issues/19)) ([af8ba81](https://github.com/RomRider/apexcharts-card/commit/af8ba8156452054c38b4b65bb843bb16fbfdf6bd)), closes [#18](https://github.com/RomRider/apexcharts-card/issues/18)
+
+
+### Bug Fixes
+
+* **config:** `style` was not a valid config option (card-mod/picture-element) ([0a38778](https://github.com/RomRider/apexcharts-card/commit/0a3877858c9187e7356ca4cdd2543c6f0865db99)), closes [#15](https://github.com/RomRider/apexcharts-card/issues/15)
+* **header:** Unit would sometimes be on a new line ([92fad1b](https://github.com/RomRider/apexcharts-card/commit/92fad1b1a39dda89f264e690fc15c7ce394d6105))
+* **series.offset:** Fix bug introduced by [#19](https://github.com/RomRider/apexcharts-card/issues/19) ([f5c0d57](https://github.com/RomRider/apexcharts-card/commit/f5c0d57f17c2e799d2890b78b12b9a7dd685703f)), closes [#18](https://github.com/RomRider/apexcharts-card/issues/18)
+* **style:** Better default styling of toolbar ([4d0ef1c](https://github.com/RomRider/apexcharts-card/commit/4d0ef1c6b1c22f6c9a0e84244062dd4361ea7cca)), closes [#16](https://github.com/RomRider/apexcharts-card/issues/16)
+
 ## [1.3.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.3.0-dev.2...v1.3.0-dev.3) (2021-01-30)
 
 
