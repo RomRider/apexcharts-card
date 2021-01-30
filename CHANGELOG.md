@@ -1,3 +1,16 @@
+## [1.3.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.3.0-dev.2...v1.3.0-dev.3) (2021-01-30)
+
+
+### Features
+
+* **series:** Display values as a duration ([#21](https://github.com/RomRider/apexcharts-card/issues/21)) ([227f0ea](https://github.com/RomRider/apexcharts-card/commit/227f0ea0a4457b0aa7a26fd032b6cb9e28cb1c2b))
+* **series:** Hide the value of a serie in the legend ([#22](https://github.com/RomRider/apexcharts-card/issues/22)) ([1e8f748](https://github.com/RomRider/apexcharts-card/commit/1e8f748594f36ed3bbacd4305f9a5233aecbb029)), closes [#20](https://github.com/RomRider/apexcharts-card/issues/20)
+
+
+### Bug Fixes
+
+* **header:** Unit would sometimes be on a new line ([92fad1b](https://github.com/RomRider/apexcharts-card/commit/92fad1b1a39dda89f264e690fc15c7ce394d6105))
+
 ## [1.3.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.3.0-dev.1...v1.3.0-dev.2) (2021-01-29)
 
 
