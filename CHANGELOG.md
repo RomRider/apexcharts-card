@@ -1,3 +1,16 @@
+## [1.4.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.3.1-dev.1...v1.4.0-dev.1) (2021-01-30)
+
+
+### Features
+
+* **graph:** New chart types `scatter`, `donut`, `pie` and `radialBar` ([#24](https://github.com/RomRider/apexcharts-card/issues/24)) ([a0e4f85](https://github.com/RomRider/apexcharts-card/commit/a0e4f8536593dc6f67f7439d77be367af74de736))
+
+
+### Documentation
+
+* Add an example to change the line thickness ([fd4a495](https://github.com/RomRider/apexcharts-card/commit/fd4a49542ea2fc7ebee10969c73bcbe26c73b68a))
+* Missing `title` documentation in the header section ([ff7f35b](https://github.com/RomRider/apexcharts-card/commit/ff7f35b0b341305600bd0ac9baa86cfec737d20f))
+
 ### [1.3.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.3.0...v1.3.1-dev.1) (2021-01-30)
 
 
