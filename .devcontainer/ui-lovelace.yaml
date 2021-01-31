@@ -134,6 +134,15 @@ views:
                 group_by:
                   duration: 10min
                   func: first
+              - entity: sensor.random0_100
+                curve: smooth
+                name: DIFF
+                type: line
+                show:
+                  as_duration: year
+                group_by:
+                  duration: 10min
+                  func: diff
 
           - type: custom:apexcharts-card
             graph_span: 4h

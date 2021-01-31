@@ -379,8 +379,9 @@ export default class GraphEntry {
   }
 
   private _diff(items: EntityCachePoints): number | null {
-    const first = this._first(items);
-    const last = this._last(items);
+    const noNulls = this._filterNulls(items);
+    const first = this._first(noNulls);
+    const last = this._last(noNulls);
     if (first === null || last === null) {
       return null;
     }
