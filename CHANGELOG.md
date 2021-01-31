@@ -1,3 +1,11 @@
+## [1.4.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.1...v1.4.0-dev.2) (2021-01-31)
+
+
+### Features
+
+* **editor:** Preview in the GUI card selector ([d4cd7a3](https://github.com/RomRider/apexcharts-card/commit/d4cd7a3a28ab9d29300772dbe22331857a3a1efc))
+* **group_by:** Add new `diff` function ([57fd6a6](https://github.com/RomRider/apexcharts-card/commit/57fd6a640aaee223adaa174ad5d1fb82f496a878))
+
 ## [1.4.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.3.1-dev.1...v1.4.0-dev.1) (2021-01-30)
 
 
