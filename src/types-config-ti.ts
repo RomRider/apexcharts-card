@@ -58,7 +58,7 @@ export const ChartCardPrettyTime = t.union(t.lit('millisecond'), t.lit('second')
 
 export const GroupByFill = t.union(t.lit('null'), t.lit('last'), t.lit('zero'));
 
-export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.lit('max'), t.lit('last'), t.lit('first'), t.lit('sum'), t.lit('median'), t.lit('delta'));
+export const GroupByFunc = t.union(t.lit('raw'), t.lit('avg'), t.lit('min'), t.lit('max'), t.lit('last'), t.lit('first'), t.lit('sum'), t.lit('median'), t.lit('delta'), t.lit('diff'));
 
 export const ChartCardHeaderExternalConfig = t.iface([], {
   "show": t.opt("boolean"),

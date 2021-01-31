@@ -63,6 +63,7 @@ export default class GraphEntry {
       sum: this._sum,
       median: this._median,
       delta: this._delta,
+      diff: this._diff,
     };
     this._index = index;
     this._cache = cache;
@@ -375,6 +376,15 @@ export default class GraphEntry {
     const max = this._maximum(items);
     const min = this._minimum(items);
     return max === null || min === null ? null : max - min;
+  }
+
+  private _diff(items: EntityCachePoints): number | null {
+    const first = this._first(items);
+    const last = this._last(items);
+    if (first === null || last === null) {
+      return null;
+    }
+    return last - first;
   }
 
   private _filterNulls(items: EntityCachePoints): EntityCachePoints {

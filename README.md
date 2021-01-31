@@ -183,6 +183,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `sum` | v1.0.0 | Will return the sum of all the states in each bucket |
 | `median` | v1.0.0 | Will return the median of all the states in each bucket |
 | `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
+| `diff` | MEXT_VERSION | Will return the difference between the last and the first entry in the bucket |
 
 ### `chart_type` Options
 
