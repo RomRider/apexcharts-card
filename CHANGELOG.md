@@ -1,3 +1,10 @@
+## [1.4.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.2...v1.4.0-dev.3) (2021-01-31)
+
+
+### Bug Fixes
+
+* **func:** Filter `null` values in `diff` ([cfe736c](https://github.com/RomRider/apexcharts-card/commit/cfe736ccf6ef071b7dfe4ae90804a919c12cb984))
+
 ## [1.4.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.1...v1.4.0-dev.2) (2021-01-31)
 
 
