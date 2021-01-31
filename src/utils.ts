@@ -5,6 +5,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardPrettyTime } from './types-config';
 import { DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
+import { LovelaceConfig } from 'custom-card-helpers';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -147,4 +148,23 @@ export function getPercentFromValue(value: number, min: number | undefined, max:
   const lMin = min === undefined ? DEFAULT_MIN : min;
   const lMax = max === undefined ? DEFAULT_MAX : max;
   return ((value - lMin) * 100) / (lMax - lMin);
+}
+
+export function getLovelace(): LovelaceConfig | null {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let root: any = document.querySelector('home-assistant');
+  root = root && root.shadowRoot;
+  root = root && root.querySelector('home-assistant-main');
+  root = root && root.shadowRoot;
+  root = root && root.querySelector('app-drawer-layout partial-panel-resolver');
+  root = (root && root.shadowRoot) || root;
+  root = root && root.querySelector('ha-panel-lovelace');
+  root = root && root.shadowRoot;
+  root = root && root.querySelector('hui-root');
+  if (root) {
+    const ll = root.lovelace;
+    ll.current_view = root.___curView;
+    return ll;
+  }
+  return null;
 }

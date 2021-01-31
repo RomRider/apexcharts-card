@@ -104,6 +104,10 @@ export default class GraphEntry {
     return this._realEnd;
   }
 
+  set cache(cache: boolean) {
+    this._cache = cache;
+  }
+
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
     const data: EntityEntryCache | undefined | null = await localForage.getItem(
       `${key}_${this._md5Config}${compressed ? '' : '-raw'}`,

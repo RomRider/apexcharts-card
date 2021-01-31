@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
 import { ChartCardConfig, EntityCachePoints, EntityEntryCache } from './types';
-import { HomeAssistant } from 'custom-card-helpers';
+import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
@@ -23,7 +23,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { getLayoutConfig } from './apex-layouts';
 import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
-import { ChartCardExternalConfig } from './types-config';
+import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_SHOW_LEGEND_VALUE, moment, NO_VALUE, TIMESERIES_TYPES } from './const';
 import {
@@ -100,6 +100,8 @@ class ChartsCard extends LitElement {
 
   private _seriesOffset: number[] = [];
 
+  @property({ type: Boolean }) private _warning = false;
+
   public connectedCallback() {
     super.connectedCallback();
     if (this._config && this._hass && !this._loaded) {
@@ -168,6 +170,12 @@ class ChartsCard extends LitElement {
         }
       }
     });
+    if (this._config.series.some((_, index) => this._entities[index] === undefined)) {
+      this._warning = true;
+      return;
+    } else if (this._warning) {
+      this._warning = false;
+    }
     if (updated) {
       this._entities = [...this._entities];
       if (!this._updating && !this._config.update_interval) {
@@ -240,18 +248,35 @@ class ChartsCard extends LitElement {
         }
         validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
         if (serie.entity) {
-          return new GraphEntry(
+          const editMode = getLovelace()?.editMode;
+          // disable caching for editor
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const caching = editMode === true ? false : this._config!.cache;
+          const graphEntry = new GraphEntry(
             index,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._graphSpan!,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._config!.cache,
+            caching,
             serie,
             this._config?.span,
           );
+          if (this._hass) graphEntry.hass = this._hass;
+          return graphEntry;
         }
         return undefined;
       });
+    }
+    // Reset only happens in editor mode
+    if (this._apexChart) {
+      this._apexChart.destroy();
+      this._apexChart = undefined;
+      this._loaded = false;
+      this._dataLoaded = false;
+      this._updating = false;
+    }
+    if (this._config && this._hass && !this._loaded) {
+      this._initialLoad();
     }
   }
 
@@ -261,8 +286,8 @@ class ChartsCard extends LitElement {
 
   protected render(): TemplateResult {
     if (!this._config || !this._hass) return html``;
-    if (this._config.series.some((_, index) => this._entities[index] === undefined)) {
-      return this.renderWarnings();
+    if (this._warning || this._config.series.some((_, index) => this._entities[index] === undefined)) {
+      return this._renderWarnings();
     }
 
     const spinnerClass: ClassInfo = {
@@ -293,7 +318,7 @@ class ChartsCard extends LitElement {
     `;
   }
 
-  renderWarnings() {
+  private _renderWarnings(): TemplateResult {
     return html`
       <ha-card class="warning">
         <hui-warning>
@@ -366,13 +391,17 @@ class ChartsCard extends LitElement {
     if (!this._config || !this._apexChart || !this._graphs) return;
 
     const { start, end } = this._getSpanDates();
+    const editMode = getLovelace()?.editMode;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const caching = editMode === true ? false : this._config!.cache;
     try {
-      const promise = this._graphs.map((graph, index) =>
-        graph?._updateHistory(
+      const promise = this._graphs.map((graph, index) => {
+        if (graph) graph.cache = caching;
+        return graph?._updateHistory(
           this._seriesOffset[index] ? new Date(start.getTime() + this._seriesOffset[index]) : start,
           this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]) : end,
-        ),
-      );
+        );
+      });
       await Promise.all(promise);
       let graphData: unknown = {};
       if (TIMESERIES_TYPES.includes(this._config.chart_type)) {
@@ -495,6 +524,110 @@ class ChartsCard extends LitElement {
   public getCardSize(): number {
     return 3;
   }
+
+  static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {
+    const entityFilter = (stateObj: HassEntity): boolean => {
+      return !isNaN(Number(stateObj.state));
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _arrayFilter = (array: any[], conditions: Array<(value: any) => boolean>, maxSize: number) => {
+      if (!maxSize || maxSize > array.length) {
+        maxSize = array.length;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const filteredArray: any[] = [];
+
+      for (let i = 0; i < array.length && filteredArray.length < maxSize; i++) {
+        let meetsConditions = true;
+
+        for (const condition of conditions) {
+          if (!condition(array[i])) {
+            meetsConditions = false;
+            break;
+          }
+        }
+
+        if (meetsConditions) {
+          filteredArray.push(array[i]);
+        }
+      }
+
+      return filteredArray;
+    };
+    const _findEntities = (
+      hass: HomeAssistant,
+      maxEntities: number,
+      entities: string[],
+      entitiesFallback: string[],
+      includeDomains?: string[],
+      entityFilter?: (stateObj: HassEntity) => boolean,
+    ) => {
+      const conditions: Array<(value: string) => boolean> = [];
+
+      if (includeDomains?.length) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        conditions.push((eid) => includeDomains!.includes(eid.split('.')[0]));
+      }
+
+      if (entityFilter) {
+        conditions.push((eid) => hass.states[eid] && entityFilter(hass.states[eid]));
+      }
+
+      const entityIds = _arrayFilter(entities, conditions, maxEntities);
+
+      if (entityIds.length < maxEntities && entitiesFallback.length) {
+        const fallbackEntityIds = _findEntities(
+          hass,
+          maxEntities - entityIds.length,
+          entitiesFallback,
+          [],
+          includeDomains,
+          entityFilter,
+        );
+
+        entityIds.push(...fallbackEntityIds);
+      }
+
+      return entityIds;
+    };
+    const includeDomains = ['sensor'];
+    const maxEntities = 2;
+
+    const foundEntities = _findEntities(hass, maxEntities, entities, entitiesFallback, includeDomains, entityFilter);
+    const conf = {
+      header: { show: true, title: 'ApexCharts-Card', show_states: true, colorize_states: true },
+      series: [] as ChartCardSeriesExternalConfig[],
+    };
+    if (foundEntities[0]) {
+      conf.series[0] = {
+        entity: foundEntities[0],
+        data_generator: `// REMOVE ME
+const now = new Date();
+const data = [];
+for(let i = 0; i <= 24; i++) {
+  data.push([now.getTime() - i * 1000 * 60 * 60, Math.floor((Math.random() * 10) + 1)])
+}
+return data.reverse();
+`,
+      };
+    }
+    if (foundEntities[1]) {
+      conf.series[1] = {
+        entity: foundEntities[1],
+        type: 'column',
+        data_generator: `// REMOVE ME
+const now = new Date();
+const data = [];
+for(let i = 0; i <= 24; i++) {
+  data.push([now.getTime() - i * 1000 * 60 * 60, Math.floor((Math.random() * 10) + 1)])
+}
+return data.reverse();
+`,
+      };
+    }
+    return conf;
+  }
 }
 
 // Configure the preview in the Lovelace card picker
@@ -504,6 +637,6 @@ class ChartsCard extends LitElement {
 (window as any).customCards.push({
   type: 'apexcharts-card',
   name: 'ApexCharts Card',
-  preview: false,
+  preview: true,
   description: 'A graph card based on ApexCharts',
 });

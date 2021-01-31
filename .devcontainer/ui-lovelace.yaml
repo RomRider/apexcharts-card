@@ -314,7 +314,7 @@ views:
           - type: custom:apexcharts-card
             header:
               show: true
-              title: Scatter
+              title: scatter
             chart_type: scatter
             apex_config:
               responsive:
