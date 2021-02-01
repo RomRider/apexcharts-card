@@ -172,8 +172,8 @@ class ChartsCard extends LitElement {
     let updated = false;
     this._config.series.forEach((serie, index) => {
       const entityState = (hass && hass.states[serie.entity]) || undefined;
+      this._entities[index] = entityState;
       if (entityState && this._entities[index] !== entityState) {
-        this._entities[index] = entityState;
         updated = true;
         if (this._graphs && this._graphs[index]) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -186,6 +186,7 @@ class ChartsCard extends LitElement {
       return;
     } else if (this._warning) {
       this._warning = false;
+      this._reset();
     }
     if (updated) {
       this._entities = [...this._entities];
@@ -200,6 +201,19 @@ class ChartsCard extends LitElement {
           }, this._updateDelay);
         }
       }
+    }
+  }
+
+  private _reset() {
+    if (this._apexChart) {
+      this._apexChart.destroy();
+      this._apexChart = undefined;
+      this._loaded = false;
+      this._dataLoaded = false;
+      this._updating = false;
+    }
+    if (this._config && this._hass && !this._loaded) {
+      this._initialLoad();
     }
   }
 
@@ -292,17 +306,8 @@ class ChartsCard extends LitElement {
         return undefined;
       });
     }
-    // Reset only happens in editor mode
-    if (this._apexChart) {
-      this._apexChart.destroy();
-      this._apexChart = undefined;
-      this._loaded = false;
-      this._dataLoaded = false;
-      this._updating = false;
-    }
-    if (this._config && this._hass && !this._loaded) {
-      this._initialLoad();
-    }
+    // Full reset only happens in editor mode
+    this._reset();
   }
 
   static get styles(): CSSResult {
