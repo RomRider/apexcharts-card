@@ -202,27 +202,32 @@ class ChartsCard extends LitElement {
   }
 
   public setConfig(config: ChartCardExternalConfig) {
+    const configDup = JSON.parse(JSON.stringify(config));
+    if (configDup.entities) {
+      configDup.series = configDup.entities;
+      delete configDup.entities;
+    }
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
-    ChartCardExternalConfig.strictCheck(config);
-    if (config.update_interval) {
-      this._interval = validateInterval(config.update_interval, 'update_interval');
+    ChartCardExternalConfig.strictCheck(configDup);
+    if (configDup.update_interval) {
+      this._interval = validateInterval(configDup.update_interval, 'update_interval');
     }
-    if (config.graph_span) {
-      this._graphSpan = validateInterval(config.graph_span, 'graph_span');
+    if (configDup.graph_span) {
+      this._graphSpan = validateInterval(configDup.graph_span, 'graph_span');
     }
-    if (config.span?.offset) {
-      this._offset = validateOffset(config.span.offset, 'span.offset');
+    if (configDup.span?.offset) {
+      this._offset = validateOffset(configDup.span.offset, 'span.offset');
     }
-    if (config.span?.end && config.span?.start) {
+    if (configDup.span?.end && configDup.span?.start) {
       throw new Error(`span: Only one of 'start' or 'end' is allowed.`);
     }
-    config.series.forEach((serie, index) => {
+    configDup.series.forEach((serie, index) => {
       if (serie.offset) {
         this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
       }
     });
-    if (config.update_delay) {
-      this._updateDelay = validateInterval(config.update_delay, `update_delay`);
+    if (configDup.update_delay) {
+      this._updateDelay = validateInterval(configDup.update_delay, `update_delay`);
     }
 
     this._config = mergeDeep(
@@ -232,7 +237,7 @@ class ChartsCard extends LitElement {
         useCompress: false,
         show: { loading: true },
       },
-      JSON.parse(JSON.stringify(config)),
+      configDup,
     );
 
     if (this._config) {

@@ -47,6 +47,7 @@ However, some things might be broken :grin:
   - [Aggregating data](#aggregating-data)
   - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
   - [Change the line thickness](#change-the-line-thickness)
+  - [Use apexcharts-card auto-entities](#use-apexcharts-card-auto-entities)
 
 ## Installation
 
@@ -504,3 +505,18 @@ series:
     - entity: sensor.temperature
     - entity: sensor.humidity
   ```
+
+### Use apexcharts-card auto-entities
+
+This requires the [auto-entities card](https://github.com/thomasloven/lovelace-auto-entities)
+
+```yaml
+type: custom:auto-entities
+  filter:
+    include:
+      - entity_id: sensor.temperature*
+        options:
+          entity: this.entity_id
+  card:
+    type: custom:apexcharts-card
+```
