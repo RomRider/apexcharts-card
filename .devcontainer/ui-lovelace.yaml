@@ -282,9 +282,10 @@ views:
               - entity: weather.openweathermap
                 type: area
                 extend_to_end: false
+                offset: -1d
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
-                    return [new Date(entry.datetime), entry.temperature];
+                    return [new Date(entry.datetime).getTime(), entry.temperature];
                   });
 
           - type: custom:apexcharts-card
