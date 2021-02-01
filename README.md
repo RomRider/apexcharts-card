@@ -107,7 +107,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
 | `chart_type` | string | `line` | NEXT_VERSION | See [chart_type](#chart_type-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `update_delay` | string | `1500ms` | NEXT_VERSION | If doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
+| `update_delay` | string | `1500ms` | NEXT_VERSION | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
