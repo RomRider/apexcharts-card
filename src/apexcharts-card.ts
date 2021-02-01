@@ -172,8 +172,10 @@ class ChartsCard extends LitElement {
     let updated = false;
     this._config.series.forEach((serie, index) => {
       const entityState = (hass && hass.states[serie.entity]) || undefined;
-      this._entities[index] = entityState;
-      if (entityState && this._entities[index] !== entityState) {
+      if (!entityState) {
+        this._entities[index] = entityState;
+      } else if (entityState && this._entities[index] !== entityState) {
+        this._entities[index] = entityState;
         updated = true;
         if (this._graphs && this._graphs[index]) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
