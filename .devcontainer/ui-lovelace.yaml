@@ -140,6 +140,8 @@ views:
                 type: line
                 show:
                   as_duration: year
+                  in_header: true
+                  in_chart: false
                 group_by:
                   duration: 10min
                   func: diff

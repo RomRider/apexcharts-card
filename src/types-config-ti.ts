@@ -48,6 +48,8 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "show": t.opt(t.iface([], {
     "as_duration": t.opt("ChartCardPrettyTime"),
     "legend_value": t.opt("boolean"),
+    "in_header": t.opt("boolean"),
+    "in_chart": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),

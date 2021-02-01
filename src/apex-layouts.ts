@@ -119,6 +119,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           : {},
     },
     legend: {
+      showForNullSeries: !config.series.some((serie) => serie.show.in_chart === false),
       position: 'bottom',
       show: true,
       formatter: function (_, opts, conf = config, hass2 = hass) {
