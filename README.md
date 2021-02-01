@@ -47,7 +47,7 @@ However, some things might be broken :grin:
   - [Aggregating data](#aggregating-data)
   - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
   - [Change the line thickness](#change-the-line-thickness)
-  - [Use apexcharts-card auto-entities](#use-apexcharts-card-auto-entities)
+  - [Use apexcharts-card with auto-entities](#use-apexcharts-card-with-auto-entities)
   - [Change the height of the graph](#change-the-height-of-the-graph)
 
 ## Installation
@@ -509,7 +509,7 @@ series:
     - entity: sensor.humidity
   ```
 
-### Use apexcharts-card auto-entities
+### Use apexcharts-card with auto-entities
 
 This requires the [auto-entities card](https://github.com/thomasloven/lovelace-auto-entities)
 
