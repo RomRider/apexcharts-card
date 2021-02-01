@@ -1,3 +1,17 @@
+## [1.4.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.3...v1.4.0-dev.4) (2021-02-01)
+
+
+### Features
+
+* Support for auto-entities ([060e4c0](https://github.com/RomRider/apexcharts-card/commit/060e4c0f7cdfebb72055d83dada4129a0f699f3c))
+* **series:** Retrieve an attribute of your entity instead of the state ([#32](https://github.com/RomRider/apexcharts-card/issues/32)) ([b76bf16](https://github.com/RomRider/apexcharts-card/commit/b76bf16e9f3d4dc8c28767d552139de3aa033fa7)), closes [#29](https://github.com/RomRider/apexcharts-card/issues/29)
+
+
+### Documentation
+
+* Add more example ([ffaa5df](https://github.com/RomRider/apexcharts-card/commit/ffaa5df44fb009b881ba6af8d4d73ec9e7562c26))
+* Fix some typos ([3df6aed](https://github.com/RomRider/apexcharts-card/commit/3df6aed4769b8b0b927f961083f7aa16521ddf58))
+
 ## [1.4.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.2...v1.4.0-dev.3) (2021-01-31)
 
 
