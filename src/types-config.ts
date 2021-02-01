@@ -44,6 +44,8 @@ export interface ChartCardSeriesExternalConfig {
   show?: {
     as_duration?: ChartCardPrettyTime;
     legend_value?: boolean;
+    in_header?: boolean;
+    in_chart?: boolean;
   };
   group_by?: {
     duration?: string;

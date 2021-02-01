@@ -25,6 +25,8 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
   show: {
     as_duration?: ChartCardPrettyTime;
     legend_value: boolean;
+    in_header: boolean;
+    in_chart: boolean;
   };
 }
 

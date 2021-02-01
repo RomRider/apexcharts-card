@@ -27,6 +27,8 @@ import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-
 import exportedTypeSuite from './types-config-ti';
 import {
   DEFAULT_FLOAT_PRECISION,
+  DEFAULT_SHOW_IN_CHART,
+  DEFAULT_SHOW_IN_HEADER,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_UPDATE_DELAY,
   moment,
@@ -258,10 +260,16 @@ class ChartsCard extends LitElement {
           serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
         }
         if (!serie.show) {
-          serie.show = { legend_value: DEFAULT_SHOW_LEGEND_VALUE };
+          serie.show = {
+            legend_value: DEFAULT_SHOW_LEGEND_VALUE,
+            in_header: DEFAULT_SHOW_IN_HEADER,
+            in_chart: DEFAULT_SHOW_IN_CHART,
+          };
         } else {
           serie.show.legend_value =
             serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
+          serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
+          serie.show.in_header = serie.show.in_header === undefined ? DEFAULT_SHOW_IN_HEADER : serie.show.in_header;
         }
         validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
         if (serie.entity) {
@@ -366,27 +374,31 @@ class ChartsCard extends LitElement {
     return html`
       <div id="header__states">
         ${this._config?.series.map((serie, index) => {
-          return html`
-            <div id="states__state">
-              <div id="state__value">
-                <span
-                  id="state"
-                  style="${this._config?.header?.colorize_states && this._colors && this._colors.length > 0
-                    ? `color: ${this._colors[index % this._colors?.length]};`
-                    : ''}"
-                  >${this._lastState?.[index] === 0
-                    ? 0
-                    : (serie.show.as_duration
-                        ? prettyPrintTime(this._lastState?.[index], serie.show.as_duration)
-                        : this._lastState?.[index]) || NO_VALUE}</span
-                >
-                ${!serie.show.as_duration
-                  ? html`<span id="uom">${computeUom(index, this._config, this._entities)}</span>`
-                  : ''}
+          if (serie.show.in_header) {
+            return html`
+              <div id="states__state">
+                <div id="state__value">
+                  <span
+                    id="state"
+                    style="${this._config?.header?.colorize_states && this._colors && this._colors.length > 0
+                      ? `color: ${this._colors[index % this._colors?.length]};`
+                      : ''}"
+                    >${this._lastState?.[index] === 0
+                      ? 0
+                      : (serie.show.as_duration
+                          ? prettyPrintTime(this._lastState?.[index], serie.show.as_duration)
+                          : this._lastState?.[index]) || NO_VALUE}</span
+                  >
+                  ${!serie.show.as_duration
+                    ? html`<span id="uom">${computeUom(index, this._config, this._entities)}</span>`
+                    : ''}
+                </div>
+                <div id="state__name">${computeName(index, this._config, this._entities)}</div>
               </div>
-              <div id="state__name">${computeName(index, this._config, this._entities)}</div>
-            </div>
-          `;
+            `;
+          } else {
+            return html``;
+          }
         })}
       </div>
     `;
@@ -434,7 +446,9 @@ class ChartsCard extends LitElement {
               data = graph.history;
             }
             data = offsetData(data, this._seriesOffset[index]);
-            return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
+            if (this._config?.series[index].show.in_chart)
+              return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
+            return { data: [] };
           }),
           xaxis: {
             min: start.getTime(),
@@ -449,6 +463,7 @@ class ChartsCard extends LitElement {
             if (!graph || graph.history.length === 0) return;
             const lastState = graph.history[graph.history.length - 1][1];
             this._lastState[index] = this._computeLastState(lastState, index);
+            if (!this._config?.series[index].show.in_chart) return;
             if (lastState === null) {
               return;
             } else {
