@@ -515,13 +515,13 @@ This requires the [auto-entities card](https://github.com/thomasloven/lovelace-a
 
 ```yaml
 type: custom:auto-entities
-  filter:
-    include:
-      - entity_id: sensor.temperature*
-        options:
-          entity: this.entity_id
-  card:
-    type: custom:apexcharts-card
+filter:
+  include:
+    - entity_id: sensor.temperature*
+      options:
+        entity: this.entity_id
+card:
+  type: custom:apexcharts-card
 ```
 
 ### Change the height of the graph
