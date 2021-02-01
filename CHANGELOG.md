@@ -1,3 +1,21 @@
+## [1.4.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.4...v1.4.0-dev.5) (2021-02-01)
+
+
+### Features
+
+* **series:** Show/Hide a specific serie from the header or the graph ([#36](https://github.com/RomRider/apexcharts-card/issues/36)) ([95c0433](https://github.com/RomRider/apexcharts-card/commit/95c0433833c197d32914ed11260b4dd08885d9f4))
+
+
+### Bug Fixes
+
+* Graph stopped updating following ddf6ca9 ([bc54729](https://github.com/RomRider/apexcharts-card/commit/bc547290301e1a5b09725589eaf95a640bdb5752))
+* Sometimes card would stay in warning mode ([ddf6ca9](https://github.com/RomRider/apexcharts-card/commit/ddf6ca9105062a8591ba1e9ab702abb01e689592))
+
+
+### Documentation
+
+* Fix error `data_generator` example ([6d1c7a0](https://github.com/RomRider/apexcharts-card/commit/6d1c7a0d53a74a081b4900f1aa5c7c26b8159945)), closes [#34](https://github.com/RomRider/apexcharts-card/issues/34)
+
 ## [1.4.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.3...v1.4.0-dev.4) (2021-02-01)
 
 
