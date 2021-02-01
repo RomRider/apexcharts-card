@@ -8,6 +8,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
+  "update_delay": t.opt("string"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
   "span": t.opt("ChartCardSpanExtConfig"),
@@ -31,6 +32,7 @@ export const ChartCardSpanExtConfig = t.iface([], {
 
 export const ChartCardSeriesExternalConfig = t.iface([], {
   "entity": "string",
+  "attribute": t.opt("string"),
   "name": t.opt("string"),
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
   "color": t.opt("string"),
