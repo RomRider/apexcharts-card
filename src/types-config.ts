@@ -2,6 +2,7 @@ export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
+  update_delay?: string;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
   span?: ChartCardSpanExtConfig;
@@ -27,6 +28,7 @@ export interface ChartCardSpanExtConfig {
 }
 export interface ChartCardSeriesExternalConfig {
   entity: string;
+  attribute?: string;
   name?: string;
   type?: 'line' | 'column' | 'area';
   color?: string;

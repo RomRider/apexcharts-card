@@ -25,7 +25,14 @@ import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
-import { DEFAULT_FLOAT_PRECISION, DEFAULT_SHOW_LEGEND_VALUE, moment, NO_VALUE, TIMESERIES_TYPES } from './const';
+import {
+  DEFAULT_FLOAT_PRECISION,
+  DEFAULT_SHOW_LEGEND_VALUE,
+  DEFAULT_UPDATE_DELAY,
+  moment,
+  NO_VALUE,
+  TIMESERIES_TYPES,
+} from './const';
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
@@ -99,6 +106,8 @@ class ChartsCard extends LitElement {
   private _dataLoaded = false;
 
   private _seriesOffset: number[] = [];
+
+  private _updateDelay: number = DEFAULT_UPDATE_DELAY;
 
   @property({ type: Boolean }) private _warning = false;
 
@@ -186,7 +195,7 @@ class ChartsCard extends LitElement {
           // give time to HA's recorder component to write the data in the history
           setTimeout(() => {
             this._updateData();
-          }, 1500);
+          }, this._updateDelay);
         }
       }
     }
@@ -212,6 +221,9 @@ class ChartsCard extends LitElement {
         this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
       }
     });
+    if (config.update_delay) {
+      this._updateDelay = validateInterval(config.update_delay, `update_delay`);
+    }
 
     this._config = mergeDeep(
       {

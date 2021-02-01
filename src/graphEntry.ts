@@ -171,12 +171,33 @@ export default class GraphEntry {
             new Date(history.data.slice(-1)[0]![0] + 1)
           : startHistory,
         end,
-        skipInitialState,
+        this._config.attribute ? false : skipInitialState,
+        this._config.attribute ? true : false,
       );
       if (newHistory && newHistory[0] && newHistory[0].length > 0) {
+        /*
+        hack because HA doesn't return anything if skipInitialState is false
+        when retrieving for attributes so we retrieve it and we remove it.
+        */
+        if (this._config.attribute && skipInitialState) {
+          newHistory[0].shift();
+        }
         const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
-          const stateParsed = parseFloat(item.state);
-          return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+          let stateParsed: number | null = null;
+          if (this._config.attribute) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            if (item.attributes && item.attributes![this._config.attribute]) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              stateParsed = parseFloat(item.attributes![this._config.attribute]);
+            }
+          } else {
+            stateParsed = parseFloat(item.state);
+          }
+          if (this._config.attribute) {
+            return [new Date(item.last_updated).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+          } else {
+            return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+          }
         });
         if (history?.data.length) {
           history.span = this._graphSpan;
@@ -221,13 +242,15 @@ export default class GraphEntry {
     start: Date | undefined,
     end: Date | undefined,
     skipInitialState: boolean,
+    withAttributes = false,
   ): Promise<HassHistory | undefined> {
     let url = 'history/period';
     if (start) url += `/${start.toISOString()}`;
     url += `?filter_entity_id=${this._entityID}`;
     if (end) url += `&end_time=${end.toISOString()}`;
     if (skipInitialState) url += '&skip_initial_state';
-    url += '&minimal_response';
+    if (!withAttributes) url += '&minimal_response';
+    if (withAttributes) url += '&significant_changes_only=0';
     return this._hass?.callApi('GET', url);
   }
 

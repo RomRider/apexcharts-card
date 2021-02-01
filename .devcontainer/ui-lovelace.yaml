@@ -344,3 +344,16 @@ views:
                 group_by:
                   func: sum
                   duration: 20min
+
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            update_delay: 5.5s
+            # apex_config:
+            #   dataLabels:
+            #     enabled: true
+            header:
+              show: true
+              title: Light Brightness (attribute test)
+            series:
+              - entity: light.kitchen_lights
+                attribute: brightness

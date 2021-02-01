@@ -43,6 +43,7 @@ export interface HassHistoryEntry {
   last_updated: string;
   state: string;
   last_changed: string;
+  attributes?: never;
 }
 
 export interface HistoryBucket {
