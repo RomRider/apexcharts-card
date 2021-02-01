@@ -324,7 +324,7 @@ Let's take this example:
     - entity: sensor.test
       data_generator: | # This is what builds the data
         return entity.attributes.PeakTimes.map((peak, index) => {
-          return [new Date(peak), entity.attributes.PeakHeights[index]];
+          return [new Date(peak).getTime(), entity.attributes.PeakHeights[index]];
         });
   ```
   The result of this function call would be something like: <br/>
