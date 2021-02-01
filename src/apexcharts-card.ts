@@ -26,7 +26,7 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { getLayoutConfig } from './apex-layouts';
 import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
-import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
+import { ChartCardColorThreshold, ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
   DEFAULT_FILL_RAW,
@@ -37,6 +37,7 @@ import {
   DEFAULT_UPDATE_DELAY,
   moment,
   NO_VALUE,
+  PLAIN_COLOR_TYPES,
   TIMESERIES_TYPES,
 } from './const';
 import {
@@ -297,6 +298,12 @@ class ChartsCard extends LitElement {
           serie.show.in_header = serie.show.in_header === undefined ? DEFAULT_SHOW_IN_HEADER : serie.show.in_header;
         }
         validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
+        if (serie.color_threshold && serie.color_threshold.length > 0) {
+          const sorted: ChartCardColorThreshold[] = JSON.parse(JSON.stringify(serie.color_threshold));
+          sorted.sort((a, b) => (a.value < b.value ? -1 : 1));
+          serie.color_threshold = sorted;
+        }
+
         if (serie.entity) {
           const editMode = getLovelace()?.editMode;
           // disable caching for editor
@@ -490,7 +497,6 @@ class ChartsCard extends LitElement {
             min: start.getTime(),
             max: this._findEndOfChart(end),
           },
-          colors: computeColors(this._colors),
         };
         if (this._config.now?.show) {
           const color = computeColor(this._config.now.color || 'var(--primary-color)');
@@ -541,9 +547,12 @@ class ChartsCard extends LitElement {
               }
             }
           }),
-          colors: computeColors(this._colors),
         };
       }
+      graphData.colors = this._computeChartColors();
+      graphData.fill = { colors: graphData.colors };
+      graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
+      graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
       this._lastState = [...this._lastState];
       this._apexChart?.updateOptions(
         graphData,
@@ -554,6 +563,28 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _computeChartColors(): (string | (({ value }) => string))[] {
+    const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
+    this._config?.series.forEach((serie, index) => {
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (PLAIN_COLOR_TYPES.includes(this._config!.chart_type!) || serie.type === 'column') &&
+        serie.color_threshold &&
+        serie.color_threshold.length > 0
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        defaultColors[index] = function ({ value }, sortedL = serie.color_threshold!) {
+          let returnValue = sortedL[0].color;
+          sortedL.forEach((color) => {
+            if (value > color.value) returnValue = color.color;
+          });
+          return computeColor(returnValue);
+        };
+      }
+    });
+    return defaultColors.slice(0, this._config?.series.length);
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {

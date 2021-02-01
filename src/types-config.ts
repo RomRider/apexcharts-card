@@ -61,6 +61,7 @@ export interface ChartCardSeriesExternalConfig {
     fill?: GroupByFill;
   };
   transform?: string;
+  color_threshold?: ChartCardColorThreshold[];
 }
 
 export type ChartCardPrettyTime = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -75,4 +76,9 @@ export interface ChartCardHeaderExternalConfig {
   title?: string;
   show_states?: boolean;
   colorize_states?: boolean;
+}
+
+export interface ChartCardColorThreshold {
+  value: number;
+  color: string;
 }

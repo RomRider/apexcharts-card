@@ -1,6 +1,14 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
-import { DEFAULT_FLOAT_PRECISION, DEFAULT_SERIE_TYPE, HOUR_24, moment, NO_VALUE, TIMESERIES_TYPES } from './const';
+import {
+  DEFAULT_FLOAT_PRECISION,
+  DEFAULT_SERIE_TYPE,
+  HOUR_24,
+  moment,
+  NO_VALUE,
+  PLAIN_COLOR_TYPES,
+  TIMESERIES_TYPES,
+} from './const';
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, mergeDeep, prettyPrintTime } from './utils';
 import { layoutMinimal } from './layouts/minimal';
@@ -24,6 +32,18 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     fill: {
       opacity: getFillOpacity(config),
+      type: config.series.map((serie) => {
+        if (
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
+          serie.type !== 'column' &&
+          serie.color_threshold &&
+          serie.color_threshold.length > 0
+        ) {
+          return 'gradient';
+        }
+        return 'solid';
+      }),
     },
     series: getSeries(config, hass),
     labels: getLabels(config, hass),
@@ -55,6 +75,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
+      width: getStrokeWidth(config),
     },
     markers: {
       showNullDataPoints: false,
@@ -288,5 +309,24 @@ function getStrokeCurve(config: ChartCardConfig) {
 function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
   return config.series_in_graph.flatMap((serie, index) => {
     return serie.show.datalabels ? [index] : [];
+  });
+}
+
+function getStrokeWidth(config: ChartCardConfig) {
+  if (config.chart_type !== undefined && config.chart_type !== 'line')
+    return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
+  return config.series.map((serie, index) => {
+    if (serie.type === 'column') {
+      return 0;
+    } else if (config.apex_config?.stroke?.width !== undefined) {
+      if (Array.isArray(config.apex_config.stroke.width)) {
+        return [null, undefined].includes(config.apex_config.stroke.width[index] as never)
+          ? 5
+          : config.apex_config.stroke.width[index];
+      } else {
+        return config.apex_config.stroke.width[index];
+      }
+    }
+    return 5;
   });
 }

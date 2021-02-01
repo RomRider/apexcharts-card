@@ -40,6 +40,11 @@ views:
             stacked: true
             span:
               offset: -1d
+            apex_config:
+              stroke:
+                width:
+                  -
+                  - 20
             series:
               - entity: sensor.random_0_1000
                 name: RAM Usage
@@ -60,11 +65,26 @@ views:
             series:
               - entity: sensor.random_0_1000
                 name: test1
-                type: column
+                # type: line
+                # color_threshold:
+                #   - value: 333
+                #     color: '#00ff00'
+                #   - value: 666
+                #     color: '#000001'
+                #   - value: 0
+                #     color: '#ff0000'
+
               - entity: sensor.random_0_1000
                 name: test2
-                type: column
-            graph_span: 20min
+                # type: line
+                # color_threshold:
+                #   - value: 0
+                #     color: '#0000ff'
+                #   - value: 333
+                #     color: '#00ff00'
+                #   - value: 666
+                #     color: '#ff0000'
+            graph_span: 10min
             cache: true
           - type: custom:apexcharts-card
             graph_span: 200h
@@ -192,6 +212,11 @@ views:
                 group_by:
                   func: avg
                   duration: 30min
+                color_threshold:
+                  - value: 49
+                    color: '#ff0000'
+                  - value: 0
+                    color: '#00ff00'
 
           - type: custom:apexcharts-card
             header:
