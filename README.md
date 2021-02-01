@@ -48,6 +48,7 @@ However, some things might be broken :grin:
   - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
   - [Change the line thickness](#change-the-line-thickness)
   - [Use apexcharts-card auto-entities](#use-apexcharts-card-auto-entities)
+  - [Change the height of the graph](#change-the-height-of-the-graph)
 
 ## Installation
 
@@ -333,6 +334,8 @@ Let's take this example:
 
 This is how you could change some options from ApexCharts as described on the [`Options (Reference)` menu entry](https://apexcharts.com/docs/installation/).
 
+Hundreds of options are available and it is not possible to describe them all here so check over there and ask on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) if you need help with using them.
+
 Some options might now work in the context of this card.
 
 ```yaml
@@ -519,4 +522,17 @@ type: custom:auto-entities
           entity: this.entity_id
   card:
     type: custom:apexcharts-card
+```
+
+### Change the height of the graph
+
+This is described in the ApexCharts.js documentation [here](https://apexcharts.com/docs/options/chart/height/) where you can find way more options.
+
+```yaml
+type: custom:apexchart-card
+apex_config:
+  chart:
+    height: 250px
+series:
+  - entity: sensor.temperature
 ```
