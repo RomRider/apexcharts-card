@@ -148,8 +148,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_header` | boolean | `true` | If `show_states` is enabled, this would enable/disable this specific serie in the header |
-| `in_chart` | boolean | `true` | If `false`, hides the series from the chart. Putting this to `false` in any serie will also hide all the series which are completely empty (ie no data at all) from the legend |
+| `in_header` | boolean | `true` | NEXT_VERSION |If `show_states` is enabled, this would enable/disable this specific serie in the header |
+| `in_chart` | boolean | `true` | NEXT_VERSION |If `false`, hides the series from the chart. Putting this to `false` in any serie will also hide all the series which are completely empty (ie no data at all) from the legend |
 
 
 ### Main `show` Options
