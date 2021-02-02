@@ -1,3 +1,4 @@
+import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
 import { ChartCardConfig, EntityCachePoints, EntityEntryCache } from './types';
@@ -97,7 +98,9 @@ class ChartsCard extends LitElement {
 
   private _intervalTimeout?: NodeJS.Timeout;
 
-  private _colors?: string[];
+  private _colors: string[] = [];
+
+  private _headerColors: string[] = [...DEFAULT_COLORS];
 
   private _graphSpan: number = HOUR_24;
 
@@ -259,11 +262,13 @@ class ChartsCard extends LitElement {
     );
 
     if (this._config) {
-      this._colors = [...DEFAULT_COLORS];
+      // this._colors = [...DEFAULT_COLORS];
       this._graphs = this._config.series.map((serie, index) => {
+        if (!this._headerColors[index]) {
+          this._headerColors[index] = this._headerColors[index % DEFAULT_COLORS.length];
+        }
         if (serie.color) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this._colors![index] = serie.color;
+          this._headerColors[index] = serie.color;
         }
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
         serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
@@ -307,7 +312,17 @@ class ChartsCard extends LitElement {
         }
         return undefined;
       });
+      this._config.series_in_graph = [];
+      this._config.series.forEach((serie, index) => {
+        if (serie.show.in_chart) {
+          this._colors.push(this._headerColors[index]);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this._config!.series_in_graph.push(serie);
+        }
+      });
+      this._headerColors = this._headerColors.slice(0, this._config?.series.length);
     }
+
     // Full reset only happens in editor mode
     this._reset();
   }
@@ -387,8 +402,10 @@ class ChartsCard extends LitElement {
                 <div id="state__value">
                   <span
                     id="state"
-                    style="${this._config?.header?.colorize_states && this._colors && this._colors.length > 0
-                      ? `color: ${this._colors[index % this._colors?.length]};`
+                    style="${this._config?.header?.colorize_states &&
+                    this._headerColors &&
+                    this._headerColors.length > 0
+                      ? `color: ${this._headerColors[index]};`
                       : ''}"
                     >${this._lastState?.[index] === 0
                       ? 0
@@ -397,10 +414,10 @@ class ChartsCard extends LitElement {
                           : this._lastState?.[index]) || NO_VALUE}</span
                   >
                   ${!serie.show.as_duration
-                    ? html`<span id="uom">${computeUom(index, this._config, this._entities)}</span>`
+                    ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
                     : ''}
                 </div>
-                <div id="state__name">${computeName(index, this._config, this._entities)}</div>
+                <div id="state__name">${computeName(index, this._config?.series, this._entities)}</div>
               </div>
             `;
           } else {
@@ -442,9 +459,18 @@ class ChartsCard extends LitElement {
       let graphData: unknown = {};
       if (TIMESERIES_TYPES.includes(this._config.chart_type)) {
         graphData = {
-          series: this._graphs.map((graph, index) => {
-            if (!graph || graph.history.length === 0) return { data: [] };
-            this._lastState[index] = this._computeLastState(graph.history[graph.history.length - 1][1], index);
+          series: this._graphs.flatMap((graph, index) => {
+            if (!graph) return [];
+            if (graph.history.length === 0) {
+              this._lastState[index] = null;
+            } else {
+              const lastState = graph.history[graph.history.length - 1][1];
+              this._lastState[index] = this._computeLastState(lastState, index);
+            }
+            if (!this._config?.series[index].show.in_chart) {
+              return [];
+            }
+            if (graph.history.length === 0) return [{ data: [] }];
             let data: EntityCachePoints = [];
             if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -453,9 +479,7 @@ class ChartsCard extends LitElement {
               data = graph.history;
             }
             data = offsetData(data, this._seriesOffset[index]);
-            if (this._config?.series[index].show.in_chart)
-              return this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
-            return { data: [] };
+            return [this._config?.series[index].invert ? { data: this._invertData(data) } : { data }];
           }),
           xaxis: {
             min: start.getTime(),
@@ -466,19 +490,31 @@ class ChartsCard extends LitElement {
       } else {
         // No timeline charts
         graphData = {
-          series: this._graphs.map((graph, index) => {
-            if (!graph || graph.history.length === 0) return;
-            const lastState = graph.history[graph.history.length - 1][1];
-            this._lastState[index] = this._computeLastState(lastState, index);
-            if (!this._config?.series[index].show.in_chart) return;
-            if (lastState === null) {
-              return;
+          series: this._graphs.flatMap((graph, index) => {
+            if (!graph) return [];
+            if (graph.history.length === 0) {
+              this._lastState[index] = null;
+            } else {
+              const lastState = graph.history[graph.history.length - 1][1];
+              this._lastState[index] = this._computeLastState(lastState, index);
+            }
+            if (!this._config?.series[index].show.in_chart) {
+              return [];
+            }
+            if (this._lastState[index] === null) {
+              return [0];
             } else {
               if (this._config?.chart_type === 'radialBar') {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return getPercentFromValue(lastState, this._config.series[index].min, this._config.series[index].max);
+                return [
+                  getPercentFromValue(
+                    this._lastState[index] as number,
+                    this._config.series[index].min,
+                    this._config.series[index].max,
+                  ),
+                ];
               } else {
-                return lastState;
+                return [this._lastState[index]];
               }
             }
           }),

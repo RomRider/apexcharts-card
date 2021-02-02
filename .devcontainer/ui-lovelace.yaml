@@ -86,6 +86,8 @@ views:
                 type: line
                 show:
                   as_duration: millisecond
+                  in_header: true
+                  in_chart: false
                 group_by:
                   duration: 10min
                   func: avg
@@ -121,7 +123,11 @@ views:
                 name: LAST
                 type: line
                 show:
-                  as_duration: month
+                  # as_duration: month
+                  in_header: true
+                  in_chart: false
+                # show:
+                #   as_duration: month
                 group_by:
                   duration: 10min
                   func: last
@@ -129,8 +135,8 @@ views:
                 curve: smooth
                 name: FIRST
                 type: line
-                show:
-                  as_duration: year
+                # show:
+                # as_duration: year
                 group_by:
                   duration: 10min
                   func: first

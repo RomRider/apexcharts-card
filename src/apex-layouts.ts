@@ -23,23 +23,28 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       strokeDashArray: 3,
     },
     fill: {
-      opacity: config.series.map((serie) => {
-        return serie.type === 'area' ? 0.7 : 1;
+      opacity: config.series.flatMap((serie) => {
+        if (!serie.show.in_chart) return [];
+        return [serie.type === 'area' ? 0.7 : 1];
       }),
     },
     series: TIMESERIES_TYPES.includes(config.chart_type)
-      ? config?.series.map((serie, index) => {
-          return {
-            name: computeName(index, config, undefined, hass?.states[serie.entity]),
-            type: serie.type,
-            data: [],
-          };
+      ? config?.series.flatMap((serie, index) => {
+          if (!serie.show.in_chart) return [];
+          return [
+            {
+              name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
+              type: serie.type,
+              data: [],
+            },
+          ];
         })
       : [],
     labels: TIMESERIES_TYPES.includes(config.chart_type)
       ? []
-      : config.series.map((serie, index) => {
-          return computeName(index, config, undefined, hass?.states[serie.entity]);
+      : config.series.flatMap((serie, index) => {
+          if (!serie.show.in_chart) return [];
+          return [computeName(index, config.series, undefined, hass?.states[serie.entity])];
         }),
     xaxis: TIMESERIES_TYPES.includes(config.chart_type)
       ? {
@@ -73,23 +78,23 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             value !== null &&
             typeof value === 'number' &&
             !Number.isInteger(value) &&
-            !conf.series[opts.seriesIndex]?.show.as_duration
+            !conf.series_in_graph[opts.seriesIndex]?.show.as_duration
           ) {
             value = (value as number).toFixed(
-              conf.series[opts.seriesIndex].float_precision === undefined
+              conf.series_in_graph[opts.seriesIndex].float_precision === undefined
                 ? DEFAULT_FLOAT_PRECISION
-                : conf.series[opts.seriesIndex].float_precision,
+                : conf.series_in_graph[opts.seriesIndex].float_precision,
             );
           }
           const uom = computeUom(
             opts.seriesIndex,
-            conf,
+            conf.series_in_graph,
             undefined,
-            hass2?.states[conf.series[opts.seriesIndex].entity],
+            hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
           );
-          return conf.series[opts.seriesIndex]?.show.as_duration
+          return conf.series_in_graph[opts.seriesIndex]?.show.as_duration
             ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              [`<strong>${prettyPrintTime(value, conf.series[opts.seriesIndex].show.as_duration!)}</strong>`]
+              [`<strong>${prettyPrintTime(value, conf.series_in_graph[opts.seriesIndex].show.as_duration!)}</strong>`]
             : [`<strong>${value} ${uom}</strong>`];
         },
       },
@@ -119,17 +124,16 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           : {},
     },
     legend: {
-      showForNullSeries: !config.series.some((serie) => serie.show.in_chart === false),
       position: 'bottom',
       show: true,
       formatter: function (_, opts, conf = config, hass2 = hass) {
         const name = computeName(
           opts.seriesIndex,
-          conf,
+          conf.series_in_graph,
           undefined,
-          hass2?.states[conf.series[opts.seriesIndex].entity],
+          hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
         );
-        if (!conf.series[opts.seriesIndex].show.legend_value) {
+        if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
           return [name];
         } else {
           let value = TIMESERIES_TYPES.includes(config.chart_type)
@@ -139,29 +143,29 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             value !== null &&
             typeof value === 'number' &&
             !Number.isInteger(value) &&
-            !conf.series[opts.seriesIndex]?.show.as_duration
+            !conf.series_in_graph[opts.seriesIndex]?.show.as_duration
           ) {
             value = (value as number).toFixed(
-              conf.series[opts.seriesIndex].float_precision === undefined
+              conf.series_in_graph[opts.seriesIndex].float_precision === undefined
                 ? DEFAULT_FLOAT_PRECISION
-                : conf.series[opts.seriesIndex].float_precision,
+                : conf.series_in_graph[opts.seriesIndex].float_precision,
             );
           }
           const uom = computeUom(
             opts.seriesIndex,
-            conf,
+            conf.series_in_graph,
             undefined,
-            hass2?.states[conf.series[opts.seriesIndex].entity],
+            hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
           );
           let valueString = '';
           if (value === undefined || value === null) {
             valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
           } else {
-            if (conf.series[opts.seriesIndex]?.show.as_duration) {
+            if (conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
               valueString = `<strong>${prettyPrintTime(
                 value,
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                conf.series[opts.seriesIndex].show.as_duration!,
+                conf.series_in_graph[opts.seriesIndex].show.as_duration!,
               )}</strong>`;
             } else {
               valueString = `<strong>${value} ${uom}</strong>`;
@@ -172,8 +176,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     stroke: {
-      curve: config.series.map((serie) => {
-        return serie.curve || 'smooth';
+      curve: config.series.flatMap((serie) => {
+        if (!serie.show.in_chart) return [];
+        return [serie.curve || 'smooth'];
       }),
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:

@@ -1,9 +1,9 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { ChartCardConfig, EntityCachePoints } from './types';
+import { EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
-import { ChartCardPrettyTime } from './types-config';
+import { ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
 import { LovelaceConfig } from 'custom-card-helpers';
 
@@ -61,35 +61,32 @@ export function mergeDeep(target: any, source: any): any {
 
 export function computeName(
   index: number,
-  config: ChartCardConfig | undefined,
+  series: ChartCardSeriesExternalConfig[] | undefined,
   entities: (HassEntity | undefined)[] | HassEntities | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
-  if (!config || (!entities && !entity)) return '';
+  if (!series || (!entities && !entity)) return '';
   let name = '';
   if (entity) {
-    name = config.series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
+    name = series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
   } else if (entities) {
     name =
-      config.series[index].name ||
-      entities[index]?.attributes?.friendly_name ||
-      entities[entities[index]]?.entity_id ||
-      '';
+      series[index].name || entities[index]?.attributes?.friendly_name || entities[entities[index]]?.entity_id || '';
   }
-  return name + (config.series[index].offset ? ` (${config.series[index].offset})` : '');
+  return name + (series[index].offset ? ` (${series[index].offset})` : '');
 }
 
 export function computeUom(
   index: number,
-  config: ChartCardConfig | undefined,
+  series: ChartCardSeriesExternalConfig[] | undefined,
   entities: HassEntity[] | undefined[] | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
-  if (!config || (!entities && !entity)) return '';
+  if (!series || (!entities && !entity)) return '';
   if (entity) {
-    return config.series[index].unit || entity.attributes?.unit_of_measurement || '';
+    return series[index].unit || entity.attributes?.unit_of_measurement || '';
   } else if (entities) {
-    return config.series[index].unit || entities[index]?.attributes?.unit_of_measurement || '';
+    return series[index].unit || entities[index]?.attributes?.unit_of_measurement || '';
   }
   return '';
 }

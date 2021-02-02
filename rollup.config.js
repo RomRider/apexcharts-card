@@ -28,12 +28,20 @@ const plugins = [
   babel({
     exclude: 'node_modules/**',
     babelHelpers: 'bundled',
+    babelrc: false,
+    presets: [
+      '@babel/preset-env',
+      {
+        useBuiltIns: 'entry',
+        targets: '> 0.25%, not dead',
+      },
+    ],
   }),
   // cleanup({ comments: 'none' }),
   dev && serve(serveopts),
   !dev &&
-  terser({
-    format: {
+    terser({
+      format: {
         comments: false,
       },
       mangle: {

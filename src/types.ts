@@ -9,6 +9,7 @@ import {
 
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
+  series_in_graph: ChartCardSeriesConfig[];
   graph_span: string;
   cache: boolean;
   useCompress: boolean;
