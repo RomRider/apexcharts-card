@@ -1,3 +1,35 @@
+## [1.4.0](https://github.com/RomRider/apexcharts-card/compare/v1.3.0...v1.4.0) (2021-02-02)
+
+
+### Features
+
+* **series:** Show/Hide a specific serie from the header or the graph ([#36](https://github.com/RomRider/apexcharts-card/issues/36)) ([95c0433](https://github.com/RomRider/apexcharts-card/commit/95c0433833c197d32914ed11260b4dd08885d9f4))
+* Support for auto-entities ([060e4c0](https://github.com/RomRider/apexcharts-card/commit/060e4c0f7cdfebb72055d83dada4129a0f699f3c))
+* **editor:** Preview in the GUI card selector ([d4cd7a3](https://github.com/RomRider/apexcharts-card/commit/d4cd7a3a28ab9d29300772dbe22331857a3a1efc))
+* **graph:** New chart types `scatter`, `donut`, `pie` and `radialBar` ([#24](https://github.com/RomRider/apexcharts-card/issues/24)) ([a0e4f85](https://github.com/RomRider/apexcharts-card/commit/a0e4f8536593dc6f67f7439d77be367af74de736))
+* **group_by:** Add new `diff` function ([57fd6a6](https://github.com/RomRider/apexcharts-card/commit/57fd6a640aaee223adaa174ad5d1fb82f496a878))
+* **series:** Retrieve an attribute of your entity instead of the state ([#32](https://github.com/RomRider/apexcharts-card/issues/32)) ([b76bf16](https://github.com/RomRider/apexcharts-card/commit/b76bf16e9f3d4dc8c28767d552139de3aa033fa7)), closes [#29](https://github.com/RomRider/apexcharts-card/issues/29)
+
+
+### Bug Fixes
+
+* `group_by` was extending values into the future ([2cb79d2](https://github.com/RomRider/apexcharts-card/commit/2cb79d2bc9f341fff1f03a61c334fd9212e2e4c7))
+* Graph stopped updating following ddf6ca9 ([bc54729](https://github.com/RomRider/apexcharts-card/commit/bc547290301e1a5b09725589eaf95a640bdb5752))
+* Sometimes card would stay in warning mode ([ddf6ca9](https://github.com/RomRider/apexcharts-card/commit/ddf6ca9105062a8591ba1e9ab702abb01e689592))
+* Tooltip should not be in a fixed position ([1762049](https://github.com/RomRider/apexcharts-card/commit/176204901d501bbcee8b328a003770df8d752587))
+* **func:** Filter `null` values in `diff` ([cfe736c](https://github.com/RomRider/apexcharts-card/commit/cfe736ccf6ef071b7dfe4ae90804a919c12cb984))
+* **header:** Hide unit when `as_duration` is used ([5686931](https://github.com/RomRider/apexcharts-card/commit/56869316476d7d64abb6045e1d40e854300c0836))
+* **header:** State was sometimes multi-line ([4187104](https://github.com/RomRider/apexcharts-card/commit/4187104a04bfb2acbf600abfb84bf9bd264d7ccb))
+
+
+### Documentation
+
+* Add an example to change the line thickness ([fd4a495](https://github.com/RomRider/apexcharts-card/commit/fd4a49542ea2fc7ebee10969c73bcbe26c73b68a))
+* Add more example ([ffaa5df](https://github.com/RomRider/apexcharts-card/commit/ffaa5df44fb009b881ba6af8d4d73ec9e7562c26))
+* Fix error `data_generator` example ([6d1c7a0](https://github.com/RomRider/apexcharts-card/commit/6d1c7a0d53a74a081b4900f1aa5c7c26b8159945)), closes [#34](https://github.com/RomRider/apexcharts-card/issues/34)
+* Fix some typos ([3df6aed](https://github.com/RomRider/apexcharts-card/commit/3df6aed4769b8b0b927f961083f7aa16521ddf58))
+* Missing `title` documentation in the header section ([ff7f35b](https://github.com/RomRider/apexcharts-card/commit/ff7f35b0b341305600bd0ac9baa86cfec737d20f))
+
 ## [1.4.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.5...v1.4.0-dev.6) (2021-02-02)
 
 

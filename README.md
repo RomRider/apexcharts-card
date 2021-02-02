@@ -70,7 +70,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.3.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.4.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -81,7 +81,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.3.0
+  - url: /local/apexcharts-card.js?v=1.4.0
     type: module
 ```
 
@@ -107,9 +107,9 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `chart_type` | string | `line` | NEXT_VERSION | See [chart_type](#chart_type-options) |
+| `chart_type` | string | `line` | v1.4.0 | See [chart_type](#chart_type-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `update_delay` | string | `1500ms` | NEXT_VERSION | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
+| `update_delay` | string | `1500ms` | v1.4.0 | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
@@ -127,7 +127,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
-| `attribute` | string | | NEXT_VERSION | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
+| `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
@@ -139,8 +139,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
-| `min` | number | `0` | NEXT_VERSION | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
-| `max` | number | `100` | NEXT_VERSION | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
+| `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
+| `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 
 ### `series.show` Options
 
@@ -148,8 +148,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_header` | boolean | `true` | NEXT_VERSION | If `show_states` is enabled, this would show/hide this specific serie in the header |
-| `in_chart` | boolean | `true` | NEXT_VERSION | If `false`, hides the serie from the chart |
+| `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
+| `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 
 
 ### Main `show` Options
@@ -196,10 +196,10 @@ The card stricly validates all the options available (but not for the `apex_conf
 | Name | Since | Description |
 | ---- | :---: | ----------- |
 | `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` |
-| `scatter` | NEXT_VERSION | Displays a cloud of points without a line between the values |
-| `pie` | NEXT_VERSION | This will display a pie chart with the last value computed of each sensor |
-| `donut` | NEXT_VERSION | This will display a donut chart with the last value computed of each sensor, same as pie but with a hole in the center |
-| `radialBar` | NEXT_VERSION | This will display a radial bar chart with the last value computed of each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires to convert the value into percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
+| `scatter` | v1.4.0 | Displays a cloud of points without a line between the values |
+| `pie` | v1.4.0 | This will display a pie chart with the last value computed of each sensor |
+| `donut` | v1.4.0 | This will display a donut chart with the last value computed of each sensor, same as pie but with a hole in the center |
+| `radialBar` | v1.4.0 | This will display a radial bar chart with the last value computed of each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires to convert the value into percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
 
 ![Charts Type](docs/charts_type.png)
 
