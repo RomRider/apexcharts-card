@@ -1,3 +1,11 @@
+## [1.4.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.5...v1.4.0-dev.6) (2021-02-02)
+
+
+### Bug Fixes
+
+* `group_by` was extending values into the future ([2cb79d2](https://github.com/RomRider/apexcharts-card/commit/2cb79d2bc9f341fff1f03a61c334fd9212e2e4c7))
+* Tooltip should not be in a fixed position ([1762049](https://github.com/RomRider/apexcharts-card/commit/176204901d501bbcee8b328a003770df8d752587))
+
 ## [1.4.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.4.0-dev.4...v1.4.0-dev.5) (2021-02-01)
 
 
