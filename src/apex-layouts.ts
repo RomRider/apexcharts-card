@@ -98,10 +98,6 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
             : [`<strong>${value} ${uom}</strong>`];
         },
       },
-      fixed: {
-        enabled: true,
-        postion: 'topRight',
-      },
     },
     dataLabels: {
       formatter: function (value) {
