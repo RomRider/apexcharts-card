@@ -288,7 +288,7 @@ export default class GraphEntry {
   private _dataBucketer(): HistoryBuckets {
     const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
-    const buckets: HistoryBuckets = [];
+    let buckets: HistoryBuckets = [];
     ranges.forEach((range, index) => {
       buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
@@ -316,11 +316,12 @@ export default class GraphEntry {
       });
     });
     let lastNonNullBucketValue: number | null = null;
+    const now = new Date().getTime();
     buckets.forEach((bucket) => {
       if (bucket.data.length === 0) {
-        if (this._config.group_by.fill === 'last') {
+        if (this._config.group_by.fill === 'last' && bucket.timestamp <= now) {
           bucket.data[0] = [bucket.timestamp, lastNonNullBucketValue];
-        } else if (this._config.group_by.fill === 'zero') {
+        } else if (this._config.group_by.fill === 'zero' && bucket.timestamp <= now) {
           bucket.data[0] = [bucket.timestamp, 0];
         } else if (this._config.group_by.fill === 'null') {
           bucket.data[0] = [bucket.timestamp, null];
@@ -330,6 +331,22 @@ export default class GraphEntry {
       }
     });
     buckets.pop();
+    // Could probably do better than double reverse...
+    // This is to stip any value at the end which is empty or null
+    // to make extend_to_end work with buckets
+    if (
+      (buckets.length > 0 && buckets[buckets.length - 1].data.length === 0) ||
+      (buckets[buckets.length - 1].data.length > 0 &&
+        buckets[buckets.length - 1].data[buckets[buckets.length - 1].data.length - 1][1] === null)
+    )
+      buckets = buckets
+        .reverse()
+        .flatMap((bucket) => {
+          if (bucket.data[1] === null) return [];
+          if (bucket.data.length === 0) return [];
+          else return [bucket];
+        })
+        .reverse();
     return buckets;
   }
 

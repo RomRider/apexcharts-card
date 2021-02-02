@@ -366,3 +366,20 @@ views:
             series:
               - entity: light.kitchen_lights
                 attribute: brightness
+
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: shouldn't extend to end with group_by
+            span:
+              start: day
+            series:
+              - entity: sensor.random0_100
+                group_by:
+                  duration: 1h
+                  func: last
+              - entity: sensor.random0_100
+                extend_to_end: false
+                group_by:
+                  duration: 1h
+                  func: last
