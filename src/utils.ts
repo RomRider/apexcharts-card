@@ -110,6 +110,15 @@ export function computeColor(color: string): string {
   }
 }
 
+export function computeTextColor(backgroundColor: string): string {
+  const colorObj = new TinyColor(backgroundColor);
+  if (colorObj.isValid && colorObj.getLuminance() > 0.5) {
+    return '#000'; // bright colors - black font
+  } else {
+    return '#fff'; // dark colors - white font
+  }
+}
+
 export function validateInterval(interval: string, prefix: string): number {
   const parsed = parse(interval);
   if (parsed === null) {

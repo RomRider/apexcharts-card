@@ -7,6 +7,11 @@ export interface ChartCardExternalConfig {
   graph_span?: string;
   span?: ChartCardSpanExtConfig;
   y_axis_precision?: number;
+  now?: {
+    show?: boolean;
+    color?: string;
+    label?: string;
+  };
   show?: {
     loading?: boolean;
   };

@@ -13,6 +13,11 @@ export const ChartCardExternalConfig = t.iface([], {
   "graph_span": t.opt("string"),
   "span": t.opt("ChartCardSpanExtConfig"),
   "y_axis_precision": t.opt("number"),
+  "now": t.opt(t.iface([], {
+    "show": t.opt("boolean"),
+    "color": t.opt("string"),
+    "label": t.opt("string"),
+  })),
   "show": t.opt(t.iface([], {
     "loading": t.opt("boolean"),
   })),

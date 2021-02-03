@@ -261,6 +261,10 @@ views:
             span:
               start: day
             y_axis_precision: 5
+            now:
+              show: true
+              color: '#ff0000'
+              label: Now
             header:
               show: true
               show_states: true

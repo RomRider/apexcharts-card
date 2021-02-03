@@ -6,8 +6,10 @@ import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
+  computeColor,
   computeColors,
   computeName,
+  computeTextColor,
   computeUom,
   decompress,
   getPercentFromValue,
@@ -458,7 +460,8 @@ class ChartsCard extends LitElement {
         );
       });
       await Promise.all(promise);
-      let graphData: unknown = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let graphData: any = {};
       if (TIMESERIES_TYPES.includes(this._config.chart_type)) {
         graphData = {
           series: this._graphs.flatMap((graph, index) => {
@@ -489,6 +492,27 @@ class ChartsCard extends LitElement {
           },
           colors: computeColors(this._colors),
         };
+        if (this._config.now?.show) {
+          const color = computeColor(this._config.now.color || 'var(--primary-color)');
+          const textColor = computeTextColor(color);
+          graphData.annotations = {
+            xaxis: [
+              {
+                x: new Date().getTime(),
+                strokeDashArray: 3,
+                label: {
+                  text: this._config.now.label,
+                  borderColor: color,
+                  style: {
+                    color: textColor,
+                    background: color,
+                  },
+                },
+                borderColor: color,
+              },
+            ],
+          };
+        }
       } else {
         // No timeline charts
         graphData = {

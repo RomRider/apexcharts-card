@@ -33,6 +33,7 @@ However, some things might be broken :grin:
   - [`series.show` Options](#seriesshow-options)
   - [Main `show` Options](#main-show-options)
   - [`header` Options](#header-options)
+  - [`now` Options](#now-options)
   - [`group_by` Options](#group_by-options)
   - [`func` Options](#func-options)
   - [`chart_type` Options](#chart_type-options)
@@ -124,7 +125,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
-| `header` | string | | v1.0.0 | See [header](#header-options) |
+| `header` | object | | v1.0.0 | See [header](#header-options) |
+| `now` | object | | NEXT_VERSION | See []
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
@@ -177,6 +179,18 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
+
+### `now` Options
+
+The position of the marker will only update when the card updates (state change or `update_interval`).
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `show` | boolean | `false` | NEXT_VERSION | Shows a vertical marker for the current time on the graph. Only useful if displaying data from the future |
+| `color` | string | `var(--primary-color)` | NEXT_VERSION | Color of the marker. The color of the text is computed automatically. |
+| `label` | string | | NEXT_VERSION | Text to display on the label. No label if not defined |
+
+![now_marker](docs/now-marker.png)
 
 ### `group_by` Options
 
