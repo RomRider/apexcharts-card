@@ -1,7 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HassHistory, HistoryBuckets } from './types';
 import { compress, decompress, log } from './utils';
-import localForage from 'localforage';
+import localForage, { config } from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
 import { HOUR_24, moment } from './const';
@@ -182,6 +182,10 @@ export default class GraphEntry {
         if (this._config.attribute && skipInitialState) {
           newHistory[0].shift();
         }
+        let lastNonNull: number | null = null;
+        if (history && history.data && history.data.length > 0) {
+          lastNonNull = history.data[history.data.length - 1][1];
+        }
         const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
           let stateParsed: number | null = null;
           if (this._config.attribute) {
@@ -193,6 +197,17 @@ export default class GraphEntry {
           } else {
             stateParsed = parseFloat(item.state);
           }
+          stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
+          if (stateParsed === null) {
+            if (this._config.fill_raw === 'zero') {
+              stateParsed = 0;
+            } else if (this._config.fill_raw === 'last') {
+              stateParsed = lastNonNull;
+            }
+          } else {
+            lastNonNull = stateParsed;
+          }
+
           if (this._config.attribute) {
             return [new Date(item.last_updated).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
           } else {

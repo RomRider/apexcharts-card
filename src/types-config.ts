@@ -41,6 +41,7 @@ export interface ChartCardSeriesExternalConfig {
   min?: number;
   max?: number;
   offset?: string;
+  fill_raw?: GroupByFill;
   show?: {
     as_duration?: ChartCardPrettyTime;
     legend_value?: boolean;

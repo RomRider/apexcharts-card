@@ -383,3 +383,14 @@ views:
                 group_by:
                   duration: 1h
                   func: last
+
+          - type: custom:apexcharts-card
+            update_interval: 2s
+            graph_span: 10s
+            header:
+              show: true
+              title: should show a line
+            series:
+              - entity: sensor.outside_temperature
+                curve: stepline
+                extend_to_end: false

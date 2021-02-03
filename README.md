@@ -135,6 +135,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
 | `float_precision` | number | `1` | v1.2.0 | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
+| `fill_raw` | string | `'null'` | NEXT_VERSION | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
@@ -174,7 +175,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
 | `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
-| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the states history, `last` will replace it the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`
+| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
 
 ### `func` Options
 

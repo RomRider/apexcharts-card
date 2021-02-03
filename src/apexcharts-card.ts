@@ -27,6 +27,7 @@ import { createCheckers } from 'ts-interface-checker';
 import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
+  DEFAULT_FILL_RAW,
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
@@ -270,6 +271,7 @@ class ChartsCard extends LitElement {
         if (serie.color) {
           this._headerColors[index] = serie.color;
         }
+        serie.fill_raw = serie.fill_raw || DEFAULT_FILL_RAW;
         serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
         serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
         serie.unit = this._config?.chart_type === 'radialBar' ? '%' : serie.unit;
