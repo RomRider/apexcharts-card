@@ -53,6 +53,7 @@ export interface ChartCardSeriesExternalConfig {
     func?: GroupByFunc;
     fill?: GroupByFill;
   };
+  transform?: string;
 }
 
 export type ChartCardPrettyTime = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';

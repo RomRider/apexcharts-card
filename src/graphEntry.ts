@@ -11,8 +11,6 @@ import { ChartCardSpanExtConfig } from './types-config';
 import * as pjson from '../package.json';
 
 export default class GraphEntry {
-  private _history?: EntityEntryCache;
-
   private _computedHistory?: EntityCachePoints;
 
   private _hass?: HomeAssistant;
@@ -68,7 +66,6 @@ export default class GraphEntry {
     this._index = index;
     this._cache = cache;
     this._entityID = config.entity;
-    this._history = undefined;
     this._graphSpan = graphSpan;
     this._config = config;
     const now = new Date();
@@ -90,7 +87,7 @@ export default class GraphEntry {
   }
 
   get history(): EntityCachePoints {
-    return this._computedHistory || this._history?.data || [];
+    return this._computedHistory || [];
   }
 
   get index(): number {
@@ -139,7 +136,7 @@ export default class GraphEntry {
     let history: EntityEntryCache | undefined = undefined;
 
     if (this._config.data_generator) {
-      this._history = this._generateData(start, end);
+      history = this._generateData(start, end);
     } else {
       this._realStart = new Date(start);
       this._realEnd = new Date(end);
@@ -187,16 +184,20 @@ export default class GraphEntry {
           lastNonNull = history.data[history.data.length - 1][1];
         }
         const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
-          let stateParsed: number | null = null;
+          let currentState: unknown = null;
           if (this._config.attribute) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             if (item.attributes && item.attributes![this._config.attribute]) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              stateParsed = parseFloat(item.attributes![this._config.attribute]);
+              currentState = item.attributes![this._config.attribute];
             }
           } else {
-            stateParsed = parseFloat(item.state);
+            currentState = item.state;
           }
+          if (this._config.transform) {
+            currentState = this._applyTransform(currentState);
+          }
+          let stateParsed: number | null = parseFloat(currentState as string);
           stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
           if (stateParsed === null) {
             if (this._config.fill_raw === 'zero') {
@@ -241,16 +242,22 @@ export default class GraphEntry {
 
     if (!history || history.data.length === 0) {
       this._updating = false;
+      this._computedHistory = undefined;
       return false;
     }
-    this._history = history;
     if (this._config.group_by.func !== 'raw') {
-      this._computedHistory = this._dataBucketer().map((bucket) => {
+      this._computedHistory = this._dataBucketer(history).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
+    } else {
+      this._computedHistory = history.data;
     }
     this._updating = false;
     return true;
+  }
+
+  private _applyTransform(value: unknown): number | null {
+    return new Function('x', 'hass', `'use strict'; ${this._config.transform}`).call(this, value, this._hass);
   }
 
   private async _fetchRecent(
@@ -300,7 +307,7 @@ export default class GraphEntry {
     };
   }
 
-  private _dataBucketer(): HistoryBuckets {
+  private _dataBucketer(history: EntityEntryCache): HistoryBuckets {
     const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
     let buckets: HistoryBuckets = [];
@@ -308,7 +315,7 @@ export default class GraphEntry {
       buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
     let lastNotNullValue: number | null = null;
-    this._history?.data.forEach((entry) => {
+    history?.data.forEach((entry) => {
       let properEntry = entry;
       // Fill null values
       if (properEntry[1] === null) {

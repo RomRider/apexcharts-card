@@ -26,6 +26,7 @@ However, some things might be broken :grin:
   - [Manual install](#manual-install)
   - [CLI install](#cli-install)
   - [Add resource reference](#add-resource-reference)
+- [Data processing steps](#data-processing-steps)
 - [Using the card](#using-the-card)
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
@@ -36,6 +37,7 @@ However, some things might be broken :grin:
   - [`func` Options](#func-options)
   - [`chart_type` Options](#chart_type-options)
   - [`span` Options](#span-options)
+  - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
@@ -92,6 +94,12 @@ Else, if you prefer the graphical editor, use the menu to add the resource:
 3. Enter URL `/local/apexcharts-card.js` and select type "JavaScript Module".
 4. Restart Home Assistant.
 
+## Data processing steps
+
+This diagrams shows how your data goes through all the steps allowed by this card:
+
+![data_processing_steps](docs/data_processing_chart.png)
+
 ## Using the card
 
 ### Main Options
@@ -138,6 +146,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `fill_raw` | string | `'null'` | NEXT_VERSION | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
+| `transform` | string | | NEXT_VERSION | Transform your raw data in any way you like. See [transform](#transform-option) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
@@ -259,6 +268,42 @@ Eg:
     end: day
   ```
 
+### `transform` Option
+
+With transform, you can modify raw data comming from Home-Assistant's history using a javascript function.
+
+Some of the things you can do:
+* Transform any state into a number (for eg. for binary_sensors)
+* Apply a different scale to your data (eg: divide by 1024 to convert bits into Kbits)
+* Do anything that javascript allows with the value
+
+Your javascript code will receive:
+* `x`: a state or a value of the attribute if you defined one (it can be a `string`, `null` or a `number` depending on the entity type you've assigned)
+* `hass`: the full `hass` object (`hass.states['other.entity']` to get the state object of another entity for eg.)
+
+And should return a `number`, a `float` or `null`.
+
+Some examples:
+* Convert `binary_sensor` to numbers (`1` is `on`, `0` is `off`)
+  ```yaml
+  type: custom:apexcharts-card
+  update_delay: 3s
+  update_interval: 1min
+  series:
+    - entity: binary_sensor.heating
+      transform: "return x === 'on' ? 1 : 0;"
+  ```
+
+* Scale a sensor:
+  ```yaml
+  type: custom:apexcharts-card
+  update_delay: 3s
+  update_interval: 1min
+  series:
+    - entity: sensor.bandwidth
+      transform: "return x / 1024;"
+  ```
+
 ### `data_generator` Option
 
 Before we start, to learn javascript, google is your friend or ask for help on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) :slightly_smiling_face:
@@ -373,12 +418,12 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 Not ordered by priority:
 
 * [X] ~~Support more types of charts (pie, radial, polar area at least)~~
-* [ ] Support for `binary_sensors`
+* [X] ~~Support for `binary_sensors`~~
 * [X] ~~Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)~~
 * [X] ~~Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"~~
 * [ ] Support for any number of Y-axis
 * [ ] Support for logarithmic
-* [ ] Support for state mapping for non-numerical state sensors
+* [X] ~~Support for state mapping for non-numerical state sensors~~
 * [ ] Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)
 * [ ] Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)
 
