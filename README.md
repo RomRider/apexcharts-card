@@ -418,12 +418,12 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 Not ordered by priority:
 
 * [X] ~~Support more types of charts (pie, radial, polar area at least)~~
-* [ ] Support for `binary_sensors`
+* [X] ~~Support for `binary_sensors`~~
 * [X] ~~Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)~~
 * [X] ~~Display the graph from start of day, week, month, ... with support for "up to now" or until the "end of the period"~~
 * [ ] Support for any number of Y-axis
 * [ ] Support for logarithmic
-* [ ] Support for state mapping for non-numerical state sensors
+* [X] ~~Support for state mapping for non-numerical state sensors~~
 * [ ] Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)
 * [ ] Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)
 
