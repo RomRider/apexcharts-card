@@ -1,3 +1,16 @@
+## [1.5.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.2...v1.5.0-dev.3) (2021-02-03)
+
+
+### Features
+
+* **now:** Add a marker at the current time on the chart ([9b6b83d](https://github.com/RomRider/apexcharts-card/commit/9b6b83db64e8ec80ceaf3f929f3716b3fe5943b1)), closes [#44](https://github.com/RomRider/apexcharts-card/issues/44)
+* **series:** `transform` the data the way you want ([#45](https://github.com/RomRider/apexcharts-card/issues/45)) ([1cb6bb5](https://github.com/RomRider/apexcharts-card/commit/1cb6bb5d0c5abbe73a4e5f0ded426cc123af515b))
+
+
+### Documentation
+
+* Fix typo in doc ([89ed3c5](https://github.com/RomRider/apexcharts-card/commit/89ed3c530ed296765dcbe65f856df16a57cc9db5))
+
 ## [1.5.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.1...v1.5.0-dev.2) (2021-02-03)
 
 
