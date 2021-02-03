@@ -1,3 +1,10 @@
+## [1.5.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.1...v1.5.0-dev.2) (2021-02-03)
+
+
+### Bug Fixes
+
+* Float were not displayed in non-timeline charts ([e67d2d7](https://github.com/RomRider/apexcharts-card/commit/e67d2d7cdf2041c41e7c26965074c4037cfe46aa)), closes [#42](https://github.com/RomRider/apexcharts-card/issues/42)
+
 ## [1.5.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.4.0...v1.5.0-dev.1) (2021-02-03)
 
 
