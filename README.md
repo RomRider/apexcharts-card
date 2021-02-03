@@ -126,7 +126,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
-| `now` | object | | NEXT_VERSION | See []
+| `now` | object | | NEXT_VERSION | See [now](#now-options) |
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
