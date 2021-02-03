@@ -1,7 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HassHistory, HistoryBuckets } from './types';
 import { compress, decompress, log } from './utils';
-import localForage, { config } from 'localforage';
+import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
 import { HOUR_24, moment } from './const';

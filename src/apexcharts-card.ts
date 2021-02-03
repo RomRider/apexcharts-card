@@ -494,10 +494,13 @@ class ChartsCard extends LitElement {
         graphData = {
           series: this._graphs.flatMap((graph, index) => {
             if (!graph) return [];
+            let data = 0;
             if (graph.history.length === 0) {
               this._lastState[index] = null;
+              data = 0;
             } else {
               const lastState = graph.history[graph.history.length - 1][1];
+              data = lastState === null ? 0 : lastState;
               this._lastState[index] = this._computeLastState(lastState, index);
             }
             if (!this._config?.series[index].show.in_chart) {
@@ -508,15 +511,9 @@ class ChartsCard extends LitElement {
             } else {
               if (this._config?.chart_type === 'radialBar') {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return [
-                  getPercentFromValue(
-                    this._lastState[index] as number,
-                    this._config.series[index].min,
-                    this._config.series[index].max,
-                  ),
-                ];
+                return [getPercentFromValue(data, this._config.series[index].min, this._config.series[index].max)];
               } else {
-                return [this._lastState[index]];
+                return [data];
               }
             }
           }),
