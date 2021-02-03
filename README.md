@@ -213,7 +213,7 @@ The position of the marker will only update when the card updates (state change 
 | `sum` | v1.0.0 | Will return the sum of all the states in each bucket |
 | `median` | v1.0.0 | Will return the median of all the states in each bucket |
 | `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
-| `diff` | MEXT_VERSION | Will return the difference between the last and the first entry in the bucket |
+| `diff` | v1.4.0 | Will return the difference between the last and the first entry in the bucket |
 
 ### `chart_type` Options
 
