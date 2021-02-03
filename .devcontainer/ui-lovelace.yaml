@@ -394,3 +394,10 @@ views:
               - entity: sensor.outside_temperature
                 curve: stepline
                 extend_to_end: false
+
+          - type: custom:apexcharts-card
+            update_delay: 3s
+            graph_span: 5min
+            series:
+              - entity: input_boolean.test_boolean
+                transform: "return x === 'on' ? 1 : 0;"
