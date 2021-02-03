@@ -1,3 +1,10 @@
+## [1.5.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.4.0...v1.5.0-dev.1) (2021-02-03)
+
+
+### Features
+
+* **series:** New `fill_raw` option to fill missing data in raw history ([e2433b6](https://github.com/RomRider/apexcharts-card/commit/e2433b679aad6efdb38137970d6acbfa2d3bc75f))
+
 ## [1.4.0](https://github.com/RomRider/apexcharts-card/compare/v1.3.0...v1.4.0) (2021-02-02)
 
 
