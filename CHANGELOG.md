@@ -1,3 +1,20 @@
+## [1.5.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.3...v1.5.0-dev.4) (2021-02-04)
+
+
+### Features
+
+* Support for 12-hour format ([#55](https://github.com/RomRider/apexcharts-card/issues/55)) ([f38a18e](https://github.com/RomRider/apexcharts-card/commit/f38a18eb1e0a3aedb04c78577e6207c1eb9fb0f6)), closes [#48](https://github.com/RomRider/apexcharts-card/issues/48) [#53](https://github.com/RomRider/apexcharts-card/issues/53)
+
+
+### Bug Fixes
+
+* dataLabels would not follow `float_precision` ([cf9b63a](https://github.com/RomRider/apexcharts-card/commit/cf9b63a2a27aca63d7188f8eaf371f4c6b343191)), closes [#54](https://github.com/RomRider/apexcharts-card/issues/54)
+
+
+### Documentation
+
+* Missing link to the `now` section ([9747257](https://github.com/RomRider/apexcharts-card/commit/9747257018cb60359afc28eeb2c33f3f544f341f))
+
 ## [1.5.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.2...v1.5.0-dev.3) (2021-02-03)
 
 
