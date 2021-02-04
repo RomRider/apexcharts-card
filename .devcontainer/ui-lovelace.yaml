@@ -239,6 +239,7 @@ views:
                 extend_to_end: false
                 type: column
                 invert: true
+                float_precision: 3
                 group_by:
                   func: avg
                   fill: 'last'

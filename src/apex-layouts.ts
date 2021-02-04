@@ -100,12 +100,16 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     dataLabels: {
-      formatter: function (value) {
+      formatter: function (value, opts, conf = config) {
+        if (value === null) return;
         let lValue = value;
-        if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
-          lValue = (value as number).toFixed(1);
+        if (lValue !== null && typeof lValue === 'number' && !Number.isInteger(lValue)) {
+          lValue = (lValue as number).toFixed(
+            conf.series_in_graph[opts.seriesIndex].float_precision === undefined
+              ? DEFAULT_FLOAT_PRECISION
+              : conf.series_in_graph[opts.seriesIndex].float_precision,
+          );
         }
-        if (lValue === null) return;
         return lValue;
       },
     },
