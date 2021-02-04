@@ -52,6 +52,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
           // range: getMilli(config.hours_to_show),
           labels: {
             datetimeUTC: false,
+            datetimeFormatter: getDateTimeFormatter(config.hours_12),
           },
         }
       : {},
@@ -62,15 +63,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         },
     tooltip: {
       x: {
-        formatter:
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          parse(config.graph_span!)! < HOUR_24 && !config.span?.offset
-            ? function (val) {
-                return moment(new Date(val)).format('HH:mm:ss');
-              }
-            : function (val) {
-                return moment(new Date(val)).format('MMM Do, HH:mm:ss');
-              },
+        formatter: getXTooltipFormatter(config),
       },
       y: {
         formatter: function (value, opts, conf = config, hass2 = hass) {
@@ -242,4 +235,42 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
   }
 
   return config.apex_config ? mergeDeep(mergeDeep(def, conf), config.apex_config) : mergeDeep(def, conf);
+}
+
+function getDateTimeFormatter(hours12: boolean | undefined): unknown {
+  if (!hours12) {
+    return {
+      year: 'yyyy',
+      month: "MMM 'yy",
+      day: 'dd MMM',
+      hour: 'HH:mm',
+      minute: 'HH:mm:ss',
+    };
+  } else {
+    return {
+      year: 'yyyy',
+      month: "MMM 'yy",
+      day: 'dd MMM',
+      hour: 'hh:mm tt',
+      minute: 'hh:mm:ss tt',
+    };
+  }
+}
+
+function getXTooltipFormatter(config: ChartCardConfig): ((val: number) => string) | undefined {
+  if (config.apex_config?.tooltip?.x?.format) return undefined;
+  let hours = 'HH:mm:ss';
+  let days = 'MMM Do, HH:mm:ss';
+  if (config.hours_12) {
+    hours = 'hh:mm:ss a';
+    days = 'MMM Do, hh:mm:ss';
+  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return parse(config.graph_span)! < HOUR_24 && !config.span?.offset
+    ? function (val) {
+        return moment(new Date(val)).format(hours);
+      }
+    : function (val) {
+        return moment(new Date(val)).format(days);
+      };
 }
