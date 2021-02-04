@@ -75,7 +75,7 @@ Until then, follow the steps listed in [this issue](https://github.com/RomRider/
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.4.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.5.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -86,7 +86,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.4.0
+  - url: /local/apexcharts-card.js?v=1.5.0
     type: module
 ```
 
@@ -124,12 +124,12 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
-| `hours_12` | boolean | `false` | NEXT_VERSION | Display time in 12h format instead of the default 24h format |
+| `hours_12` | boolean | `false` | v1.5.0 | Display time in 12h format instead of the default 24h format |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
-| `now` | object | | NEXT_VERSION | See [now](#now-options) |
+| `now` | object | | v1.5.0 | See [now](#now-options) |
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 
@@ -148,10 +148,10 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
 | `float_precision` | number | `1` | v1.2.0 | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
-| `fill_raw` | string | `'null'` | NEXT_VERSION | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
+| `fill_raw` | string | `'null'` | v1.5.0 | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
 | `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
-| `transform` | string | | NEXT_VERSION | Transform your raw data in any way you like. See [transform](#transform-option) |
+| `transform` | string | | v1.5.0 | Transform your raw data in any way you like. See [transform](#transform-option) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
@@ -165,7 +165,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
 | `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
-| `datalabels` | boolean | `false` | NEXT_VERSION | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess |
+| `datalabels` | boolean | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess |
 
 
 ### Main `show` Options
@@ -190,9 +190,9 @@ The position of the marker will only update when the card updates (state change 
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `show` | boolean | `false` | NEXT_VERSION | Shows a vertical marker for the current time on the graph. Only useful if displaying data from the future |
-| `color` | string | `var(--primary-color)` | NEXT_VERSION | Color of the marker. The color of the text is computed automatically. |
-| `label` | string | | NEXT_VERSION | Text to display on the label. No label if not defined |
+| `show` | boolean | `false` | v1.5.0 | Shows a vertical marker for the current time on the graph. Only useful if displaying data from the future |
+| `color` | string | `var(--primary-color)` | v1.5.0 | Color of the marker. The color of the text is computed automatically. |
+| `label` | string | | v1.5.0 | Text to display on the label. No label if not defined |
 
 ![now_marker](docs/now-marker.png)
 

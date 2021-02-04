@@ -1,3 +1,27 @@
+## [1.5.0](https://github.com/RomRider/apexcharts-card/compare/v1.4.0...v1.5.0) (2021-02-04)
+
+
+### Features
+
+* **series.show:** Show/hide dataLabels per serie ([9e28db3](https://github.com/RomRider/apexcharts-card/commit/9e28db349bff165722ba245e336e0ec8d0a718ab))
+* Support for 12-hour format ([#55](https://github.com/RomRider/apexcharts-card/issues/55)) ([f38a18e](https://github.com/RomRider/apexcharts-card/commit/f38a18eb1e0a3aedb04c78577e6207c1eb9fb0f6)), closes [#48](https://github.com/RomRider/apexcharts-card/issues/48) [#53](https://github.com/RomRider/apexcharts-card/issues/53)
+* **now:** Add a marker at the current time on the chart ([9b6b83d](https://github.com/RomRider/apexcharts-card/commit/9b6b83db64e8ec80ceaf3f929f3716b3fe5943b1)), closes [#44](https://github.com/RomRider/apexcharts-card/issues/44)
+* **series:** `transform` the data the way you want ([#45](https://github.com/RomRider/apexcharts-card/issues/45)) ([1cb6bb5](https://github.com/RomRider/apexcharts-card/commit/1cb6bb5d0c5abbe73a4e5f0ded426cc123af515b))
+* **series:** New `fill_raw` option to fill missing data in raw history ([e2433b6](https://github.com/RomRider/apexcharts-card/commit/e2433b679aad6efdb38137970d6acbfa2d3bc75f))
+
+
+### Bug Fixes
+
+* dataLabels would not follow `float_precision` ([cf9b63a](https://github.com/RomRider/apexcharts-card/commit/cf9b63a2a27aca63d7188f8eaf371f4c6b343191)), closes [#54](https://github.com/RomRider/apexcharts-card/issues/54)
+* Float were not displayed in non-timeline charts ([e67d2d7](https://github.com/RomRider/apexcharts-card/commit/e67d2d7cdf2041c41e7c26965074c4037cfe46aa)), closes [#42](https://github.com/RomRider/apexcharts-card/issues/42)
+
+
+### Documentation
+
+* Fix HACS doc (not yet available by default) ([53fece2](https://github.com/RomRider/apexcharts-card/commit/53fece2d2e45ba80e90ed3f181021de5d1b05550))
+* Fix typo in doc ([89ed3c5](https://github.com/RomRider/apexcharts-card/commit/89ed3c530ed296765dcbe65f856df16a57cc9db5))
+* Missing link to the `now` section ([9747257](https://github.com/RomRider/apexcharts-card/commit/9747257018cb60359afc28eeb2c33f3f544f341f))
+
 ## [1.5.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.5.0-dev.3...v1.5.0-dev.4) (2021-02-04)
 
 
