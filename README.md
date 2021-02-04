@@ -165,6 +165,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
 | `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
+| `datalabels` | boolean | `false` | NEXT_VERSION | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess |
 
 
 ### Main `show` Options

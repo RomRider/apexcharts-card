@@ -38,6 +38,8 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     dataLabels: {
+      enabled: true,
+      enabledOnSeries: getDataLabels_enabledOnSeries(config),
       formatter: getDataLabelsFormatter(config),
     },
     plotOptions: {
@@ -280,5 +282,11 @@ function getStrokeCurve(config: ChartCardConfig) {
   return config.series.flatMap((serie) => {
     if (!serie.show.in_chart) return [];
     return [serie.curve || 'smooth'];
+  });
+}
+
+function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
+  return config.series_in_graph.flatMap((serie, index) => {
+    return serie.show.datalabels ? [index] : [];
   });
 }

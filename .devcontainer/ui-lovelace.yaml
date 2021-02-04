@@ -169,6 +169,8 @@ views:
                 group_by:
                   func: avg
                   duration: 1h
+                show:
+                  datalabels: true
           - type: sensor
             entity: sensor.humidity
             graph: line
@@ -198,15 +200,12 @@ views:
             graph_span: 24h
             span:
               start: day
-            apex_config:
-              dataLabels:
-                enabled: true
-                dropShadow:
-                  enabled: true
             series:
               - entity: sensor.random0_100
                 extend_to_end: false
                 type: column
+                show:
+                  datalabels: true
                 group_by:
                   func: avg
                   fill: 'null'
@@ -219,10 +218,6 @@ views:
             span:
               end: hour
             apex_config:
-              dataLabels:
-                enabled: true
-                dropShadow:
-                  enabled: true
               yaxis:
                 - title:
                     text: test1
@@ -245,18 +240,23 @@ views:
                   fill: 'last'
                 show:
                   legend_value: false
+                  datalabels: true
               - entity: sensor.random0_100
                 extend_to_end: false
                 type: column
                 group_by:
                   func: avg
                   fill: 'last'
+                show:
+                  datalabels: true
               - entity: sensor.random0_100
                 extend_to_end: false
                 type: column
                 group_by:
                   func: avg
                   fill: 'last'
+                show:
+                  datalabels: true
 
           - type: custom:apexcharts-card
             span:

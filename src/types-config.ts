@@ -53,6 +53,7 @@ export interface ChartCardSeriesExternalConfig {
     legend_value?: boolean;
     in_header?: boolean;
     in_chart?: boolean;
+    datalabels?: boolean;
   };
   group_by?: {
     duration?: string;
