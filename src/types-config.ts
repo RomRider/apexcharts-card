@@ -5,6 +5,7 @@ export interface ChartCardExternalConfig {
   update_delay?: string;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
+  hours_12?: boolean;
   span?: ChartCardSpanExtConfig;
   y_axis_precision?: number;
   now?: {

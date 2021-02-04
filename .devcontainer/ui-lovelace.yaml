@@ -365,12 +365,17 @@ views:
             # apex_config:
             #   dataLabels:
             #     enabled: true
+            hours_12: true
             header:
               show: true
               title: Light Brightness (attribute test)
             series:
               - entity: light.kitchen_lights
                 attribute: brightness
+            apex_config:
+              tooltip:
+                x:
+                  format: MMM
 
           - type: custom:apexcharts-card
             header:

@@ -11,6 +11,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "update_delay": t.opt("string"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
+  "hours_12": t.opt("boolean"),
   "span": t.opt("ChartCardSpanExtConfig"),
   "y_axis_precision": t.opt("number"),
   "now": t.opt(t.iface([], {

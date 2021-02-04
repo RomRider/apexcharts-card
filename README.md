@@ -122,6 +122,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
+| `hours_12` | boolean | `false` | NEXT_VERSION | Display time in 12h format instead of the default 24h format |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
