@@ -429,7 +429,7 @@ export default class GraphEntry {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const itemsDup = this._filterNulls([...items]).sort((a, b) => a[1]! - b[1]!);
     const mid = Math.floor((itemsDup.length - 1) / 2);
-    if (itemsDup.length % 2 === 1) return itemsDup[mid];
+    if (itemsDup.length % 2 === 1) return itemsDup[mid][1];
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (itemsDup[mid][1]! + itemsDup[mid + 1][1]!) / 2;
   }
