@@ -236,7 +236,9 @@ class ChartsCard extends LitElement {
       delete configDup.entities;
     }
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
-    ChartCardExternalConfig.strictCheck(configDup);
+    if (!configDup.experimental?.disable_config_validation) {
+      ChartCardExternalConfig.strictCheck(configDup);
+    }
     if (configDup.update_interval) {
       this._interval = validateInterval(configDup.update_interval, 'update_interval');
     }
@@ -553,7 +555,7 @@ class ChartsCard extends LitElement {
         };
       }
       graphData.colors = this._computeChartColors();
-      if (this._config.experimental && this._config.series.some((serie) => serie.color_threshold)) {
+      if (this._config.experimental?.color_threshold && this._config.series.some((serie) => serie.color_threshold)) {
         graphData.markers = {
           colors: computeColors(
             this._config.series_in_graph.flatMap((serie, index) => {
@@ -595,7 +597,7 @@ class ChartsCard extends LitElement {
     const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
     this._config?.series_in_graph.forEach((serie, index) => {
       if (
-        this._config?.experimental &&
+        this._config?.experimental?.color_threshold &&
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (PLAIN_COLOR_TYPES.includes(this._config!.chart_type!) || serie.type === 'column') &&
         serie.color_threshold &&

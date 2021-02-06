@@ -50,11 +50,6 @@ views:
             stacked: true
             span:
               offset: -1d
-            apex_config:
-              stroke:
-                width:
-                  -
-                  - 20
             series:
               - entity: sensor.random_0_1000
                 name: RAM Usage
@@ -64,6 +59,7 @@ views:
               - entity: sensor.random_0_1000
                 name: Ram Free
                 type: area
+                stroke_width: 20
             graph_span: 15min
             cache: true
             layout: minimal
@@ -72,7 +68,9 @@ views:
 
           - type: custom:apexcharts-card
             stacked: false
-            # experimental: true
+            experimental:
+              color_threshold: true
+              # disable_config_validation: true
             series:
               - entity: sensor.random_0_1000
                 name: test1
@@ -81,13 +79,13 @@ views:
                   duration: 1m
                   func: last
                 transform: return x/10;
-                # color_threshold:
-                #   - value: 33
-                #     color: '#00ff00'
-                #   - value: 66
-                #     color: '#000001'
-                #   - value: 0
-                #     color: '#ff0000'
+                color_threshold:
+                  - value: 33
+                    color: '#00ff00'
+                  - value: 66
+                    color: '#000001'
+                  - value: 0
+                    color: '#ff0000'
 
               - entity: sensor.random0_100
                 name: test2
@@ -360,17 +358,13 @@ views:
                   });
 
           - type: custom:apexcharts-card
-            graph_span: 48h
-            apex_config:
-              stroke:
-                width: [0, 5]
-
+            graph_span: 20min
+            experimental:
+              color_threshold: true
             series:
               - entity: sensor.random_0_1000
-                type: area
-                group_by:
-                  func: max
-                  duration: 1h
+                type: line
+                stroke_width: 2
                 color_threshold:
                   - value: 0
                     color: blue

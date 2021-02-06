@@ -112,7 +112,7 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
     return [];
   } else {
     return config.series_in_graph.map((serie, index) => {
-      return [computeName(index, config.series, undefined, hass?.states[serie.entity])];
+      return computeName(index, config.series, undefined, hass?.states[serie.entity]);
     });
   }
 }
@@ -284,7 +284,7 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
 }
 
 function getStrokeCurve(config: ChartCardConfig) {
-  return config.series_in_graph.flatMap((serie) => {
+  return config.series_in_graph.map((serie) => {
     return serie.curve || 'smooth';
   });
 }
@@ -298,24 +298,16 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
 function getStrokeWidth(config: ChartCardConfig) {
   if (config.chart_type !== undefined && config.chart_type !== 'line')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
-  return config.series_in_graph.map((serie, index) => {
-    if (serie.type === 'column' && serie.color_threshold) {
-      return 0;
-    } else if (config.apex_config?.stroke?.width !== undefined) {
-      if (Array.isArray(config.apex_config.stroke.width)) {
-        return [null, undefined].includes(config.apex_config.stroke.width[index] as never)
-          ? 5
-          : config.apex_config.stroke.width[index];
-      } else {
-        return config.apex_config.stroke.width[index];
-      }
+  return config.series_in_graph.map((serie) => {
+    if (serie.stroke_width !== undefined) {
+      return serie.stroke_width;
     }
     return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
   });
 }
 
 function getFillType(config: ChartCardConfig) {
-  if (!config.experimental) {
+  if (!config.experimental?.color_threshold) {
     return config.apex_config?.fill?.type || 'solid';
   } else {
     return config.series_in_graph.map((serie) => {
