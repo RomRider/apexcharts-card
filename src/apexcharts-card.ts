@@ -553,29 +553,31 @@ class ChartsCard extends LitElement {
         };
       }
       graphData.colors = this._computeChartColors();
-      graphData.markers = {
-        colors: computeColors(
-          this._config.series_in_graph.flatMap((serie, index) => {
-            if (serie.type === 'column') return [];
-            return this._colors[index];
-          }),
-        ),
-      };
-      // graphData.fill = { colors: graphData.colors };
-      graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
-      graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
-      graphData.fill = {
-        gradient: {
-          type: 'vertical',
-          colorStops: this._config.series_in_graph.map((serie, index) => {
-            if (!serie.color_threshold || !(serie.type === 'line' || serie.type === 'area')) return [];
-            const min = this._graphs?.[index]?.min;
-            const max = this._graphs?.[index]?.max;
-            if (min === undefined || max === undefined) return [];
-            return this._computeFillColorStops(serie, min, max) || [];
-          }),
-        },
-      };
+      if (this._config.experimental && this._config.series.some((serie) => serie.color_threshold)) {
+        graphData.markers = {
+          colors: computeColors(
+            this._config.series_in_graph.flatMap((serie, index) => {
+              if (serie.type === 'column') return [];
+              return [this._colors[index]];
+            }),
+          ),
+        };
+        // graphData.fill = { colors: graphData.colors };
+        graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
+        graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
+        graphData.fill = {
+          gradient: {
+            type: 'vertical',
+            colorStops: this._config.series_in_graph.map((serie, index) => {
+              if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+              const min = this._graphs?.[index]?.min;
+              const max = this._graphs?.[index]?.max;
+              if (min === undefined || max === undefined) return [];
+              return this._computeFillColorStops(serie, min, max, this._colors[index]) || [];
+            }),
+          },
+        };
+      }
       // graphData.tooltip = { marker: { fillColors: ['#ff0000', '#00ff00'] } };
       this._lastState = [...this._lastState];
       this._apexChart?.updateOptions(
@@ -593,16 +595,18 @@ class ChartsCard extends LitElement {
     const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
     this._config?.series_in_graph.forEach((serie, index) => {
       if (
+        this._config?.experimental &&
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (PLAIN_COLOR_TYPES.includes(this._config!.chart_type!) || serie.type === 'column') &&
         serie.color_threshold &&
         serie.color_threshold.length > 0
       ) {
+        const colors = this._colors;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        defaultColors[index] = function ({ value }, sortedL = serie.color_threshold!) {
-          let returnValue = sortedL[0].color;
+        defaultColors[index] = function ({ value }, sortedL = serie.color_threshold!, defColor = colors[index]) {
+          let returnValue = sortedL[0].color || defColor;
           sortedL.forEach((color) => {
-            if (value > color.value) returnValue = color.color;
+            if (value > color.value) returnValue = color.color || defColor;
           });
           return computeColor(returnValue);
         };
@@ -615,6 +619,7 @@ class ChartsCard extends LitElement {
     serie: ChartCardSeriesConfig,
     min: number,
     max: number,
+    defColor: string,
   ): { offset: number; color: string; opacity?: number }[] | undefined {
     if (!serie.color_threshold) return undefined;
     const scale = max - min;
@@ -627,8 +632,8 @@ class ChartsCard extends LitElement {
         if (thres.value > max && arr[index - 1]) {
           const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
           color = interpolateColor(
-            tinycolor(arr[index - 1].color).toHexString(),
-            tinycolor(thres.color).toHexString(),
+            tinycolor(arr[index - 1].color || defColor).toHexString(),
+            tinycolor(thres.color || defColor).toHexString(),
             factor,
           );
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -645,8 +650,8 @@ class ChartsCard extends LitElement {
         } else if (thres.value < min && arr[index + 1]) {
           const factor = (arr[index + 1].value - min) / (arr[index + 1].value - thres.value);
           color = interpolateColor(
-            tinycolor(arr[index + 1].color).toHexString(),
-            tinycolor(thres.color).toHexString(),
+            tinycolor(arr[index + 1].color || defColor).toHexString(),
+            tinycolor(thres.color || defColor).toHexString(),
             factor,
           );
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -661,7 +666,7 @@ class ChartsCard extends LitElement {
           opacity = opacity < 0 ? -opacity : opacity;
         }
         return {
-          color: color || tinycolor(thres.color).toHexString(),
+          color: color || tinycolor(thres.color || defColor).toHexString(),
           offset: scale <= 0 ? 0 : (max - thres.value) * (100 / scale),
           opacity,
         };

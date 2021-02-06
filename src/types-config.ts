@@ -1,5 +1,6 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  experimental?: boolean;
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
   update_delay?: string;
@@ -80,6 +81,6 @@ export interface ChartCardHeaderExternalConfig {
 
 export interface ChartCardColorThreshold {
   value: number;
-  color: string;
+  color?: string;
   opacity?: number;
 }

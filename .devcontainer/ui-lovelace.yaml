@@ -18,8 +18,17 @@ views:
                     reset: true
                 zoom:
                   enabled: true
+              fill:
+                type: gradient
+                gradient:
+                  type: vertical
+                  shadeIntensity: 0.8
+                  stops:
+                    - 0
+                    - 1000
+                  inverseColors: false
             update_interval: 5sec
-            stacked: true
+            # stacked: true
             series:
               - entity: sensor.random_0_1000
                 name: Sensor 1
@@ -30,6 +39,7 @@ views:
                 name: Sensor 2
                 type: area
                 offset: -1d
+                invert: true
             graph_span: 15min
             cache: true
             layout: minimal
@@ -62,27 +72,35 @@ views:
 
           - type: custom:apexcharts-card
             stacked: false
+            # experimental: true
             series:
               - entity: sensor.random_0_1000
                 name: test1
                 type: column
+                group_by:
+                  duration: 1m
+                  func: last
+                transform: return x/10;
                 # color_threshold:
-                #   - value: 333
+                #   - value: 33
                 #     color: '#00ff00'
-                #   - value: 666
+                #   - value: 66
                 #     color: '#000001'
                 #   - value: 0
                 #     color: '#ff0000'
 
-              - entity: sensor.random_0_1000
+              - entity: sensor.random0_100
                 name: test2
                 type: column
+                group_by:
+                  duration: 1m
+                  func: last
                 # color_threshold:
                 #   - value: 0
                 #     color: '#0000ff'
-                #   - value: 333
+                #   - value: 33
                 #     color: '#00ff00'
-                #   - value: 666
+                #   - value: 66
                 #     color: '#ff0000'
             graph_span: 10min
             cache: true
@@ -209,17 +227,6 @@ views:
               - entity: sensor.random0_100
                 type: column
                 name: Office Humidity
-                group_by:
-                  func: avg
-                  duration: 30min
-                # color_threshold:
-                #   - value: 49
-                #     color: '#ff0000'
-                #   - value: 0
-                #     color: '#00ff00'
-              - entity: sensor.random0_100
-                type: column
-                name: Office Humidity2
                 group_by:
                   func: avg
                   duration: 30min
@@ -414,6 +421,13 @@ views:
               title: line
             series:
               - entity: sensor.random0_100
+                color_threshold:
+                  - value: 0
+                    color: '#0000ff'
+                  - value: 33
+                    color: '#00ff00'
+                  - value: 66
+                    color: '#ff0000'
               - entity: sensor.random_0_1000
           - type: custom:apexcharts-card
             header:

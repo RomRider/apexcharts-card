@@ -32,18 +32,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     fill: {
       opacity: getFillOpacity(config),
-      type: config.series.map((serie) => {
-        if (
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          !PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
-          serie.type !== 'column' &&
-          serie.color_threshold &&
-          serie.color_threshold.length > 0
-        ) {
-          return 'gradient';
-        }
-        return 'solid';
-      }),
+      type: getFillType(config),
     },
     series: getSeries(config, hass),
     labels: getLabels(config, hass),
@@ -75,7 +64,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
-      // width: getStrokeWidth(config),
+      width: getStrokeWidth(config),
     },
     markers: {
       showNullDataPoints: false,
@@ -99,23 +88,19 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
 }
 
 function getFillOpacity(config: ChartCardConfig): number[] {
-  return config.series.flatMap((serie) => {
-    if (!serie.show.in_chart) return [];
-    return [serie.type === 'area' ? 0.7 : 1];
+  return config.series_in_graph.map((serie) => {
+    return serie.type === 'area' ? 0.7 : 1;
   });
 }
 
 function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
-    return config?.series.flatMap((serie, index) => {
-      if (!serie.show.in_chart) return [];
-      return [
-        {
-          name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
-          type: serie.type,
-          data: [],
-        },
-      ];
+    return config?.series_in_graph.map((serie, index) => {
+      return {
+        name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
+        type: serie.type === 'column' ? 'bar' : serie.type,
+        data: [],
+      };
     });
   } else {
     return [];
@@ -126,8 +111,7 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
     return [];
   } else {
-    return config.series.flatMap((serie, index) => {
-      if (!serie.show.in_chart) return [];
+    return config.series_in_graph.map((serie, index) => {
       return [computeName(index, config.series, undefined, hass?.states[serie.entity])];
     });
   }
@@ -300,9 +284,8 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
 }
 
 function getStrokeCurve(config: ChartCardConfig) {
-  return config.series.flatMap((serie) => {
-    if (!serie.show.in_chart) return [];
-    return [serie.curve || 'smooth'];
+  return config.series_in_graph.flatMap((serie) => {
+    return serie.curve || 'smooth';
   });
 }
 
@@ -315,8 +298,8 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
 function getStrokeWidth(config: ChartCardConfig) {
   if (config.chart_type !== undefined && config.chart_type !== 'line')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
-  return config.series.map((serie, index) => {
-    if (serie.type === 'column') {
+  return config.series_in_graph.map((serie, index) => {
+    if (serie.type === 'column' && serie.color_threshold) {
       return 0;
     } else if (config.apex_config?.stroke?.width !== undefined) {
       if (Array.isArray(config.apex_config.stroke.width)) {
@@ -327,6 +310,25 @@ function getStrokeWidth(config: ChartCardConfig) {
         return config.apex_config.stroke.width[index];
       }
     }
-    return 5;
+    return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
   });
+}
+
+function getFillType(config: ChartCardConfig) {
+  if (!config.experimental) {
+    return config.apex_config?.fill?.type || 'solid';
+  } else {
+    return config.series_in_graph.map((serie) => {
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        !PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
+        serie.type !== 'column' &&
+        serie.color_threshold &&
+        serie.color_threshold.length > 0
+      ) {
+        return 'gradient';
+      }
+      return 'solid';
+    });
+  }
 }

@@ -6,6 +6,7 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
+  "experimental": t.opt("boolean"),
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
   "update_delay": t.opt("string"),
@@ -84,7 +85,7 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
 
 export const ChartCardColorThreshold = t.iface([], {
   "value": "number",
-  "color": "string",
+  "color": t.opt("string"),
   "opacity": t.opt("number"),
 });
 
