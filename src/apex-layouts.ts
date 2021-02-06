@@ -98,7 +98,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
     return config?.series_in_graph.map((serie, index) => {
       return {
         name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
-        type: serie.type === 'column' ? 'bar' : serie.type,
+        type: serie.type,
         data: [],
       };
     });

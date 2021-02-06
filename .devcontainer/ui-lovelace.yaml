@@ -217,7 +217,7 @@ views:
               show: false
             series:
               - entity: sensor.humidity
-                # type: line
+                type: line
                 name: Outside Humidity
                 group_by:
                   func: avg
