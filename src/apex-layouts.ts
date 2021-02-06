@@ -35,7 +35,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       type: config.series.map((serie) => {
         if (
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
+          !PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
           serie.type !== 'column' &&
           serie.color_threshold &&
           serie.color_threshold.length > 0
@@ -75,7 +75,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
-      width: getStrokeWidth(config),
+      // width: getStrokeWidth(config),
     },
     markers: {
       showNullDataPoints: false,

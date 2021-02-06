@@ -81,4 +81,5 @@ export interface ChartCardHeaderExternalConfig {
 export interface ChartCardColorThreshold {
   value: number;
   color: string;
+  opacity?: number;
 }

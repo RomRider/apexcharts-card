@@ -66,24 +66,24 @@ views:
               - entity: sensor.random_0_1000
                 name: test1
                 type: column
-                color_threshold:
-                  - value: 333
-                    color: '#00ff00'
-                  - value: 666
-                    color: '#000001'
-                  - value: 0
-                    color: '#ff0000'
+                # color_threshold:
+                #   - value: 333
+                #     color: '#00ff00'
+                #   - value: 666
+                #     color: '#000001'
+                #   - value: 0
+                #     color: '#ff0000'
 
               - entity: sensor.random_0_1000
                 name: test2
                 type: column
-                color_threshold:
-                  - value: 0
-                    color: '#0000ff'
-                  - value: 333
-                    color: '#00ff00'
-                  - value: 666
-                    color: '#ff0000'
+                # color_threshold:
+                #   - value: 0
+                #     color: '#0000ff'
+                #   - value: 333
+                #     color: '#00ff00'
+                #   - value: 666
+                #     color: '#ff0000'
             graph_span: 10min
             cache: true
           - type: custom:apexcharts-card
@@ -201,7 +201,7 @@ views:
               show: false
             series:
               - entity: sensor.humidity
-                type: line
+                # type: line
                 name: Outside Humidity
                 group_by:
                   func: avg
@@ -212,11 +212,22 @@ views:
                 group_by:
                   func: avg
                   duration: 30min
-                color_threshold:
-                  - value: 49
-                    color: '#ff0000'
-                  - value: 0
-                    color: '#00ff00'
+                # color_threshold:
+                #   - value: 49
+                #     color: '#ff0000'
+                #   - value: 0
+                #     color: '#00ff00'
+              - entity: sensor.random0_100
+                type: column
+                name: Office Humidity2
+                group_by:
+                  func: avg
+                  duration: 30min
+                # color_threshold:
+                #   - value: 49
+                #     color: '#ff0000'
+                #   - value: 0
+                #     color: '#00ff00'
 
           - type: custom:apexcharts-card
             header:
@@ -307,23 +318,68 @@ views:
           - type: custom:apexcharts-card
             graph_span: 8d
             span:
-              start: hour
-            # apex_config:
-            #   dataLabels:
-            #     enabled: true
+              start: day
+              offset: -3d
             header:
               show: true
-              title: Precipitation Forecast
+              title: Temperature Forecast
+              show_states: true
+            now:
+              show: true
+              label: 'now'
+              color: '#0066ff88'
+            apex_config:
+              legend:
+                show: false
             series:
               - entity: weather.openweathermap
-                type: area
+                name: Temperature
+                unit: °C
+                attribute: temperature
+                fill_raw: last
                 extend_to_end: false
-                offset: -1d
+                group_by:
+                  func: avg
+                  duration: 1h
+              - entity: weather.openweathermap
+                type: line
+                extend_to_end: false
+                unit: °C
+                show:
+                  in_header: false
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
                     return [new Date(entry.datetime).getTime(), entry.temperature];
                   });
 
+          - type: custom:apexcharts-card
+            graph_span: 48h
+            apex_config:
+              stroke:
+                width: [0, 5]
+
+            series:
+              - entity: sensor.random_0_1000
+                type: area
+                group_by:
+                  func: max
+                  duration: 1h
+                color_threshold:
+                  - value: 0
+                    color: blue
+                  - value: 250
+                    color: green
+                  - value: 500
+                    color: yellow
+                    # opacity: 0
+                  - value: 500
+                    color: orange
+                  - value: 750
+                    color: orange
+                  - value: 750
+                    color: red
+                  - value: 1000
+                    color: red
           - type: custom:apexcharts-card
             header:
               show: true

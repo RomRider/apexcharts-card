@@ -1,7 +1,7 @@
 import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, EntityCachePoints, EntityEntryCache } from './types';
+import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache } from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -13,6 +13,7 @@ import {
   computeUom,
   decompress,
   getPercentFromValue,
+  interpolateColor,
   log,
   mergeDeep,
   offsetData,
@@ -29,6 +30,7 @@ import { createCheckers } from 'ts-interface-checker';
 import { ChartCardColorThreshold, ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
+  DEFAULT_AREA_OPACITY,
   DEFAULT_FILL_RAW,
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
@@ -50,6 +52,7 @@ import {
   HOUR_24,
 } from './const';
 import parse from 'parse-duration';
+import tinycolor from '@ctrl/tinycolor';
 
 /* eslint no-console: 0 */
 console.info(
@@ -550,9 +553,30 @@ class ChartsCard extends LitElement {
         };
       }
       graphData.colors = this._computeChartColors();
-      graphData.fill = { colors: graphData.colors };
+      graphData.markers = {
+        colors: computeColors(
+          this._config.series_in_graph.flatMap((serie, index) => {
+            if (serie.type === 'column') return [];
+            return this._colors[index];
+          }),
+        ),
+      };
+      // graphData.fill = { colors: graphData.colors };
       graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
       graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
+      graphData.fill = {
+        gradient: {
+          type: 'vertical',
+          colorStops: this._config.series_in_graph.map((serie, index) => {
+            if (!serie.color_threshold || !(serie.type === 'line' || serie.type === 'area')) return [];
+            const min = this._graphs?.[index]?.min;
+            const max = this._graphs?.[index]?.max;
+            if (min === undefined || max === undefined) return [];
+            return this._computeFillColorStops(serie, min, max) || [];
+          }),
+        },
+      };
+      // graphData.tooltip = { marker: { fillColors: ['#ff0000', '#00ff00'] } };
       this._lastState = [...this._lastState];
       this._apexChart?.updateOptions(
         graphData,
@@ -567,7 +591,7 @@ class ChartsCard extends LitElement {
 
   private _computeChartColors(): (string | (({ value }) => string))[] {
     const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
-    this._config?.series.forEach((serie, index) => {
+    this._config?.series_in_graph.forEach((serie, index) => {
       if (
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         (PLAIN_COLOR_TYPES.includes(this._config!.chart_type!) || serie.type === 'column') &&
@@ -584,7 +608,65 @@ class ChartsCard extends LitElement {
         };
       }
     });
-    return defaultColors.slice(0, this._config?.series.length);
+    return defaultColors.slice(0, this._config?.series_in_graph.length);
+  }
+
+  private _computeFillColorStops(
+    serie: ChartCardSeriesConfig,
+    min: number,
+    max: number,
+  ): { offset: number; color: string; opacity?: number }[] | undefined {
+    if (!serie.color_threshold) return undefined;
+    const scale = max - min;
+
+    return serie.color_threshold
+      .map((thres, index, arr) => {
+        let color: string | undefined = undefined;
+        const defaultOp = serie.type === 'line' ? 1 : DEFAULT_AREA_OPACITY;
+        let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
+        if (thres.value > max && arr[index - 1]) {
+          const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
+          color = interpolateColor(
+            tinycolor(arr[index - 1].color).toHexString(),
+            tinycolor(thres.color).toHexString(),
+            factor,
+          );
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const prevOp = arr[index - 1].opacity === undefined ? defaultOp : arr[index - 1].opacity!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          if (prevOp > curOp) {
+            opacity = (prevOp - curOp) * (1 - factor) + curOp;
+          } else {
+            opacity = (curOp - prevOp) * factor + prevOp;
+          }
+          opacity = opacity < 0 ? -opacity : opacity;
+        } else if (thres.value < min && arr[index + 1]) {
+          const factor = (arr[index + 1].value - min) / (arr[index + 1].value - thres.value);
+          color = interpolateColor(
+            tinycolor(arr[index + 1].color).toHexString(),
+            tinycolor(thres.color).toHexString(),
+            factor,
+          );
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const nextOp = arr[index + 1].opacity === undefined ? defaultOp : arr[index + 1].opacity!;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+          if (nextOp > curOp) {
+            opacity = (nextOp - curOp) * (1 - factor) + curOp;
+          } else {
+            opacity = (curOp - nextOp) * factor + nextOp;
+          }
+          opacity = opacity < 0 ? -opacity : opacity;
+        }
+        return {
+          color: color || tinycolor(thres.color).toHexString(),
+          offset: scale <= 0 ? 0 : (max - thres.value) * (100 / scale),
+          opacity,
+        };
+      })
+      .reverse();
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {

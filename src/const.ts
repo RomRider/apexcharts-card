@@ -43,3 +43,4 @@ export const DEFAULT_MIN = 0;
 export const DEFAULT_MAX = 100;
 
 export const DEFAULT_UPDATE_DELAY = 1500;
+export const DEFAULT_AREA_OPACITY = 0.7;
