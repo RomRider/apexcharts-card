@@ -41,10 +41,10 @@ However, some things might be broken :grin:
   - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
+  - [Layouts](#layouts)
 - [Experimental features](#experimental-features)
   - [Configuration options](#configuration-options)
   - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
-  - [Layouts](#layouts)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
 - [Examples](#examples)
@@ -420,6 +420,16 @@ apex_config:
       enabled: true
 ```
 
+### Layouts
+
+For now, only `minimal` is supported: It will remove the grid, the axis and display the legend at the top. But you can use the `apex_config` to do whatever you want.
+
+* `minimal`
+
+  ![minimal](docs/minimal.png)
+
+For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](src/apex-layouts.ts)
+
 ## Experimental features
 
 :warning: You enter the danger zone :warning:
@@ -428,7 +438,7 @@ apex_config:
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | `color_threshold` | boolean | `false` | NEXT_VERSION | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
-| `disable_config_validation` | boolean | `false` | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+| `disable_config_validation` | boolean | NEXT_VERSION |`false` | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
 
 ### `color_threshold` experimental feature
 
@@ -476,16 +486,6 @@ series:
 ```
 
 ![color_threshold](docs/color_threshold.png)
-
-### Layouts
-
-For now, only `minimal` is supported: It will remove the grid, the axis and display the legend at the top. But you can use the `apex_config` to do whatever you want.
-
-* `minimal`
-
-  ![minimal](docs/minimal.png)
-
-For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](src/apex-layouts.ts)
 
 ## Known issues
 
