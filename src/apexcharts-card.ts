@@ -15,7 +15,9 @@ import {
   getPercentFromValue,
   interpolateColor,
   log,
+  mergeConfigTemplates,
   mergeDeep,
+  mergeDeepConfig,
   offsetData,
   prettyPrintTime,
   validateInterval,
@@ -107,7 +109,7 @@ class ChartsCard extends LitElement {
 
   private _colors: string[] = [];
 
-  private _headerColors: string[] = [...DEFAULT_COLORS];
+  private _headerColors: string[] = [];
 
   private _graphSpan: number = HOUR_24;
 
@@ -239,14 +241,30 @@ class ChartsCard extends LitElement {
   }
 
   public setConfig(config: ChartCardExternalConfig) {
-    const configDup = JSON.parse(JSON.stringify(config));
-    if (configDup.entities) {
-      configDup.series = configDup.entities;
-      delete configDup.entities;
+    let configDup: ChartCardExternalConfig = JSON.parse(JSON.stringify(config));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((configDup as any).entities) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      configDup.series = (configDup as any).entities;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (configDup as any).entities;
+    }
+    configDup = configDup as ChartCardExternalConfig;
+    if (configDup.config_templates && configDup.config_templates.length > 0) {
+      configDup = mergeConfigTemplates(getLovelace(), configDup);
     }
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
     if (!configDup.experimental?.disable_config_validation) {
-      ChartCardExternalConfig.strictCheck(configDup);
+      try {
+        ChartCardExternalConfig.strictCheck(configDup);
+      } catch (e) {
+        throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
+      }
+    }
+    if (configDup.all_series_config) {
+      configDup.series.forEach((serie) => {
+        mergeDeepConfig(serie, configDup.all_series_config);
+      });
     }
     if (configDup.update_interval) {
       this._interval = validateInterval(configDup.update_interval, 'update_interval');
@@ -279,11 +297,11 @@ class ChartsCard extends LitElement {
       configDup,
     );
 
+    const defColors = this._config?.color_list || DEFAULT_COLORS;
     if (this._config) {
-      // this._colors = [...DEFAULT_COLORS];
       this._graphs = this._config.series.map((serie, index) => {
         if (!this._headerColors[index]) {
-          this._headerColors[index] = this._headerColors[index % DEFAULT_COLORS.length];
+          this._headerColors[index] = defColors[index % defColors.length];
         }
         if (serie.color) {
           this._headerColors[index] = serie.color;
