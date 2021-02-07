@@ -41,6 +41,9 @@ However, some things might be broken :grin:
   - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
+- [Experimental features](#experimental-features)
+  - [Configuration options](#configuration-options)
+  - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
   - [Layouts](#layouts)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
@@ -132,6 +135,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `now` | object | | v1.5.0 | See [now](#now-options) |
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
+| `experimental` | object | | NEXT_VERSION |
 
 
 
@@ -143,6 +147,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
+| `stroke_width` | number | `5` | NEXT_VERSION | Change the width of the line. Only works for `area` and `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
@@ -402,7 +407,7 @@ This is how you could change some options from ApexCharts as described on the [`
 
 Hundreds of options are available and it is not possible to describe them all here so check over there and ask on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) if you need help with using them.
 
-Some options might now work in the context of this card.
+Some options might not work in the context of this card.
 
 ```yaml
 type: custom:apexcharts-card
@@ -414,6 +419,63 @@ apex_config:
     dropShadow:
       enabled: true
 ```
+
+## Experimental features
+
+:warning: You enter the danger zone :warning:
+### Configuration options
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `color_threshold` | boolean | `false` | NEXT_VERSION | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
+| `disable_config_validation` | boolean | `false` | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+
+### `color_threshold` experimental feature
+
+`color_threshold` is an experimental feature for now since enabling it will break some other default features.
+
+If enabled, it might:
+* display the wrong serie color in the tooltip in some cases (series with datapoints not aligned mostly)
+* display thin columns instead of the standard size
+* completely render `apex_config.fill` options unusable, and if you do, it will break the card
+
+Now that you are warned, it works with:
+* `chart_type`: `radialBar`, `line`, `pie`, `donut`
+* `series`'s `type`: `column`, `area`, `line`
+
+Some notes:
+* For `series`'s `type: column`, the full bar will be of the color defined. Gradient is not possible
+* For `series`'s `type: area`:
+  * only the filled area will be displayed with the gradient. It is not possible to do so for the line.
+  * It works better with `stroke_width: 1` or `stroke_width: 0`
+* If using `invert: true`, the values in `color_threshold` should stay the same as with `invert: false`.
+
+
+And this is how to use it:
+```yaml
+type: custom:apexcharts-card
+experimental:
+  color_threshold: true
+series:
+  - entity: sensor.temperature
+    color_threshold:
+      - value: -10
+        # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+        # default is: the default color of the serie
+        color: blue
+        # optional opacity, value from 0 to 1.
+        # only for line and area
+        # Default is 1 for 'type: line' and 0.7 for `type: area`
+        opacity: 1
+      - value: 0
+        color: cyan
+      - value: 15
+        color: green
+      - value: 25
+        color: orange
+```
+
+![color_threshold](docs/color_threshold.png)
 
 ### Layouts
 
@@ -442,7 +504,7 @@ Not ordered by priority:
 * [ ] Support for any number of Y-axis
 * [ ] Support for logarithmic
 * [X] ~~Support for state mapping for non-numerical state sensors~~
-* [ ] Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)
+* [X] ~~Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)~~
 * [ ] Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)
 
 ## Examples

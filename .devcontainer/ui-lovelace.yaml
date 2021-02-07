@@ -500,3 +500,83 @@ views:
             series:
               - entity: input_boolean.test_boolean
                 transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            update_delay: 3s
+            graph_span: 5min
+            series:
+              - entity: input_boolean.test_boolean
+                transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            update_delay: 3s
+            graph_span: 5min
+            series:
+              - entity: input_boolean.test_boolean
+                transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                transform: return x / 2 - 15;
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                type: area
+                stroke_width: 0
+                transform: return x / 2 - 15;
+                invert: true
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                type: column
+                # stroke_width: 0
+                transform: return x / 2 - 15;
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange
