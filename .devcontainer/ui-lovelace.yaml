@@ -583,3 +583,10 @@ views:
                     color: green
                   - value: 25
                     color: orange
+
+          - type: custom:apexcharts-card
+            graph_span: 20min
+            chart_mode: 'compare'
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000

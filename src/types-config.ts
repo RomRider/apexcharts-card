@@ -5,6 +5,7 @@ export interface ChartCardExternalConfig {
     disable_config_validation?: boolean;
   };
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
+  chart_mode?: 'compare';
   update_interval?: string;
   update_delay?: string;
   series: ChartCardSeriesExternalConfig[];

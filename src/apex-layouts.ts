@@ -37,7 +37,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     series: getSeries(config, hass),
     labels: getLabels(config, hass),
-    xaxis: getXAxis(config),
+    xaxis: getXAxis(config, hass),
     yaxis: getYAxis(config),
     tooltip: {
       x: {
@@ -95,7 +95,7 @@ function getFillOpacity(config: ChartCardConfig): number[] {
 }
 
 function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
-  if (TIMESERIES_TYPES.includes(config.chart_type)) {
+  if (TIMESERIES_TYPES.includes(config.chart_type) && config.chart_mode !== 'compare') {
     return config?.series_in_graph.map((serie, index) => {
       return {
         name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
@@ -118,8 +118,8 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   }
 }
 
-function getXAxis(config: ChartCardConfig) {
-  if (TIMESERIES_TYPES.includes(config.chart_type)) {
+function getXAxis(config: ChartCardConfig, hass: HomeAssistant | undefined) {
+  if (TIMESERIES_TYPES.includes(config.chart_type) && config.chart_mode !== 'compare') {
     return {
       type: 'datetime',
       // range: getMilli(config.hours_to_show),
@@ -127,6 +127,12 @@ function getXAxis(config: ChartCardConfig) {
         datetimeUTC: false,
         datetimeFormatter: getDateTimeFormatter(config.hours_12),
       },
+    };
+  } else if (config.chart_mode === 'compare') {
+    return {
+      categories: config.series_in_graph.map((serie, index) => {
+        return computeName(index, config.series, undefined, hass?.states[serie.entity]);
+      }),
     };
   } else {
     return {};

@@ -474,7 +474,7 @@ class ChartsCard extends LitElement {
       await Promise.all(promise);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let graphData: any = {};
-      if (TIMESERIES_TYPES.includes(this._config.chart_type)) {
+      if (TIMESERIES_TYPES.includes(this._config.chart_type) && !(this._config.chart_mode === 'compare')) {
         graphData = {
           series: this._graphs.flatMap((graph, index) => {
             if (!graph) return [];
