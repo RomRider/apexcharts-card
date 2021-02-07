@@ -575,7 +575,9 @@ class ChartsCard extends LitElement {
               const min = this._graphs?.[index]?.min;
               const max = this._graphs?.[index]?.max;
               if (min === undefined || max === undefined) return [];
-              return this._computeFillColorStops(serie, min, max, this._colors[index], serie.invert) || [];
+              return (
+                this._computeFillColorStops(serie, min, max, computeColor(this._colors[index]), serie.invert) || []
+              );
             }),
           },
         };
@@ -667,6 +669,8 @@ class ChartsCard extends LitElement {
         }
         opacity = opacity < 0 ? -opacity : opacity;
       }
+      color = color || tinycolor(thres.color || defColor).toHexString();
+      if ([undefined, 'line'].includes(serie.type)) color = tinycolor(color).setAlpha(opacity).toHex8String();
       return {
         color: color || tinycolor(thres.color || defColor).toHexString(),
         offset:

@@ -526,7 +526,7 @@ views:
                     color: blue
                     # optional opacity, value from 0 to 1.
                     # Default is 1 for 'type: line' and 0.7 for `type: area`
-                    opacity: 1
+                    opacity: 0
                   - value: 0
                     color: cyan
                   - value: 15
@@ -547,10 +547,10 @@ views:
                   - value: -10
                     # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
                     # default is: the default color of the serie
-                    color: blue
+                    # color: blue
                     # optional opacity, value from 0 to 1.
                     # Default is 1 for 'type: line' and 0.7 for `type: area`
-                    opacity: 1
+                    # opacity: 1
                   - value: 0
                     color: cyan
                   - value: 15
@@ -570,10 +570,10 @@ views:
                   - value: -10
                     # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
                     # default is: the default color of the serie
-                    color: blue
+                    # color: blue
                     # optional opacity, value from 0 to 1.
                     # Default is 1 for 'type: line' and 0.7 for `type: area`
-                    opacity: 1
+                    opacity: 0
                   - value: 0
                     color: cyan
                   - value: 15
