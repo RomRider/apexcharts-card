@@ -3,6 +3,7 @@ export interface ChartCardExternalConfig {
   experimental?: {
     color_threshold?: boolean;
     disable_config_validation?: boolean;
+    hidden_by_default?: boolean;
   };
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
@@ -60,6 +61,7 @@ export interface ChartCardSeriesExternalConfig {
     in_header?: boolean;
     in_chart?: boolean;
     datalabels?: boolean;
+    hidden_by_default?: boolean;
   };
   group_by?: {
     duration?: string;

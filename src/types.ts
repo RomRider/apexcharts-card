@@ -29,6 +29,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     in_header: boolean;
     in_chart: boolean;
     datalabels?: boolean;
+    hidden_by_default?: boolean;
   };
 }
 

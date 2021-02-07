@@ -9,6 +9,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "experimental": t.opt(t.iface([], {
     "color_threshold": t.opt("boolean"),
     "disable_config_validation": t.opt("boolean"),
+    "hidden_by_default": t.opt("boolean"),
   })),
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
@@ -64,6 +65,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
     "in_header": t.opt("boolean"),
     "in_chart": t.opt("boolean"),
     "datalabels": t.opt("boolean"),
+    "hidden_by_default": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),

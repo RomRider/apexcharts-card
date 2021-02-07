@@ -70,6 +70,7 @@ views:
             stacked: false
             experimental:
               color_threshold: true
+              hidden_by_default: true
               # disable_config_validation: true
             series:
               - entity: sensor.random_0_1000
@@ -90,6 +91,8 @@ views:
               - entity: sensor.random0_100
                 name: test2
                 type: column
+                show:
+                  hidden_by_default: true
                 group_by:
                   duration: 1m
                   func: last
