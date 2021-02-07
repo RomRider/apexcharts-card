@@ -631,7 +631,7 @@ class ChartsCard extends LitElement {
 
     const result = serie.color_threshold.map((thres, index, arr) => {
       let color: string | undefined = undefined;
-      const defaultOp = serie.type === 'line' ? 1 : DEFAULT_AREA_OPACITY;
+      const defaultOp = serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
       let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
       if (thres.value > max && arr[index - 1]) {
         const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);

@@ -42,6 +42,7 @@ export interface ChartCardSeriesExternalConfig {
   name?: string;
   type?: 'line' | 'column' | 'area';
   color?: string;
+  opacity?: number;
   curve?: 'smooth' | 'straight' | 'stepline';
   stroke_width?: number;
   extend_to_end?: boolean;

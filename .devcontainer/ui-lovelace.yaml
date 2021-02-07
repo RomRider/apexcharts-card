@@ -196,12 +196,14 @@ views:
               - entity: sensor.humidity
                 type: area
                 name: Outside Humidity
+                opacity: 0.3
                 group_by:
                   func: avg
                   duration: 1h
               - entity: sensor.random0_100
                 type: area
                 name: Office Humidity
+                opacity: 0.3
                 group_by:
                   func: avg
                   duration: 1h
@@ -541,6 +543,7 @@ views:
               - entity: sensor.random0_100
                 type: area
                 stroke_width: 0
+                opacity: 0.5
                 transform: return x / 2 - 15;
                 invert: true
                 color_threshold:

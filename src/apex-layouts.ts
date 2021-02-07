@@ -1,6 +1,7 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import parse from 'parse-duration';
 import {
+  DEFAULT_AREA_OPACITY,
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SERIE_TYPE,
   HOUR_24,
@@ -89,7 +90,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
 
 function getFillOpacity(config: ChartCardConfig): number[] {
   return config.series_in_graph.map((serie) => {
-    return serie.type === 'area' ? 0.7 : 1;
+    return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
   });
 }
 

@@ -147,6 +147,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
+| `opacity` | number | `0.7` for `area`<br/>else `1` | NEXT_VERSION | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | NEXT_VERSION | Change the width of the line. Only works for `area` and `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
