@@ -45,6 +45,7 @@ However, some things might be broken :grin:
 - [Experimental features](#experimental-features)
   - [Configuration options](#configuration-options)
   - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
+  - [`hidden_by_default` experimental feature](#hidden_by_default-experimental-feature)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
 - [Examples](#examples)
@@ -173,6 +174,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess |
+| `hidden_by_default` | boolean | `false` | NEXT_VERSION | See [experimental](#hidden_by_default-experimental-feature) |
 
 
 ### Main `show` Options
@@ -442,6 +444,7 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 | ---- | :--: | :-----: | :---: | ----------- |
 | `color_threshold` | boolean | `false` | NEXT_VERSION | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
 | `disable_config_validation` | boolean | `false` | NEXT_VERSION | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+| `hidden_by_default` | boolean | `false` | NEXT_VERSION | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
 
 ### `color_threshold` experimental feature
 
@@ -489,6 +492,24 @@ series:
 ```
 
 ![color_threshold](docs/color_threshold.png)
+
+### `hidden_by_default` experimental feature
+
+Enabling this experimental feature might/will break the auto-scaling and auto-column width feature. Don't open an issue for that. It only works if all the series have a unique name.
+
+This option is useful if you want to hide a serie from the chart by default when it's loaded as if you had clicked on the legend to disable this serie.
+
+This is how to use it:
+```yaml
+type: custom:apexcharts-card
+experimental:
+  hidden_by_default: true
+series:
+  - entity: sensor.temperature
+    show:
+      hidden_by_default: true
+  - entity: sensor.temperature_office
+```
 
 ## Known issues
 

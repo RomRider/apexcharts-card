@@ -168,7 +168,16 @@ class ChartsCard extends LitElement {
     if (this._updating || this._dataLoaded || !this._apexChart || !this._config || !this._hass) return;
     this._dataLoaded = true;
     this._updating = true;
-    this._updateData();
+    this._updateData().then(() => {
+      if (this._config?.experimental?.hidden_by_default) {
+        this._config.series_in_graph.forEach((serie, index) => {
+          if (serie.show.hidden_by_default) {
+            const name = computeName(index, this._config?.series_in_graph, this._hass?.states);
+            this._apexChart?.hideSeries(name);
+          }
+        });
+      }
+    });
   }
 
   public set hass(hass: HomeAssistant) {
