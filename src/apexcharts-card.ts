@@ -575,7 +575,7 @@ class ChartsCard extends LitElement {
               const min = this._graphs?.[index]?.min;
               const max = this._graphs?.[index]?.max;
               if (min === undefined || max === undefined) return [];
-              return this._computeFillColorStops(serie, min, max, this._colors[index]) || [];
+              return this._computeFillColorStops(serie, min, max, this._colors[index], serie.invert) || [];
             }),
           },
         };
@@ -622,58 +622,59 @@ class ChartsCard extends LitElement {
     min: number,
     max: number,
     defColor: string,
+    invert = false,
   ): { offset: number; color: string; opacity?: number }[] | undefined {
     if (!serie.color_threshold) return undefined;
     const scale = max - min;
 
-    return serie.color_threshold
-      .map((thres, index, arr) => {
-        let color: string | undefined = undefined;
-        const defaultOp = serie.type === 'line' ? 1 : DEFAULT_AREA_OPACITY;
-        let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
-        if (thres.value > max && arr[index - 1]) {
-          const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
-          color = interpolateColor(
-            tinycolor(arr[index - 1].color || defColor).toHexString(),
-            tinycolor(thres.color || defColor).toHexString(),
-            factor,
-          );
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const prevOp = arr[index - 1].opacity === undefined ? defaultOp : arr[index - 1].opacity!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          if (prevOp > curOp) {
-            opacity = (prevOp - curOp) * (1 - factor) + curOp;
-          } else {
-            opacity = (curOp - prevOp) * factor + prevOp;
-          }
-          opacity = opacity < 0 ? -opacity : opacity;
-        } else if (thres.value < min && arr[index + 1]) {
-          const factor = (arr[index + 1].value - min) / (arr[index + 1].value - thres.value);
-          color = interpolateColor(
-            tinycolor(arr[index + 1].color || defColor).toHexString(),
-            tinycolor(thres.color || defColor).toHexString(),
-            factor,
-          );
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const nextOp = arr[index + 1].opacity === undefined ? defaultOp : arr[index + 1].opacity!;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
-          if (nextOp > curOp) {
-            opacity = (nextOp - curOp) * (1 - factor) + curOp;
-          } else {
-            opacity = (curOp - nextOp) * factor + nextOp;
-          }
-          opacity = opacity < 0 ? -opacity : opacity;
+    const result = serie.color_threshold.map((thres, index, arr) => {
+      let color: string | undefined = undefined;
+      const defaultOp = serie.type === 'line' ? 1 : DEFAULT_AREA_OPACITY;
+      let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
+      if (thres.value > max && arr[index - 1]) {
+        const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
+        color = interpolateColor(
+          tinycolor(arr[index - 1].color || defColor).toHexString(),
+          tinycolor(thres.color || defColor).toHexString(),
+          factor,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const prevOp = arr[index - 1].opacity === undefined ? defaultOp : arr[index - 1].opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (prevOp > curOp) {
+          opacity = (prevOp - curOp) * (1 - factor) + curOp;
+        } else {
+          opacity = (curOp - prevOp) * factor + prevOp;
         }
-        return {
-          color: color || tinycolor(thres.color || defColor).toHexString(),
-          offset: scale <= 0 ? 0 : (max - thres.value) * (100 / scale),
-          opacity,
-        };
-      })
-      .reverse();
+        opacity = opacity < 0 ? -opacity : opacity;
+      } else if (thres.value < min && arr[index + 1]) {
+        const factor = (arr[index + 1].value - min) / (arr[index + 1].value - thres.value);
+        color = interpolateColor(
+          tinycolor(arr[index + 1].color || defColor).toHexString(),
+          tinycolor(thres.color || defColor).toHexString(),
+          factor,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const nextOp = arr[index + 1].opacity === undefined ? defaultOp : arr[index + 1].opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+        if (nextOp > curOp) {
+          opacity = (nextOp - curOp) * (1 - factor) + curOp;
+        } else {
+          opacity = (curOp - nextOp) * factor + nextOp;
+        }
+        opacity = opacity < 0 ? -opacity : opacity;
+      }
+      return {
+        color: color || tinycolor(thres.color || defColor).toHexString(),
+        offset:
+          scale <= 0 ? 0 : invert ? 100 - (max - thres.value) * (100 / scale) : (max - thres.value) * (100 / scale),
+        opacity,
+      };
+    });
+    return invert ? result : result.reverse();
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {
