@@ -6,6 +6,10 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
+  "experimental": t.opt(t.iface([], {
+    "color_threshold": t.opt("boolean"),
+    "disable_config_validation": t.opt("boolean"),
+  })),
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
   "update_delay": t.opt("string"),
@@ -43,6 +47,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
   "color": t.opt("string"),
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
+  "stroke_width": t.opt("number"),
   "extend_to_end": t.opt("boolean"),
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
@@ -65,6 +70,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
     "fill": t.opt("GroupByFill"),
   })),
   "transform": t.opt("string"),
+  "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
 });
 
 export const ChartCardPrettyTime = t.union(t.lit('millisecond'), t.lit('second'), t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'));
@@ -81,6 +87,12 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
   "colorize_states": t.opt("boolean"),
 });
 
+export const ChartCardColorThreshold = t.iface([], {
+  "value": "number",
+  "color": t.opt("string"),
+  "opacity": t.opt("number"),
+});
+
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardSpanExtConfig,
@@ -89,5 +101,6 @@ const exportedTypeSuite: t.ITypeSuite = {
   GroupByFill,
   GroupByFunc,
   ChartCardHeaderExternalConfig,
+  ChartCardColorThreshold,
 };
 export default exportedTypeSuite;

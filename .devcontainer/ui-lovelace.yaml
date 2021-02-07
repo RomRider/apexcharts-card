@@ -18,8 +18,17 @@ views:
                     reset: true
                 zoom:
                   enabled: true
+              fill:
+                type: gradient
+                gradient:
+                  type: vertical
+                  shadeIntensity: 0.8
+                  stops:
+                    - 0
+                    - 1000
+                  inverseColors: false
             update_interval: 5sec
-            stacked: true
+            # stacked: true
             series:
               - entity: sensor.random_0_1000
                 name: Sensor 1
@@ -30,6 +39,7 @@ views:
                 name: Sensor 2
                 type: area
                 offset: -1d
+                invert: true
             graph_span: 15min
             cache: true
             layout: minimal
@@ -49,6 +59,7 @@ views:
               - entity: sensor.random_0_1000
                 name: Ram Free
                 type: area
+                stroke_width: 20
             graph_span: 15min
             cache: true
             layout: minimal
@@ -57,14 +68,39 @@ views:
 
           - type: custom:apexcharts-card
             stacked: false
+            experimental:
+              color_threshold: true
+              # disable_config_validation: true
             series:
               - entity: sensor.random_0_1000
                 name: test1
                 type: column
-              - entity: sensor.random_0_1000
+                group_by:
+                  duration: 1m
+                  func: last
+                transform: return x/10;
+                color_threshold:
+                  - value: 33
+                    color: '#00ff00'
+                  - value: 66
+                    color: '#000001'
+                  - value: 0
+                    color: '#ff0000'
+
+              - entity: sensor.random0_100
                 name: test2
                 type: column
-            graph_span: 20min
+                group_by:
+                  duration: 1m
+                  func: last
+                # color_threshold:
+                #   - value: 0
+                #     color: '#0000ff'
+                #   - value: 33
+                #     color: '#00ff00'
+                #   - value: 66
+                #     color: '#ff0000'
+            graph_span: 10min
             cache: true
           - type: custom:apexcharts-card
             graph_span: 200h
@@ -192,6 +228,11 @@ views:
                 group_by:
                   func: avg
                   duration: 30min
+                # color_threshold:
+                #   - value: 49
+                #     color: '#ff0000'
+                #   - value: 0
+                #     color: '#00ff00'
 
           - type: custom:apexcharts-card
             header:
@@ -282,23 +323,64 @@ views:
           - type: custom:apexcharts-card
             graph_span: 8d
             span:
-              start: hour
-            # apex_config:
-            #   dataLabels:
-            #     enabled: true
+              start: day
+              offset: -3d
             header:
               show: true
-              title: Precipitation Forecast
+              title: Temperature Forecast
+              show_states: true
+            now:
+              show: true
+              label: 'now'
+              color: '#0066ff88'
+            apex_config:
+              legend:
+                show: false
             series:
               - entity: weather.openweathermap
-                type: area
+                name: Temperature
+                unit: °C
+                attribute: temperature
+                fill_raw: last
                 extend_to_end: false
-                offset: -1d
+                group_by:
+                  func: avg
+                  duration: 1h
+              - entity: weather.openweathermap
+                type: line
+                extend_to_end: false
+                unit: °C
+                show:
+                  in_header: false
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
                     return [new Date(entry.datetime).getTime(), entry.temperature];
                   });
 
+          - type: custom:apexcharts-card
+            graph_span: 20min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random_0_1000
+                type: line
+                stroke_width: 2
+                color_threshold:
+                  - value: 0
+                    color: blue
+                  - value: 250
+                    color: green
+                  - value: 500
+                    color: yellow
+                    # opacity: 0
+                  - value: 500
+                    color: orange
+                  - value: 750
+                    color: orange
+                  - value: 750
+                    color: red
+                  - value: 1000
+                    color: red
           - type: custom:apexcharts-card
             header:
               show: true
@@ -333,6 +415,13 @@ views:
               title: line
             series:
               - entity: sensor.random0_100
+                color_threshold:
+                  - value: 0
+                    color: '#0000ff'
+                  - value: 33
+                    color: '#00ff00'
+                  - value: 66
+                    color: '#ff0000'
               - entity: sensor.random_0_1000
           - type: custom:apexcharts-card
             header:
@@ -411,3 +500,83 @@ views:
             series:
               - entity: input_boolean.test_boolean
                 transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            update_delay: 3s
+            graph_span: 5min
+            series:
+              - entity: input_boolean.test_boolean
+                transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            update_delay: 3s
+            graph_span: 5min
+            series:
+              - entity: input_boolean.test_boolean
+                transform: "return x === 'on' ? 1 : 0;"
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                transform: return x / 2 - 15;
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                type: area
+                stroke_width: 0
+                transform: return x / 2 - 15;
+                invert: true
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange
+          - type: custom:apexcharts-card
+            graph_span: 30min
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.random0_100
+                type: column
+                # stroke_width: 0
+                transform: return x / 2 - 15;
+                color_threshold:
+                  - value: -10
+                    # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
+                    # default is: the default color of the serie
+                    color: blue
+                    # optional opacity, value from 0 to 1.
+                    # Default is 1 for 'type: line' and 0.7 for `type: area`
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                  - value: 25
+                    color: orange

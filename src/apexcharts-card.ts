@@ -1,7 +1,7 @@
 import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, EntityCachePoints, EntityEntryCache } from './types';
+import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache } from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -13,6 +13,7 @@ import {
   computeUom,
   decompress,
   getPercentFromValue,
+  interpolateColor,
   log,
   mergeDeep,
   offsetData,
@@ -26,9 +27,10 @@ import { HassEntity } from 'home-assistant-js-websocket';
 import { getLayoutConfig } from './apex-layouts';
 import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
-import { ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
+import { ChartCardColorThreshold, ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
+  DEFAULT_AREA_OPACITY,
   DEFAULT_FILL_RAW,
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
@@ -37,6 +39,7 @@ import {
   DEFAULT_UPDATE_DELAY,
   moment,
   NO_VALUE,
+  PLAIN_COLOR_TYPES,
   TIMESERIES_TYPES,
 } from './const';
 import {
@@ -49,6 +52,7 @@ import {
   HOUR_24,
 } from './const';
 import parse from 'parse-duration';
+import tinycolor from '@ctrl/tinycolor';
 
 /* eslint no-console: 0 */
 console.info(
@@ -232,7 +236,9 @@ class ChartsCard extends LitElement {
       delete configDup.entities;
     }
     const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
-    ChartCardExternalConfig.strictCheck(configDup);
+    if (!configDup.experimental?.disable_config_validation) {
+      ChartCardExternalConfig.strictCheck(configDup);
+    }
     if (configDup.update_interval) {
       this._interval = validateInterval(configDup.update_interval, 'update_interval');
     }
@@ -297,6 +303,12 @@ class ChartsCard extends LitElement {
           serie.show.in_header = serie.show.in_header === undefined ? DEFAULT_SHOW_IN_HEADER : serie.show.in_header;
         }
         validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
+        if (serie.color_threshold && serie.color_threshold.length > 0) {
+          const sorted: ChartCardColorThreshold[] = JSON.parse(JSON.stringify(serie.color_threshold));
+          sorted.sort((a, b) => (a.value < b.value ? -1 : 1));
+          serie.color_threshold = sorted;
+        }
+
         if (serie.entity) {
           const editMode = getLovelace()?.editMode;
           // disable caching for editor
@@ -490,7 +502,6 @@ class ChartsCard extends LitElement {
             min: start.getTime(),
             max: this._findEndOfChart(end),
           },
-          colors: computeColors(this._colors),
         };
         if (this._config.now?.show) {
           const color = computeColor(this._config.now.color || 'var(--primary-color)');
@@ -541,9 +552,35 @@ class ChartsCard extends LitElement {
               }
             }
           }),
-          colors: computeColors(this._colors),
         };
       }
+      graphData.colors = this._computeChartColors();
+      if (this._config.experimental?.color_threshold && this._config.series.some((serie) => serie.color_threshold)) {
+        graphData.markers = {
+          colors: computeColors(
+            this._config.series_in_graph.flatMap((serie, index) => {
+              if (serie.type === 'column') return [];
+              return [this._colors[index]];
+            }),
+          ),
+        };
+        // graphData.fill = { colors: graphData.colors };
+        graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
+        graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
+        graphData.fill = {
+          gradient: {
+            type: 'vertical',
+            colorStops: this._config.series_in_graph.map((serie, index) => {
+              if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+              const min = this._graphs?.[index]?.min;
+              const max = this._graphs?.[index]?.max;
+              if (min === undefined || max === undefined) return [];
+              return this._computeFillColorStops(serie, min, max, this._colors[index], serie.invert) || [];
+            }),
+          },
+        };
+      }
+      // graphData.tooltip = { marker: { fillColors: ['#ff0000', '#00ff00'] } };
       this._lastState = [...this._lastState];
       this._apexChart?.updateOptions(
         graphData,
@@ -554,6 +591,90 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _computeChartColors(): (string | (({ value }) => string))[] {
+    const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
+    this._config?.series_in_graph.forEach((serie, index) => {
+      if (
+        this._config?.experimental?.color_threshold &&
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (PLAIN_COLOR_TYPES.includes(this._config!.chart_type!) || serie.type === 'column') &&
+        serie.color_threshold &&
+        serie.color_threshold.length > 0
+      ) {
+        const colors = this._colors;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        defaultColors[index] = function ({ value }, sortedL = serie.color_threshold!, defColor = colors[index]) {
+          let returnValue = sortedL[0].color || defColor;
+          sortedL.forEach((color) => {
+            if (value > color.value) returnValue = color.color || defColor;
+          });
+          return computeColor(returnValue);
+        };
+      }
+    });
+    return defaultColors.slice(0, this._config?.series_in_graph.length);
+  }
+
+  private _computeFillColorStops(
+    serie: ChartCardSeriesConfig,
+    min: number,
+    max: number,
+    defColor: string,
+    invert = false,
+  ): { offset: number; color: string; opacity?: number }[] | undefined {
+    if (!serie.color_threshold) return undefined;
+    const scale = max - min;
+
+    const result = serie.color_threshold.map((thres, index, arr) => {
+      let color: string | undefined = undefined;
+      const defaultOp = serie.type === 'line' ? 1 : DEFAULT_AREA_OPACITY;
+      let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
+      if (thres.value > max && arr[index - 1]) {
+        const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
+        color = interpolateColor(
+          tinycolor(arr[index - 1].color || defColor).toHexString(),
+          tinycolor(thres.color || defColor).toHexString(),
+          factor,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const prevOp = arr[index - 1].opacity === undefined ? defaultOp : arr[index - 1].opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (prevOp > curOp) {
+          opacity = (prevOp - curOp) * (1 - factor) + curOp;
+        } else {
+          opacity = (curOp - prevOp) * factor + prevOp;
+        }
+        opacity = opacity < 0 ? -opacity : opacity;
+      } else if (thres.value < min && arr[index + 1]) {
+        const factor = (arr[index + 1].value - min) / (arr[index + 1].value - thres.value);
+        color = interpolateColor(
+          tinycolor(arr[index + 1].color || defColor).toHexString(),
+          tinycolor(thres.color || defColor).toHexString(),
+          factor,
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const nextOp = arr[index + 1].opacity === undefined ? defaultOp : arr[index + 1].opacity!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const curOp = thres.opacity === undefined ? defaultOp : thres.opacity!;
+        if (nextOp > curOp) {
+          opacity = (nextOp - curOp) * (1 - factor) + curOp;
+        } else {
+          opacity = (curOp - nextOp) * factor + nextOp;
+        }
+        opacity = opacity < 0 ? -opacity : opacity;
+      }
+      return {
+        color: color || tinycolor(thres.color || defColor).toHexString(),
+        offset:
+          scale <= 0 ? 0 : invert ? 100 - (max - thres.value) * (100 / scale) : (max - thres.value) * (100 / scale),
+        opacity,
+      };
+    });
+    return invert ? result : result.reverse();
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {

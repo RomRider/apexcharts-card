@@ -1,5 +1,9 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  experimental?: {
+    color_threshold?: boolean;
+    disable_config_validation?: boolean;
+  };
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
   update_delay?: string;
@@ -39,6 +43,7 @@ export interface ChartCardSeriesExternalConfig {
   type?: 'line' | 'column' | 'area';
   color?: string;
   curve?: 'smooth' | 'straight' | 'stepline';
+  stroke_width?: number;
   extend_to_end?: boolean;
   unit?: string;
   invert?: boolean;
@@ -61,6 +66,7 @@ export interface ChartCardSeriesExternalConfig {
     fill?: GroupByFill;
   };
   transform?: string;
+  color_threshold?: ChartCardColorThreshold[];
 }
 
 export type ChartCardPrettyTime = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -75,4 +81,10 @@ export interface ChartCardHeaderExternalConfig {
   title?: string;
   show_states?: boolean;
   colorize_states?: boolean;
+}
+
+export interface ChartCardColorThreshold {
+  value: number;
+  color?: string;
+  opacity?: number;
 }

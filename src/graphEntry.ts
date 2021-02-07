@@ -106,6 +106,16 @@ export default class GraphEntry {
     this._cache = cache;
   }
 
+  get min(): number | undefined {
+    if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
+    return Math.min(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+  }
+
+  get max(): number | undefined {
+    if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
+    return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+  }
+
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
     const data: EntityEntryCache | undefined | null = await localForage.getItem(
       `${key}_${this._md5Config}${compressed ? '' : '-raw'}`,
