@@ -135,7 +135,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `now` | object | | v1.5.0 | See [now](#now-options) |
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
-| `experimental` | object | | NEXT_VERSION |
+| `experimental` | object | | NEXT_VERSION | See [experimental](#experimental-features) |
 
 
 
@@ -161,6 +161,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
+| `color_threshold` | object | | NEXT_VERSION | See [experimental](#experimental-features) |
 
 ### `series.show` Options
 
@@ -433,12 +434,13 @@ For code junkies, you'll find the default options I use in [`src/apex-layouts.ts
 ## Experimental features
 
 :warning: You enter the danger zone :warning:
+
 ### Configuration options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | `color_threshold` | boolean | `false` | NEXT_VERSION | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
-| `disable_config_validation` | boolean | NEXT_VERSION |`false` | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+| `disable_config_validation` | boolean | `false` | NEXT_VERSION | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
 
 ### `color_threshold` experimental feature
 
