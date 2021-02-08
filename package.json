@@ -30,7 +30,7 @@
   "homepage": "https://github.com/RomRider/apexcharts-card#readme",
   "dependencies": {
     "@ctrl/tinycolor": "^3.3.3",
-    "apexcharts": "3.23.1",
+    "apexcharts": "^3.23.1",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.6.6",
     "home-assistant-js-websocket": "^5.7.0",
