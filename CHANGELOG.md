@@ -1,3 +1,11 @@
+## [1.6.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.6.0-dev.1...v1.6.0-dev.2) (2021-02-08)
+
+
+### Features
+
+* **config_tpl:** Create a config template and use it everywhere with `config_templates`, apply the same config to every series with `all_series_config` and add `color_list` to define your color list in one shot ([#64](https://github.com/RomRider/apexcharts-card/issues/64)) ([17004a3](https://github.com/RomRider/apexcharts-card/commit/17004a30b77733e5b09ebe7b4bbb4b7d3b265688))
+* **experimental:** `hidden_by_default` to toggle series on load ([#62](https://github.com/RomRider/apexcharts-card/issues/62)) ([63717b7](https://github.com/RomRider/apexcharts-card/commit/63717b7ae9648debdb1d11a17ddf61f95f7225d4)), closes [#60](https://github.com/RomRider/apexcharts-card/issues/60)
+
 ## [1.6.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.5.0...v1.6.0-dev.1) (2021-02-07)
 
 
