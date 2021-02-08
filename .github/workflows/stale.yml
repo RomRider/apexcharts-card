@@ -7,11 +7,13 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v3
+      - uses: actions/stale@v3.0.16
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: 'This issue is stale because it has been open 45 days with no activity. Remove stale label or comment or this will be closed in 10 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          days-before-issue-stale: 45
+          stale-issue-message: 'This issue is stale because it has been open 30 days with no activity. Remove stale label or comment or this will be closed in 10 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 10 days with no activity.'
+          days-before-issue-stale: 30
           days-before-issue-close: 10
+          days-before-pr-close: -1
+          days-before-pr-stale: -1
           exempt-issue-labels: 'ApexCharts.JS,released on @dev'
