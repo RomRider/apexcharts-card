@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/github/license/custom-cards/button-card.svg)](LICENSE)
+[![License](https://img.shields.io/github/license/RomRider/apexcharts-card.svg)](LICENSE)
 [![HACS Supported](https://img.shields.io/badge/HACS-Supported-green.svg)](https://github.com/custom-components/hacs)
 ![Downloads](https://img.shields.io/github/downloads/RomRider/apexcharts-card/total)
 ![GitHub Activity](https://img.shields.io/github/commit-activity/y/RomRider/apexcharts-card.svg?label=commits)
@@ -42,6 +42,9 @@ However, some things might be broken :grin:
   - [`data_generator` Option](#data_generator-option)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
+  - [Configuration Templates](#configuration-templates)
+    - [General](#general)
+    - [`all_series_config` options](#all_series_config-options)
 - [Experimental features](#experimental-features)
   - [Configuration options](#configuration-options)
   - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
@@ -122,6 +125,9 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
+| `config_templates` | array | | NEXT_VERSION | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
+| `color_list` | array | | NEXT_VERSION | Define the array of colors applied to the series. Will be overriden by each serie's color if defined. Usefull for `config_templates` mainly. |
+| `all_series_config` | object | | NEXT_VERSION | If something is defined here it will apply this config to all the series. It accepts the same options as a serie minus `entity`. It is useful to avoid repetition but the same thing can be achieve in each serie individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
 | `chart_type` | string | `line` | v1.4.0 | See [chart_type](#chart_type-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `update_delay` | string | `1500ms` | v1.4.0 | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
@@ -411,7 +417,8 @@ This is how you could change some options from ApexCharts as described on the [`
 
 Hundreds of options are available and it is not possible to describe them all here so check over there and ask on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) if you need help with using them.
 
-Some options might not work in the context of this card.
+* :warning: Some options might not work in the context of this card.
+* :warning: Everything which is available through the default config of this card shouldn't be defined in `apex_config`. If you do, it might break.
 
 ```yaml
 type: custom:apexcharts-card
@@ -433,6 +440,132 @@ For now, only `minimal` is supported: It will remove the grid, the axis and disp
   ![minimal](docs/minimal.png)
 
 For code junkies, you'll find the default options I use in [`src/apex-layouts.ts`](src/apex-layouts.ts)
+
+### Configuration Templates
+
+#### General
+
+- Define your config template in the main lovelace configuration and then use it in your cards. This will avoid a lot of repetitions! It's basically YAML anchors, but without using YAML anchors and is very useful if you split your config in multiple files 😄
+- You can overload any parameter with a new one
+- Arrays will be merged by matching the index
+- You can also inherit another template from within a template.
+- You can inherit multiple templates at once by making it an array. In this case, the templates will be merged together with the current configuration in the order they are defined. This happens recursively.
+
+  ```yaml
+  type: custom:apexcharts-card
+  config_templates:
+    - template1
+    - template2
+  # or
+  type: custom:apexcharts-card
+  config_templates: template1
+  ```
+
+The card templates will be applied in the order they are defined: `template2` will be merged with `template1` and then the local config will be merged with the result. You can still chain templates together (ie. define template in a apexcharts-card template. It will follow the path recursively).
+
+Make sure which type of lovelace dashboard you are using before changing the main lovelace configuration:
+  * **`managed`** changes are managed by lovelace UI - add the template configuration to configuration in raw editor
+      * go to your dashboard
+      * click three dots and `Edit dashboard` button
+      * click three dots again and click `Raw configuration editor` button
+  * **`yaml`** - add template configuration to your dashboard file (`ui-lovelace.yaml` for eg.)
+
+**Note:** Templates have to be defined in all dashboards, they are not shared.
+
+To give you an idea where to put those (in your dashboard file/RAW editor):
+```yaml
+apexcharts_card_templates:
+  default:
+    color_list: ['red', 'green', 'blue']
+
+  bandwidth_chart:
+    graph_span: 24h
+    config_templates: default
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+    all_series_config:
+      stroke_width: 2
+      opacity: 0.3
+      type: area
+
+views:
+  - title: Main
+    panel: true
+    cards:
+      [...]
+```
+
+And then where you define your card, you can consume those templates, and/or overload it:
+
+```yaml
+- type: custom:apexcharts-card
+  template: bandwidth_chart
+  header:
+    title: WAN Bandwidth
+  series:
+    - entity: sensor.wan_download
+    - entity: sensor.wan_upload
+      invert: true
+```
+
+In the end, this would produce the same result as but it's shorter and you can reuse that template elsewhere:
+```yaml
+- type: custom:apexcharts-card
+  graph_span: 24h
+  header:
+    title: WAN Bandwidth
+    show: true
+    show_states: true
+    colorize_states: true
+  all_series_config:
+    stroke_width: 2
+    opacity: 0.3
+    type: area
+  color_list: ['red', 'green', 'blue']
+  series:
+    - entity: sensor.wan_download
+    - entity: sensor.wan_upload
+      invert: true
+```
+
+#### `all_series_config` options
+
+This will allow you to apply some settings to all the series avoiding repetition. It's just syntaxic sugar and doesn't add more features.
+
+Eg:
+```yaml
+- type: custom:apexcharts-card
+  graph_span: 24h
+  all_series_config:
+    stroke_width: 2
+    type: area
+    transform: return x / 1024;
+    unit: Mb/s
+  series:
+    - entity: sensor.wan_download
+    - entity: sensor.wan_upload
+      invert: true
+```
+
+Generates the same result as repeating the configuration in each series:
+```yaml
+- type: custom:apexcharts-card
+  graph_span: 24h
+  series:
+    - entity: sensor.wan_download
+      stroke_width: 2
+      type: area
+      transform: return x / 1024;
+      unit: Mb/s
+    - entity: sensor.wan_upload
+      invert: true
+      stroke_width: 2
+      type: area
+      transform: return x / 1024;
+      unit: Mb/s
+```
 
 ## Experimental features
 
@@ -529,7 +662,7 @@ Not ordered by priority:
 * [ ] Support for logarithmic
 * [X] ~~Support for state mapping for non-numerical state sensors~~
 * [X] ~~Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)~~
-* [ ] Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)
+* [X] ~~Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)~~
 
 ## Examples
 
@@ -636,10 +769,8 @@ series:
   ```yaml
   type: custom:apexcharts-card
   graph_span: 1d
-  apex_config:
-    stroke:
-      # Will affect all the series
-      width: 2
+  all_series_config:
+    stroke_width: 2
   series:
     - entity: sensor.temperature
     - entity: sensor.humidity
@@ -650,15 +781,11 @@ series:
   ```yaml
   type: custom:apexcharts-card
   graph_span: 1d
-  apex_config:
-    stroke:
-      # 2 will affect sensor.temperature
-      # 4 will affect sensor.humidity
-      # You need as much values here as the number of series
-      width: [2, 4]
   series:
     - entity: sensor.temperature
+      stroke_width: 2
     - entity: sensor.humidity
+      stroke_width: 6
   ```
 
 ### Use apexcharts-card with auto-entities
