@@ -82,7 +82,7 @@ Until then, follow the steps listed in [this issue](https://github.com/RomRider/
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.5.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.6.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -93,7 +93,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.5.0
+  - url: /local/apexcharts-card.js?v=1.6.0
     type: module
 ```
 
@@ -125,9 +125,9 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `config_templates` | array | | NEXT_VERSION | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
-| `color_list` | array | | NEXT_VERSION | Define the array of colors applied to the series. Will be overriden by each serie's color if defined. Usefull for `config_templates` mainly. |
-| `all_series_config` | object | | NEXT_VERSION | If something is defined here it will apply this config to all the series. It accepts the same options as a serie minus `entity`. It is useful to avoid repetition but the same thing can be achieve in each serie individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
+| `config_templates` | array | | v1.6.0 | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
+| `color_list` | array | | v1.6.0 | Define the array of colors applied to the series. Will be overriden by each serie's color if defined. Usefull for `config_templates` mainly. |
+| `all_series_config` | object | | v1.6.0 | If something is defined here it will apply this config to all the series. It accepts the same options as a serie minus `entity`. It is useful to avoid repetition but the same thing can be achieve in each serie individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
 | `chart_type` | string | `line` | v1.4.0 | See [chart_type](#chart_type-options) |
 | `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `update_delay` | string | `1500ms` | v1.4.0 | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
@@ -142,7 +142,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `now` | object | | v1.5.0 | See [now](#now-options) |
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
-| `experimental` | object | | NEXT_VERSION | See [experimental](#experimental-features) |
+| `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 
 
 
@@ -154,8 +154,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
-| `opacity` | number | `0.7` for `area`<br/>else `1` | NEXT_VERSION | The opacity of the line or filled area, between `0` and `1` |
-| `stroke_width` | number | `5` | NEXT_VERSION | Change the width of the line. Only works for `area` and `line` |
+| `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
+| `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | `extend_to_end` | boolean | `true` | v1.0.0 | If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types. |
@@ -169,7 +169,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
-| `color_threshold` | object | | NEXT_VERSION | See [experimental](#experimental-features) |
+| `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
 
 ### `series.show` Options
 
@@ -180,7 +180,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess |
-| `hidden_by_default` | boolean | `false` | NEXT_VERSION | See [experimental](#hidden_by_default-experimental-feature) |
+| `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
 
 
 ### Main `show` Options
@@ -575,9 +575,9 @@ Generates the same result as repeating the configuration in each series:
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `color_threshold` | boolean | `false` | NEXT_VERSION | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
-| `disable_config_validation` | boolean | `false` | NEXT_VERSION | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
-| `hidden_by_default` | boolean | `false` | NEXT_VERSION | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
+| `color_threshold` | boolean | `false` | v1.6.0 | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
+| `disable_config_validation` | boolean | `false` | v1.6.0 | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+| `hidden_by_default` | boolean | `false` | v1.6.0 | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
 
 ### `color_threshold` experimental feature
 

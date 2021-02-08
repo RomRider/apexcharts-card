@@ -1,3 +1,19 @@
+## [1.6.0](https://github.com/RomRider/apexcharts-card/compare/v1.5.0...v1.6.0) (2021-02-08)
+
+
+### Features
+
+* **config_tpl:** Create a config template and use it everywhere with `config_templates`, apply the same config to every series with `all_series_config` and add `color_list` to define your color list in one shot ([#64](https://github.com/RomRider/apexcharts-card/issues/64)) ([17004a3](https://github.com/RomRider/apexcharts-card/commit/17004a30b77733e5b09ebe7b4bbb4b7d3b265688))
+* **experimental:** `hidden_by_default` to toggle series on load ([#62](https://github.com/RomRider/apexcharts-card/issues/62)) ([63717b7](https://github.com/RomRider/apexcharts-card/commit/63717b7ae9648debdb1d11a17ddf61f95f7225d4)), closes [#60](https://github.com/RomRider/apexcharts-card/issues/60)
+* **series:** Define the `opacity` of the line or area ([8dfb3fd](https://github.com/RomRider/apexcharts-card/commit/8dfb3fd8839d7f93438b2273701bacd916d405c0)), closes [#57](https://github.com/RomRider/apexcharts-card/issues/57)
+* add stroke_width and experimental color_threshold/disable_config_validation ([fcdfa88](https://github.com/RomRider/apexcharts-card/commit/fcdfa88fc357b64d7d958cfbc67695f58b53c69c)), closes [#58](https://github.com/RomRider/apexcharts-card/issues/58)
+
+
+### Bug Fixes
+
+* **color_threshold:** opacity for color_threshold ([5a325f4](https://github.com/RomRider/apexcharts-card/commit/5a325f4507b165564f41fb2d86095ca6175b37dc))
+* **func:** median was sometimes wrong ([c36dda7](https://github.com/RomRider/apexcharts-card/commit/c36dda7b6121df9bcd924f5e5b5c9e543930e896))
+
 ## [1.6.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.6.0-dev.1...v1.6.0-dev.2) (2021-02-08)
 
 
