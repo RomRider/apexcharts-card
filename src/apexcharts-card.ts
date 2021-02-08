@@ -253,119 +253,119 @@ class ChartsCard extends LitElement {
     if (configDup.config_templates && configDup.config_templates.length > 0) {
       configDup = mergeConfigTemplates(getLovelace(), configDup);
     }
-    const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
-    if (!configDup.experimental?.disable_config_validation) {
-      try {
+    try {
+      const { ChartCardExternalConfig } = createCheckers(exportedTypeSuite);
+      if (!configDup.experimental?.disable_config_validation) {
         ChartCardExternalConfig.strictCheck(configDup);
-      } catch (e) {
-        throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
       }
-    }
-    if (configDup.all_series_config) {
-      configDup.series.forEach((serie) => {
-        mergeDeepConfig(serie, configDup.all_series_config);
-      });
-    }
-    if (configDup.update_interval) {
-      this._interval = validateInterval(configDup.update_interval, 'update_interval');
-    }
-    if (configDup.graph_span) {
-      this._graphSpan = validateInterval(configDup.graph_span, 'graph_span');
-    }
-    if (configDup.span?.offset) {
-      this._offset = validateOffset(configDup.span.offset, 'span.offset');
-    }
-    if (configDup.span?.end && configDup.span?.start) {
-      throw new Error(`span: Only one of 'start' or 'end' is allowed.`);
-    }
-    configDup.series.forEach((serie, index) => {
-      if (serie.offset) {
-        this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
+      if (configDup.all_series_config) {
+        configDup.series.forEach((serie, index) => {
+          const allDup = JSON.parse(JSON.stringify(configDup.all_series_config));
+          configDup.series[index] = mergeDeepConfig(allDup, serie);
+        });
       }
-    });
-    if (configDup.update_delay) {
-      this._updateDelay = validateInterval(configDup.update_delay, `update_delay`);
-    }
-
-    this._config = mergeDeep(
-      {
-        graph_span: DEFAULT_GRAPH_SPAN,
-        cache: true,
-        useCompress: false,
-        show: { loading: true },
-      },
-      configDup,
-    );
-
-    const defColors = this._config?.color_list || DEFAULT_COLORS;
-    if (this._config) {
-      this._graphs = this._config.series.map((serie, index) => {
-        if (!this._headerColors[index]) {
-          this._headerColors[index] = defColors[index % defColors.length];
-        }
-        if (serie.color) {
-          this._headerColors[index] = serie.color;
-        }
-        serie.fill_raw = serie.fill_raw || DEFAULT_FILL_RAW;
-        serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
-        serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
-        serie.unit = this._config?.chart_type === 'radialBar' ? '%' : serie.unit;
-        if (!serie.group_by) {
-          serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
-        } else {
-          serie.group_by.duration = serie.group_by.duration || DEFAULT_DURATION;
-          serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
-          serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
-        }
-        if (!serie.show) {
-          serie.show = {
-            legend_value: DEFAULT_SHOW_LEGEND_VALUE,
-            in_header: DEFAULT_SHOW_IN_HEADER,
-            in_chart: DEFAULT_SHOW_IN_CHART,
-          };
-        } else {
-          serie.show.legend_value =
-            serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
-          serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
-          serie.show.in_header = serie.show.in_header === undefined ? DEFAULT_SHOW_IN_HEADER : serie.show.in_header;
-        }
-        validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
-        if (serie.color_threshold && serie.color_threshold.length > 0) {
-          const sorted: ChartCardColorThreshold[] = JSON.parse(JSON.stringify(serie.color_threshold));
-          sorted.sort((a, b) => (a.value < b.value ? -1 : 1));
-          serie.color_threshold = sorted;
-        }
-
-        if (serie.entity) {
-          const editMode = getLovelace()?.editMode;
-          // disable caching for editor
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const caching = editMode === true ? false : this._config!.cache;
-          const graphEntry = new GraphEntry(
-            index,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._graphSpan!,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            caching,
-            serie,
-            this._config?.span,
-          );
-          if (this._hass) graphEntry.hass = this._hass;
-          return graphEntry;
-        }
-        return undefined;
-      });
-      this._config.series_in_graph = [];
-      this._config.series.forEach((serie, index) => {
-        if (serie.show.in_chart) {
-          this._colors.push(this._headerColors[index]);
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this._config!.series_in_graph.push(serie);
+      if (configDup.update_interval) {
+        this._interval = validateInterval(configDup.update_interval, 'update_interval');
+      }
+      if (configDup.graph_span) {
+        this._graphSpan = validateInterval(configDup.graph_span, 'graph_span');
+      }
+      if (configDup.span?.offset) {
+        this._offset = validateOffset(configDup.span.offset, 'span.offset');
+      }
+      if (configDup.span?.end && configDup.span?.start) {
+        throw new Error(`span: Only one of 'start' or 'end' is allowed.`);
+      }
+      configDup.series.forEach((serie, index) => {
+        if (serie.offset) {
+          this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
         }
       });
-      this._headerColors = this._headerColors.slice(0, this._config?.series.length);
-    }
+      if (configDup.update_delay) {
+        this._updateDelay = validateInterval(configDup.update_delay, `update_delay`);
+      }
 
+      this._config = mergeDeep(
+        {
+          graph_span: DEFAULT_GRAPH_SPAN,
+          cache: true,
+          useCompress: false,
+          show: { loading: true },
+        },
+        configDup,
+      );
+
+      const defColors = this._config?.color_list || DEFAULT_COLORS;
+      if (this._config) {
+        this._graphs = this._config.series.map((serie, index) => {
+          if (!this._headerColors[index]) {
+            this._headerColors[index] = defColors[index % defColors.length];
+          }
+          if (serie.color) {
+            this._headerColors[index] = serie.color;
+          }
+          serie.fill_raw = serie.fill_raw || DEFAULT_FILL_RAW;
+          serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
+          serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
+          serie.unit = this._config?.chart_type === 'radialBar' ? '%' : serie.unit;
+          if (!serie.group_by) {
+            serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
+          } else {
+            serie.group_by.duration = serie.group_by.duration || DEFAULT_DURATION;
+            serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
+            serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
+          }
+          if (!serie.show) {
+            serie.show = {
+              legend_value: DEFAULT_SHOW_LEGEND_VALUE,
+              in_header: DEFAULT_SHOW_IN_HEADER,
+              in_chart: DEFAULT_SHOW_IN_CHART,
+            };
+          } else {
+            serie.show.legend_value =
+              serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
+            serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
+            serie.show.in_header = serie.show.in_header === undefined ? DEFAULT_SHOW_IN_HEADER : serie.show.in_header;
+          }
+          validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
+          if (serie.color_threshold && serie.color_threshold.length > 0) {
+            const sorted: ChartCardColorThreshold[] = JSON.parse(JSON.stringify(serie.color_threshold));
+            sorted.sort((a, b) => (a.value < b.value ? -1 : 1));
+            serie.color_threshold = sorted;
+          }
+
+          if (serie.entity) {
+            const editMode = getLovelace()?.editMode;
+            // disable caching for editor
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const caching = editMode === true ? false : this._config!.cache;
+            const graphEntry = new GraphEntry(
+              index,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              this._graphSpan!,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              caching,
+              serie,
+              this._config?.span,
+            );
+            if (this._hass) graphEntry.hass = this._hass;
+            return graphEntry;
+          }
+          return undefined;
+        });
+        this._config.series_in_graph = [];
+        this._config.series.forEach((serie, index) => {
+          if (serie.show.in_chart) {
+            this._colors.push(this._headerColors[index]);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this._config!.series_in_graph.push(serie);
+          }
+        });
+        this._headerColors = this._headerColors.slice(0, this._config?.series.length);
+      }
+    } catch (e) {
+      throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
+    }
     // Full reset only happens in editor mode
     this._reset();
   }
