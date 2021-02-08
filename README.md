@@ -499,7 +499,7 @@ And then where you define your card, you can consume those templates, and/or ove
 
 ```yaml
 - type: custom:apexcharts-card
-  template: bandwidth_chart
+  config_templates: bandwidth_chart
   header:
     title: WAN Bandwidth
   series:
