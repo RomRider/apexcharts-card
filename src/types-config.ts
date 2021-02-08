@@ -1,5 +1,7 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
+  config_templates?: string[];
+  color_list?: string[];
   experimental?: {
     color_threshold?: boolean;
     disable_config_validation?: boolean;
@@ -8,6 +10,7 @@ export interface ChartCardExternalConfig {
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
   update_delay?: string;
+  all_series_config?: ChartCardAllSeriesExternalConfig;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
   hours_12?: boolean;
@@ -37,6 +40,45 @@ export interface ChartCardSpanExtConfig {
   end?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
   offset?: string;
 }
+
+export interface ChartCardAllSeriesExternalConfig {
+  attribute?: string;
+  name?: string;
+  type?: 'line' | 'column' | 'area';
+  color?: string;
+  opacity?: number;
+  curve?: 'smooth' | 'straight' | 'stepline';
+  stroke_width?: number;
+  extend_to_end?: boolean;
+  unit?: string;
+  invert?: boolean;
+  data_generator?: string;
+  float_precision?: number;
+  min?: number;
+  max?: number;
+  offset?: string;
+  fill_raw?: GroupByFill;
+  show?: {
+    as_duration?: ChartCardPrettyTime;
+    legend_value?: boolean;
+    in_header?: boolean;
+    in_chart?: boolean;
+    datalabels?: boolean;
+    hidden_by_default?: boolean;
+  };
+  group_by?: {
+    duration?: string;
+    func?: GroupByFunc;
+    fill?: GroupByFill;
+  };
+  transform?: string;
+  color_threshold?: ChartCardColorThreshold[];
+}
+
+// Need to duplicate because of https://github.com/gristlabs/ts-interface-checker/issues/35
+// export interface ChartCardSeriesExternalConfig extends ChartCardAllSeriesExternalConfig {
+//   entity: string;
+// }
 export interface ChartCardSeriesExternalConfig {
   entity: string;
   attribute?: string;

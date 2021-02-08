@@ -6,6 +6,8 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
+  "config_templates": t.opt(t.array("string")),
+  "color_list": t.opt(t.array("string")),
   "experimental": t.opt(t.iface([], {
     "color_threshold": t.opt("boolean"),
     "disable_config_validation": t.opt("boolean"),
@@ -14,6 +16,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
   "update_delay": t.opt("string"),
+  "all_series_config": t.opt("ChartCardAllSeriesExternalConfig"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
   "hours_12": t.opt("boolean"),
@@ -39,6 +42,40 @@ export const ChartCardSpanExtConfig = t.iface([], {
   "start": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
   "end": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
   "offset": t.opt("string"),
+});
+
+export const ChartCardAllSeriesExternalConfig = t.iface([], {
+  "attribute": t.opt("string"),
+  "name": t.opt("string"),
+  "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
+  "color": t.opt("string"),
+  "opacity": t.opt("number"),
+  "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
+  "stroke_width": t.opt("number"),
+  "extend_to_end": t.opt("boolean"),
+  "unit": t.opt("string"),
+  "invert": t.opt("boolean"),
+  "data_generator": t.opt("string"),
+  "float_precision": t.opt("number"),
+  "min": t.opt("number"),
+  "max": t.opt("number"),
+  "offset": t.opt("string"),
+  "fill_raw": t.opt("GroupByFill"),
+  "show": t.opt(t.iface([], {
+    "as_duration": t.opt("ChartCardPrettyTime"),
+    "legend_value": t.opt("boolean"),
+    "in_header": t.opt("boolean"),
+    "in_chart": t.opt("boolean"),
+    "datalabels": t.opt("boolean"),
+    "hidden_by_default": t.opt("boolean"),
+  })),
+  "group_by": t.opt(t.iface([], {
+    "duration": t.opt("string"),
+    "func": t.opt("GroupByFunc"),
+    "fill": t.opt("GroupByFill"),
+  })),
+  "transform": t.opt("string"),
+  "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
 });
 
 export const ChartCardSeriesExternalConfig = t.iface([], {
@@ -99,6 +136,7 @@ export const ChartCardColorThreshold = t.iface([], {
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardSpanExtConfig,
+  ChartCardAllSeriesExternalConfig,
   ChartCardSeriesExternalConfig,
   ChartCardPrettyTime,
   GroupByFill,

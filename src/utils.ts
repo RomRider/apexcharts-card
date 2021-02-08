@@ -3,7 +3,7 @@ import { compress as lzStringCompress, decompress as lzStringDecompress } from '
 import { EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
-import { ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
+import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
 import { LovelaceConfig } from 'custom-card-helpers';
 
@@ -189,4 +189,45 @@ export function interpolateColor(a: string, b: string, factor: number): string {
   const rb = ab + factor * (bb - ab);
 
   return `#${(((1 << 24) + (rr << 16) + (rg << 8) + rb) | 0).toString(16).slice(1)}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export function mergeConfigTemplates(ll: any, config: ChartCardExternalConfig): ChartCardExternalConfig {
+  const tpl = config.config_templates;
+  if (!tpl) return config;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let result: any = {};
+  const tpls = tpl && Array.isArray(tpl) ? tpl : [tpl];
+  tpls?.forEach((template) => {
+    if (!ll.config.apexcharts_card_templates?.[template])
+      throw new Error(`apexchart-card template '${template}' is missing from your config!`);
+    const res = mergeConfigTemplates(ll, JSON.parse(JSON.stringify(ll.config.apexcharts_card_templates[template])));
+    result = mergeDeepConfig(result, res);
+  });
+  result = mergeDeepConfig(result, config);
+  return result as ChartCardExternalConfig;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
+export function mergeDeepConfig(target: any, source: any): any {
+  const isObject = (obj) => obj && typeof obj === 'object';
+
+  if (!isObject(target) || !isObject(source)) {
+    return source;
+  }
+
+  Object.keys(source).forEach((key) => {
+    const targetValue = target[key];
+    const sourceValue = source[key];
+
+    if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
+      target[key] = mergeDeepConfig(targetValue, sourceValue);
+    } else if (isObject(targetValue) && isObject(sourceValue)) {
+      target[key] = mergeDeepConfig(Object.assign({}, targetValue), sourceValue);
+    } else {
+      target[key] = sourceValue;
+    }
+  });
+
+  return target;
 }

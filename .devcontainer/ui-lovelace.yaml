@@ -1,3 +1,19 @@
+apexcharts_card_templates:
+  test2:
+    color_list:
+      - red
+      - red
+  test:
+    config_templates: test2
+    graph_span: 24h
+    color_list:
+      - black
+    all_series_config:
+      group_by:
+        duration: 1h
+        func: avg
+      stroke_width: 2
+
 views:
   - title: Main
     panel: true
@@ -586,3 +602,10 @@ views:
                     color: green
                   - value: 25
                     color: orange
+
+          - type: custom:apexcharts-card
+            config_templates:
+              - test
+            series:
+              - entity: sensor.temperature
+              - entity: sensor.temperature
