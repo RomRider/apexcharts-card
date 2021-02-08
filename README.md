@@ -64,10 +64,8 @@ However, some things might be broken :grin:
 
 ### HACS (recommended)
 
-This card is **not yet available by default** in [HACS](https://hacs.xyz/) (Home Assistant Community Store).
+This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community Store).
 <small>_HACS is a third party community store and is not included in Home Assistant out of the box._</small>
-
-Until then, follow the steps listed in [this issue](https://github.com/RomRider/apexcharts-card/issues/28) to add it manually to HACS.
 
 ### Manual install
 
