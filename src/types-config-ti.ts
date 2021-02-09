@@ -8,6 +8,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
   "config_templates": t.opt(t.array("string")),
   "color_list": t.opt(t.array("string")),
+  "locale": t.opt("string"),
   "experimental": t.opt(t.iface([], {
     "color_threshold": t.opt("boolean"),
     "disable_config_validation": t.opt("boolean"),
@@ -19,7 +20,6 @@ export const ChartCardExternalConfig = t.iface([], {
   "all_series_config": t.opt("ChartCardAllSeriesExternalConfig"),
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
-  "hours_12": t.opt("boolean"),
   "span": t.opt("ChartCardSpanExtConfig"),
   "y_axis_precision": t.opt("number"),
   "now": t.opt(t.iface([], {

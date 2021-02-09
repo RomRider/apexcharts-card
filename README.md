@@ -132,7 +132,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
-| `hours_12` | boolean | `false` | v1.5.0 | Display time in 12h format instead of the default 24h format |
+| ~~`hours_12`~~ | ~~boolean~~ | ~~`false`~~ | ~~v1.5.0~~ | **Deprecated since NEXT_VERSION** ~~Display time in 12h format instead of the default 24h format~~ |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
@@ -141,6 +141,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
+| `locale` | string | | NEXT_VERSION | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
 
 
 

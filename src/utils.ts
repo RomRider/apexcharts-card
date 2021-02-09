@@ -231,3 +231,7 @@ export function mergeDeepConfig(target: any, source: any): any {
 
   return target;
 }
+
+export function is12Hour(locale: string): boolean {
+  return !(new Date(2021, 1, 1, 15, 0, 0, 0).toLocaleTimeString(locale).indexOf('15') > -1);
+}

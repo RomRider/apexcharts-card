@@ -33,8 +33,6 @@ export default class GraphEntry {
 
   private _config: ChartCardSeriesConfig;
 
-  private _timeRange: DateRange;
-
   private _func: (item: EntityCachePoints) => number;
 
   private _realStart: Date;
@@ -72,7 +70,6 @@ export default class GraphEntry {
     const now2 = new Date(now);
     this._func = aggregateFuncMap[config.group_by.func];
     now2.setTime(now2.getTime() - HOUR_24);
-    this._timeRange = moment.range(now, now2);
     this._realEnd = new Date();
     this._realStart = new Date();
     // Valid because tested during init;
@@ -142,7 +139,6 @@ export default class GraphEntry {
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
-    this._timeRange = moment.range(startHistory, end);
     let history: EntityEntryCache | undefined = undefined;
 
     if (this._config.data_generator) {
@@ -256,7 +252,7 @@ export default class GraphEntry {
       return false;
     }
     if (this._config.group_by.func !== 'raw') {
-      this._computedHistory = this._dataBucketer(history).map((bucket) => {
+      this._computedHistory = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
     } else {
@@ -317,8 +313,8 @@ export default class GraphEntry {
     };
   }
 
-  private _dataBucketer(history: EntityEntryCache): HistoryBuckets {
-    const ranges = Array.from(this._timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
+  private _dataBucketer(history: EntityEntryCache, timeRange: DateRange): HistoryBuckets {
+    const ranges = Array.from(timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
     let buckets: HistoryBuckets = [];
     ranges.forEach((range, index) => {
