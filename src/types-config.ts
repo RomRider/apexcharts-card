@@ -2,6 +2,7 @@ export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
   config_templates?: string[];
   color_list?: string[];
+  locale?: string;
   experimental?: {
     color_threshold?: boolean;
     disable_config_validation?: boolean;
@@ -13,7 +14,6 @@ export interface ChartCardExternalConfig {
   all_series_config?: ChartCardAllSeriesExternalConfig;
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
-  hours_12?: boolean;
   span?: ChartCardSpanExtConfig;
   y_axis_precision?: number;
   now?: {
