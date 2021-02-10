@@ -168,7 +168,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
     return config?.series_in_graph.map((serie, index) => {
       return {
-        name: computeName(index, config.series, undefined, hass?.states[serie.entity]),
+        name: computeName(index, config.series_in_graph, undefined, hass?.states[serie.entity]),
         type: serie.type,
         data: [],
       };
@@ -183,7 +183,7 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
     return [];
   } else {
     return config.series_in_graph.map((serie, index) => {
-      return computeName(index, config.series, undefined, hass?.states[serie.entity]);
+      return computeName(index, config.series_in_graph, undefined, hass?.states[serie.entity]);
     });
   }
 }
