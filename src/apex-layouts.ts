@@ -276,6 +276,9 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
 
 function getDataLabelsFormatter(config: ChartCardConfig) {
   return function (value, opts, conf = config) {
+    if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'total') {
+      return opts.w.globals.stackedSeriesTotals[opts.dataPointIndex];
+    }
     if (value === null) return;
     let lValue = value;
     if (lValue !== null && typeof lValue === 'number' && !Number.isInteger(lValue)) {

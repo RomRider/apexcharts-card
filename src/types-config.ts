@@ -63,7 +63,7 @@ export interface ChartCardAllSeriesExternalConfig {
     legend_value?: boolean;
     in_header?: boolean;
     in_chart?: boolean;
-    datalabels?: boolean;
+    datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
   };
   group_by?: {
@@ -102,7 +102,7 @@ export interface ChartCardSeriesExternalConfig {
     legend_value?: boolean;
     in_header?: boolean;
     in_chart?: boolean;
-    datalabels?: boolean;
+    datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
   };
   group_by?: {
