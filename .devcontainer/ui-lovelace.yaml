@@ -83,7 +83,7 @@ views:
               floating: true
 
           - type: custom:apexcharts-card
-            stacked: false
+            stacked: true
             experimental:
               color_threshold: true
               hidden_by_default: true
@@ -92,6 +92,8 @@ views:
               - entity: sensor.random_0_1000
                 name: test1
                 type: column
+                show:
+                  datalabels: true
                 group_by:
                   duration: 1m
                   func: last
@@ -109,6 +111,7 @@ views:
                 type: column
                 show:
                   hidden_by_default: true
+                  datalabels: total
                 group_by:
                   duration: 1m
                   func: last

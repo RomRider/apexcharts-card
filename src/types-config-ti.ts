@@ -66,7 +66,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
     "legend_value": t.opt("boolean"),
     "in_header": t.opt("boolean"),
     "in_chart": t.opt("boolean"),
-    "datalabels": t.opt("boolean"),
+    "datalabels": t.opt(t.union("boolean", t.lit('total'))),
     "hidden_by_default": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
@@ -101,7 +101,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
     "legend_value": t.opt("boolean"),
     "in_header": t.opt("boolean"),
     "in_chart": t.opt("boolean"),
-    "datalabels": t.opt("boolean"),
+    "datalabels": t.opt(t.union("boolean", t.lit('total'))),
     "hidden_by_default": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
