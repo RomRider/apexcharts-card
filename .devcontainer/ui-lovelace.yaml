@@ -83,6 +83,7 @@ views:
               floating: true
 
           - type: custom:apexcharts-card
+            update_interval: 2s
             stacked: true
             experimental:
               color_threshold: true
@@ -97,7 +98,7 @@ views:
                 group_by:
                   duration: 1m
                   func: last
-                transform: return x/10;
+                transform: console.log(entity);  return x/10;
                 color_threshold:
                   - value: 33
                     color: '#00ff00'
