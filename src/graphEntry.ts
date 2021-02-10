@@ -66,10 +66,7 @@ export default class GraphEntry {
     this._entityID = config.entity;
     this._graphSpan = graphSpan;
     this._config = config;
-    const now = new Date();
-    const now2 = new Date(now);
     this._func = aggregateFuncMap[config.group_by.func];
-    now2.setTime(now2.getTime() - HOUR_24);
     this._realEnd = new Date();
     this._realStart = new Date();
     // Valid because tested during init;
