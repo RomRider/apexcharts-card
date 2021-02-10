@@ -193,8 +193,9 @@ views:
                 curve: smooth
                 name: FIRST
                 type: line
-                # show:
-                # as_duration: year
+                show:
+                  as_duration: year
+                  in_header: raw
                 group_by:
                   duration: 10min
                   func: first

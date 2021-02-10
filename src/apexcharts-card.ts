@@ -115,7 +115,7 @@ class ChartsCard extends LitElement {
 
   private _offset = 0;
 
-  @property({ attribute: false }) private _lastState: (number | string | null)[] = [];
+  @property({ attribute: false }) private _headerState: (number | string | null)[] = [];
 
   private _dataLoaded = false;
 
@@ -191,6 +191,7 @@ class ChartsCard extends LitElement {
     });
 
     let updated = false;
+    let rawHeaderStatesUpdated = false;
     this._config.series.forEach((serie, index) => {
       const entityState = (hass && hass.states[serie.entity]) || undefined;
       if (!entityState) {
@@ -202,8 +203,18 @@ class ChartsCard extends LitElement {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this._graphs[index]!.hass = this._hass!;
         }
+        if (serie.show.in_header === 'raw') {
+          this._headerState[index] = this._computeLastState(
+            serie.attribute ? entityState.attributes[serie.attribute] : entityState.state,
+            index,
+          );
+          rawHeaderStatesUpdated = true;
+        }
       }
     });
+    if (rawHeaderStatesUpdated) {
+      this._headerState = [...this._headerState];
+    }
     if (this._config.series.some((_, index) => this._entities[index] === undefined)) {
       this._warning = true;
       return;
@@ -450,11 +461,11 @@ class ChartsCard extends LitElement {
                     this._headerColors.length > 0
                       ? `color: ${this._headerColors[index]};`
                       : ''}"
-                    >${this._lastState?.[index] === 0
+                    >${this._headerState?.[index] === 0
                       ? 0
                       : (serie.show.as_duration
-                          ? prettyPrintTime(this._lastState?.[index], serie.show.as_duration)
-                          : this._lastState?.[index]) || NO_VALUE}</span
+                          ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
+                          : this._headerState?.[index]) || NO_VALUE}</span
                   >
                   ${!serie.show.as_duration
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
@@ -505,11 +516,13 @@ class ChartsCard extends LitElement {
         graphData = {
           series: this._graphs.flatMap((graph, index) => {
             if (!graph) return [];
-            if (graph.history.length === 0) {
-              this._lastState[index] = null;
-            } else {
-              const lastState = graph.history[graph.history.length - 1][1];
-              this._lastState[index] = this._computeLastState(lastState, index);
+            if (this._config?.series[index].show.in_header !== 'raw') {
+              if (graph.history.length === 0) {
+                this._headerState[index] = null;
+              } else {
+                const lastState = graph.history[graph.history.length - 1][1];
+                this._headerState[index] = this._computeLastState(lastState, index);
+              }
             }
             if (!this._config?.series[index].show.in_chart) {
               return [];
@@ -558,25 +571,25 @@ class ChartsCard extends LitElement {
             if (!graph) return [];
             let data = 0;
             if (graph.history.length === 0) {
-              this._lastState[index] = null;
+              if (this._config?.series[index].show.in_header !== 'raw') {
+                this._headerState[index] = null;
+              }
               data = 0;
             } else {
               const lastState = graph.history[graph.history.length - 1][1];
               data = lastState === null ? 0 : lastState;
-              this._lastState[index] = this._computeLastState(lastState, index);
+              if (this._config?.series[index].show.in_header !== 'raw') {
+                this._headerState[index] = this._computeLastState(lastState, index);
+              }
             }
             if (!this._config?.series[index].show.in_chart) {
               return [];
             }
-            if (this._lastState[index] === null) {
-              return [0];
+            if (this._config?.chart_type === 'radialBar') {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              return [getPercentFromValue(data, this._config.series[index].min, this._config.series[index].max)];
             } else {
-              if (this._config?.chart_type === 'radialBar') {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                return [getPercentFromValue(data, this._config.series[index].min, this._config.series[index].max)];
-              } else {
-                return [data];
-              }
+              return [data];
             }
           }),
         };
@@ -610,7 +623,7 @@ class ChartsCard extends LitElement {
         };
       }
       // graphData.tooltip = { marker: { fillColors: ['#ff0000', '#00ff00'] } };
-      this._lastState = [...this._lastState];
+      this._headerState = [...this._headerState];
       this._apexChart?.updateOptions(
         graphData,
         false,

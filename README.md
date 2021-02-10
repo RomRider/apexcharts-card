@@ -176,7 +176,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_header` | boolean | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header |
+| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header. If set to `raw` (introduced in NEXT_VERSION), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in NEXT_VERSION), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
