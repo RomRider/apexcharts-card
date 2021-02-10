@@ -4,7 +4,7 @@ import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
-import { HOUR_24, moment } from './const';
+import { moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
 import { ChartCardSpanExtConfig } from './types-config';
