@@ -1,3 +1,16 @@
+## [1.7.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.1...v1.7.0-dev.2) (2021-02-10)
+
+
+### Features
+
+* **series.show:** Option to show the raw data in the header ([#76](https://github.com/RomRider/apexcharts-card/issues/76)) ([87b56f5](https://github.com/RomRider/apexcharts-card/commit/87b56f576389964fcf08ec0968589d6dd89407b1)), closes [#69](https://github.com/RomRider/apexcharts-card/issues/69)
+* **transform:** Provide the full state as `entity` to the function ([#77](https://github.com/RomRider/apexcharts-card/issues/77)) ([9919c10](https://github.com/RomRider/apexcharts-card/commit/9919c10543b70220f5c7e6dab972324e807c095c)), closes [#71](https://github.com/RomRider/apexcharts-card/issues/71)
+
+
+### Bug Fixes
+
+* Wrong labels in tooltip in some cases ([8f0aca1](https://github.com/RomRider/apexcharts-card/commit/8f0aca1832f98d034990d75f8f09b195869b788c))
+
 ## [1.7.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.6.0...v1.7.0-dev.1) (2021-02-10)
 
 
