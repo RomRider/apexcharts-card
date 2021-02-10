@@ -1,3 +1,17 @@
+## [1.7.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.6.0...v1.7.0-dev.1) (2021-02-10)
+
+
+### Features
+
+* **datalabels:** Option to display total when chart is stacked ([#75](https://github.com/RomRider/apexcharts-card/issues/75)) ([e1c5b01](https://github.com/RomRider/apexcharts-card/commit/e1c5b015bd753c2d2b5a33dd564f0b150d66f2d8)), closes [#73](https://github.com/RomRider/apexcharts-card/issues/73)
+* **locale:** Inherit locale from Home-Assistant, deprecate `hours_12` ([#70](https://github.com/RomRider/apexcharts-card/issues/70)) ([af2d201](https://github.com/RomRider/apexcharts-card/commit/af2d2013f57540dc35471dad90b09b93f4b9dc4f)), closes [#68](https://github.com/RomRider/apexcharts-card/issues/68)
+
+
+### Documentation
+
+* **config_templates:** Fix wrong config example ([ea1fef4](https://github.com/RomRider/apexcharts-card/commit/ea1fef45736b11fa79a78ca1ac59e7c80c42b39a))
+* Card is now available in HACS by default ([1200abd](https://github.com/RomRider/apexcharts-card/commit/1200abd7909fb6d522d69cf9eb8cdfdab25a0a59))
+
 ## [1.6.0](https://github.com/RomRider/apexcharts-card/compare/v1.5.0...v1.6.0) (2021-02-08)
 
 
