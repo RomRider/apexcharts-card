@@ -1,5 +1,12 @@
 import { HomeAssistant } from 'custom-card-helpers';
-import { ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HassHistory, HistoryBuckets } from './types';
+import {
+  ChartCardSeriesConfig,
+  EntityCachePoints,
+  EntityEntryCache,
+  HassHistory,
+  HassHistoryEntry,
+  HistoryBuckets,
+} from './types';
 import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -171,15 +178,15 @@ export default class GraphEntry {
             new Date(history.data.slice(-1)[0]![0] + 1)
           : startHistory,
         end,
-        this._config.attribute ? false : skipInitialState,
-        this._config.attribute ? true : false,
+        this._config.attribute || this._config.transform ? false : skipInitialState,
+        this._config.attribute || this._config.transform ? true : false,
       );
       if (newHistory && newHistory[0] && newHistory[0].length > 0) {
         /*
         hack because HA doesn't return anything if skipInitialState is false
         when retrieving for attributes so we retrieve it and we remove it.
         */
-        if (this._config.attribute && skipInitialState) {
+        if ((this._config.attribute || this._config.transform) && skipInitialState) {
           newHistory[0].shift();
         }
         let lastNonNull: number | null = null;
@@ -198,7 +205,7 @@ export default class GraphEntry {
             currentState = item.state;
           }
           if (this._config.transform) {
-            currentState = this._applyTransform(currentState);
+            currentState = this._applyTransform(currentState, item);
           }
           let stateParsed: number | null = parseFloat(currentState as string);
           stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
@@ -259,8 +266,13 @@ export default class GraphEntry {
     return true;
   }
 
-  private _applyTransform(value: unknown): number | null {
-    return new Function('x', 'hass', `'use strict'; ${this._config.transform}`).call(this, value, this._hass);
+  private _applyTransform(value: unknown, historyItem: HassHistoryEntry): number | null {
+    return new Function('x', 'hass', 'entity', `'use strict'; ${this._config.transform}`).call(
+      this,
+      value,
+      this._hass,
+      historyItem,
+    );
   }
 
   private async _fetchRecent(

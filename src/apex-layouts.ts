@@ -80,7 +80,6 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     ua: ua,
     'zh-cn': zh_cn,
   };
-  console.log(hass?.language);
   const def = {
     chart: {
       locales: [(config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || en],
