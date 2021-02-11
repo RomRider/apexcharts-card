@@ -8,6 +8,7 @@ import * as pjson from '../package.json';
 import {
   computeColor,
   computeColors,
+  computeColorsWithAlpha,
   computeName,
   computeTextColor,
   computeUom,
@@ -637,7 +638,10 @@ class ChartsCard extends LitElement {
   }
 
   private _computeChartColors(): (string | (({ value }) => string))[] {
-    const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
+    const defaultColors: (string | (({ value }) => string))[] = computeColorsWithAlpha(
+      this._colors,
+      this._config?.series_in_graph,
+    );
     this._config?.series_in_graph.forEach((serie, index) => {
       if (
         this._config?.experimental?.color_threshold &&

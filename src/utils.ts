@@ -98,15 +98,26 @@ export function computeColors(colors: string[] | undefined): string[] {
   });
 }
 
-export function computeColor(color: string): string {
+export function computeColorsWithAlpha(
+  colors: string[] | undefined,
+  series: ChartCardSeriesExternalConfig[] | undefined,
+): string[] {
+  if (!colors) return [];
+  return colors.map((color, index) => {
+    return computeColor(color, series?.[index]?.type !== 'area');
+  });
+}
+
+export function computeColor(color: string, withAlpha = true): string {
   if (color[0] === '#') {
     return color;
   } else if (color.substring(0, 3) === 'var') {
-    return new TinyColor(
+    const wColor = new TinyColor(
       window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
-    ).toHex8String();
+    );
+    return withAlpha ? wColor.toHex8String() : wColor.toHexString();
   } else {
-    return new TinyColor(color).toHex8String();
+    return withAlpha ? new TinyColor(color).toHex8String() : new TinyColor(color).toHexString();
   }
 }
 
