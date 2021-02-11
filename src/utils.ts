@@ -104,9 +104,9 @@ export function computeColor(color: string): string {
   } else if (color.substring(0, 3) === 'var') {
     return new TinyColor(
       window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
-    ).toHexString();
+    ).toHex8String();
   } else {
-    return new TinyColor(color).toHexString();
+    return new TinyColor(color).toHex8String();
   }
 }
 
