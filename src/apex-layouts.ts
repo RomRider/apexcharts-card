@@ -10,7 +10,7 @@ import {
   TIMESERIES_TYPES,
 } from './const';
 import { ChartCardConfig } from './types';
-import { computeName, computeUom, is12Hour, mergeDeep, prettyPrintTime } from './utils';
+import { computeName, computeUom, is12Hour, mergeDeep, prettyPrintTime, truncateFloat } from './utils';
 import { layoutMinimal } from './layouts/minimal';
 import * as ca from 'apexcharts/dist/locales/ca.json';
 import * as cs from 'apexcharts/dist/locales/cs.json';
@@ -248,17 +248,8 @@ function getXTooltipFormatter(config: ChartCardConfig, lang: string): ((val: num
 
 function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (value, opts, conf = config, hass2 = hass) {
-    if (
-      value !== null &&
-      typeof value === 'number' &&
-      !Number.isInteger(value) &&
-      !conf.series_in_graph[opts.seriesIndex]?.show.as_duration
-    ) {
-      value = (value as number).toFixed(
-        conf.series_in_graph[opts.seriesIndex].float_precision === undefined
-          ? DEFAULT_FLOAT_PRECISION
-          : conf.series_in_graph[opts.seriesIndex].float_precision,
-      );
+    if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
+      value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
     }
     const uom = computeUom(
       opts.seriesIndex,
@@ -276,18 +267,13 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
 function getDataLabelsFormatter(config: ChartCardConfig) {
   return function (value, opts, conf = config) {
     if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'total') {
-      return opts.w.globals.stackedSeriesTotals[opts.dataPointIndex];
-    }
-    if (value === null) return;
-    let lValue = value;
-    if (lValue !== null && typeof lValue === 'number' && !Number.isInteger(lValue)) {
-      lValue = (lValue as number).toFixed(
-        conf.series_in_graph[opts.seriesIndex].float_precision === undefined
-          ? DEFAULT_FLOAT_PRECISION
-          : conf.series_in_graph[opts.seriesIndex].float_precision,
+      return truncateFloat(
+        opts.w.globals.stackedSeriesTotals[opts.dataPointIndex],
+        conf.series_in_graph[opts.seriesIndex].float_precision,
       );
     }
-    return lValue;
+    if (value === null) return;
+    return truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
   };
 }
 
@@ -317,17 +303,8 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       let value = TIMESERIES_TYPES.includes(config.chart_type)
         ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0]
         : opts.w.globals.series[opts.seriesIndex];
-      if (
-        value !== null &&
-        typeof value === 'number' &&
-        !Number.isInteger(value) &&
-        !conf.series_in_graph[opts.seriesIndex]?.show.as_duration
-      ) {
-        value = (value as number).toFixed(
-          conf.series_in_graph[opts.seriesIndex].float_precision === undefined
-            ? DEFAULT_FLOAT_PRECISION
-            : conf.series_in_graph[opts.seriesIndex].float_precision,
-        );
+      if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
+        value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
       }
       const uom = computeUom(
         opts.seriesIndex,

@@ -20,6 +20,7 @@ import {
   mergeDeepConfig,
   offsetData,
   prettyPrintTime,
+  truncateFloat,
   validateInterval,
   validateOffset,
 } from './utils';
@@ -722,15 +723,7 @@ class ChartsCard extends LitElement {
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {
-    if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
-      const precision =
-        this._config?.series[index].float_precision === undefined
-          ? DEFAULT_FLOAT_PRECISION
-          : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._config.series[index].float_precision!;
-      return (value as number).toFixed(precision);
-    }
-    return value;
+    return truncateFloat(value, this._config?.series[index].float_precision);
   }
 
   /*

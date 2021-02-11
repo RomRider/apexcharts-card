@@ -4,7 +4,7 @@ import { EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
-import { DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
+import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
 import { LovelaceConfig } from 'custom-card-helpers';
 
 export function compress(data: unknown): string {
@@ -234,4 +234,12 @@ export function mergeDeepConfig(target: any, source: any): any {
 
 export function is12Hour(locale: string): boolean {
   return !(new Date(2021, 1, 1, 15, 0, 0, 0).toLocaleTimeString(locale).indexOf('15') > -1);
+}
+
+export function truncateFloat(value: number | null, precision: number | undefined): string | number | null {
+  let lValue: string | number | null = value;
+  if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+    lValue = (lValue as number).toFixed(precision === undefined ? DEFAULT_FLOAT_PRECISION : precision);
+  }
+  return lValue;
 }
