@@ -117,7 +117,7 @@ class ChartsCard extends LitElement {
 
   private _offset = 0;
 
-  @property({ attribute: false }) private _headerState: (number | string | null)[] = [];
+  @property({ attribute: false }) private _headerState: (number | null)[] = [];
 
   private _dataLoaded = false;
 
@@ -206,10 +206,7 @@ class ChartsCard extends LitElement {
           this._graphs[index]!.hass = this._hass!;
         }
         if (serie.show.in_header === 'raw') {
-          this._headerState[index] = this._computeLastState(
-            serie.attribute ? entityState.attributes[serie.attribute] : entityState.state,
-            index,
-          );
+          this._headerState[index] = serie.attribute ? entityState.attributes[serie.attribute] : entityState.state;
           rawHeaderStatesUpdated = true;
         }
       }
@@ -465,9 +462,9 @@ class ChartsCard extends LitElement {
                       : ''}"
                     >${this._headerState?.[index] === 0
                       ? 0
-                      : (serie.show.as_duration
-                          ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
-                          : this._headerState?.[index]) || NO_VALUE}</span
+                      : serie.show.as_duration
+                      ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
+                      : this._computeLastState(this._headerState?.[index], index) || NO_VALUE}</span
                   >
                   ${!serie.show.as_duration
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
@@ -523,7 +520,7 @@ class ChartsCard extends LitElement {
                 this._headerState[index] = null;
               } else {
                 const lastState = graph.history[graph.history.length - 1][1];
-                this._headerState[index] = this._computeLastState(lastState, index);
+                this._headerState[index] = lastState;
               }
             }
             if (!this._config?.series[index].show.in_chart) {
@@ -581,7 +578,7 @@ class ChartsCard extends LitElement {
               const lastState = graph.history[graph.history.length - 1][1];
               data = lastState === null ? 0 : lastState;
               if (this._config?.series[index].show.in_header !== 'raw') {
-                this._headerState[index] = this._computeLastState(lastState, index);
+                this._headerState[index] = lastState;
               }
             }
             if (!this._config?.series[index].show.in_chart) {
