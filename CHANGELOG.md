@@ -1,3 +1,17 @@
+## [1.7.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.2...v1.7.0-dev.3) (2021-02-15)
+
+
+### Features
+
+* **series.show:** Display your serie's extremas on the chart ([#85](https://github.com/RomRider/apexcharts-card/issues/85)) ([f64169a](https://github.com/RomRider/apexcharts-card/commit/f64169ad0583aa754370d09d3567e2ba4d0ec9c8))
+
+
+### Bug Fixes
+
+* color with alpha would render area opaque ([100b6d4](https://github.com/RomRider/apexcharts-card/commit/100b6d4e72272127783c65b1132dbefb0b349f95))
+* Support for `rgba` colors ([7ecfafd](https://github.com/RomRider/apexcharts-card/commit/7ecfafdbeca0813d8983c061a03d375c5378142b))
+* truncate floats in total datalabels ([917a20a](https://github.com/RomRider/apexcharts-card/commit/917a20a47e1b25cf4367770e31399a177334d345)), closes [#73](https://github.com/RomRider/apexcharts-card/issues/73)
+
 ## [1.7.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.1...v1.7.0-dev.2) (2021-02-10)
 
 
