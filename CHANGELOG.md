@@ -1,3 +1,20 @@
+## [1.7.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.3...v1.7.0-dev.4) (2021-02-15)
+
+
+### Features
+
+* **experimental:** Header color can now follow `color_threshold` ([#88](https://github.com/RomRider/apexcharts-card/issues/88)) ([074bfc3](https://github.com/RomRider/apexcharts-card/commit/074bfc30f1dc1ac88ba08edb4f749e0744d9a722)), closes [#78](https://github.com/RomRider/apexcharts-card/issues/78)
+
+
+### Bug Fixes
+
+* **config_templates:** Was supposed to support a string ([f36d9b1](https://github.com/RomRider/apexcharts-card/commit/f36d9b17eb5e768e1850a5d20e12374739f0fa4e)), closes [#87](https://github.com/RomRider/apexcharts-card/issues/87)
+
+
+### Documentation
+
+* Better info about month and year as offset units ([c194f87](https://github.com/RomRider/apexcharts-card/commit/c194f87cf419371b779602a9cda7f1927bf55757)), closes [#65](https://github.com/RomRider/apexcharts-card/issues/65)
+
 ## [1.7.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.2...v1.7.0-dev.3) (2021-02-15)
 
 
