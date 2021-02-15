@@ -62,6 +62,7 @@ export interface ChartCardAllSeriesExternalConfig {
     as_duration?: ChartCardPrettyTime;
     legend_value?: boolean;
     in_header?: boolean | 'raw';
+    header_color_threshold?: boolean;
     in_chart?: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
@@ -102,6 +103,7 @@ export interface ChartCardSeriesExternalConfig {
     as_duration?: ChartCardPrettyTime;
     legend_value?: boolean;
     in_header?: boolean | 'raw';
+    header_color_threshold?: boolean;
     in_chart?: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
