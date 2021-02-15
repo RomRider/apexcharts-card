@@ -6,7 +6,7 @@ import * as t from "ts-interface-checker";
 
 export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
-  "config_templates": t.opt(t.array("string")),
+  "config_templates": t.opt(t.union(t.array("string"), "string")),
   "color_list": t.opt(t.array("string")),
   "locale": t.opt("string"),
   "experimental": t.opt(t.iface([], {

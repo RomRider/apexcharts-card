@@ -1,6 +1,6 @@
 export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
-  config_templates?: string[];
+  config_templates?: string[] | string;
   color_list?: string[];
   locale?: string;
   experimental?: {

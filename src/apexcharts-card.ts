@@ -259,7 +259,11 @@ class ChartsCard extends LitElement {
       delete (configDup as any).entities;
     }
     configDup = configDup as ChartCardExternalConfig;
-    if (configDup.config_templates && configDup.config_templates.length > 0) {
+    if (configDup.config_templates) {
+      configDup.config_templates =
+        configDup.config_templates && Array.isArray(configDup.config_templates)
+          ? configDup.config_templates
+          : [configDup.config_templates];
       configDup = mergeConfigTemplates(getLovelace(), configDup);
     }
     try {
