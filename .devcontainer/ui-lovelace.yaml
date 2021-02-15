@@ -51,6 +51,8 @@ views:
                 type: area
                 curve: straight
                 color: yellow
+                show:
+                  extremas: true
               - entity: sensor.random_0_1000
                 name: Sensor 2
                 type: area
@@ -130,6 +132,8 @@ views:
             series:
               - entity: sensor.humidity
                 curve: straight
+                show:
+                  extremas: true
 
           - type: custom:apexcharts-card
             graph_span: 1h
@@ -339,6 +343,8 @@ views:
             series:
               - entity: sensor.pvpc
                 float_precision: 5
+                show:
+                  extremas: true
                 data_generator: |
                   return [...Array(22).keys()].map((hour) => {
                     const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';
@@ -441,6 +447,8 @@ views:
               title: line
             series:
               - entity: sensor.random0_100
+                show:
+                  extremas: true
                 color_threshold:
                   - value: 0
                     color: '#0000ff'
@@ -449,6 +457,8 @@ views:
                   - value: 66
                     color: '#ff0000'
               - entity: sensor.random_0_1000
+                show:
+                  extremas: true
           - type: custom:apexcharts-card
             header:
               show: true

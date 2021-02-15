@@ -68,6 +68,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
     "in_chart": t.opt("boolean"),
     "datalabels": t.opt(t.union("boolean", t.lit('total'))),
     "hidden_by_default": t.opt("boolean"),
+    "extremas": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
@@ -103,6 +104,7 @@ export const ChartCardSeriesExternalConfig = t.iface([], {
     "in_chart": t.opt("boolean"),
     "datalabels": t.opt(t.union("boolean", t.lit('total'))),
     "hidden_by_default": t.opt("boolean"),
+    "extremas": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),

@@ -1,7 +1,7 @@
 import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache } from './types';
+import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HistoryPoint } from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -307,6 +307,7 @@ class ChartsCard extends LitElement {
       const defColors = this._config?.color_list || DEFAULT_COLORS;
       if (this._config) {
         this._graphs = this._config.series.map((serie, index) => {
+          serie.index = index;
           if (!this._headerColors[index]) {
             this._headerColors[index] = defColors[index % defColors.length];
           }
@@ -540,28 +541,8 @@ class ChartsCard extends LitElement {
             min: start.getTime(),
             max: this._findEndOfChart(end),
           },
+          annotations: this._computeAnnotations(start, end),
         };
-        if (this._config.now?.show) {
-          const color = computeColor(this._config.now.color || 'var(--primary-color)');
-          const textColor = computeTextColor(color);
-          graphData.annotations = {
-            xaxis: [
-              {
-                x: new Date().getTime(),
-                strokeDashArray: 3,
-                label: {
-                  text: this._config.now.label,
-                  borderColor: color,
-                  style: {
-                    color: textColor,
-                    background: color,
-                  },
-                },
-                borderColor: color,
-              },
-            ],
-          };
-        }
       } else {
         // No timeline charts
         graphData = {
@@ -631,6 +612,87 @@ class ChartsCard extends LitElement {
       log(err);
     }
     this._updating = false;
+  }
+
+  private _computeAnnotations(start: Date, end: Date) {
+    return {
+      ...this._computeMinMaxPointsAnnotations(start, end),
+      ...this._computeNowAnnotation(),
+    };
+  }
+
+  private _computeMinMaxPointsAnnotations(start: Date, end: Date) {
+    return {
+      points: this._config?.series_in_graph.flatMap((serie, index) => {
+        if (serie.show.extremas) {
+          const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(start.getTime(), end.getTime()) || {
+            min: [0, null],
+            max: [0, null],
+          };
+          const bgColor = computeColor(this._colors[index]);
+          const txtColor = computeTextColor(bgColor);
+          if (!min[0] || !max[0]) return [];
+          return [
+            this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index),
+            this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index),
+          ];
+        } else {
+          return [];
+        }
+      }),
+    };
+  }
+
+  private _getPointAnnotationStyle(
+    value: HistoryPoint,
+    bgColor: string,
+    txtColor: string,
+    serie: ChartCardSeriesConfig,
+    index: number,
+  ) {
+    return {
+      x: value[0],
+      y: value[1],
+      seriesIndex: index,
+      marker: {
+        strokeColor: bgColor,
+        fillColor: 'var(--card-background-color)',
+      },
+      label: {
+        text: truncateFloat(value[1], serie.float_precision)?.toString(),
+        borderColor: 'var(--card-background-color)',
+        borderWidth: 2,
+        style: {
+          background: bgColor,
+          color: txtColor,
+        },
+      },
+    };
+  }
+
+  private _computeNowAnnotation() {
+    if (this._config?.now?.show) {
+      const color = computeColor(this._config.now.color || 'var(--primary-color)');
+      const textColor = computeTextColor(color);
+      return {
+        xaxis: [
+          {
+            x: new Date().getTime(),
+            strokeDashArray: 3,
+            label: {
+              text: this._config.now.label,
+              borderColor: color,
+              style: {
+                color: textColor,
+                background: color,
+              },
+            },
+            borderColor: color,
+          },
+        ],
+      };
+    }
+    return {};
   }
 
   private _computeChartColors(): (string | (({ value }) => string))[] {

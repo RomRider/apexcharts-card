@@ -6,6 +6,7 @@ import {
   HassHistory,
   HassHistoryEntry,
   HistoryBuckets,
+  HistoryPoint,
 } from './types';
 import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
@@ -115,6 +116,20 @@ export default class GraphEntry {
   get max(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
     return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+  }
+
+  public minMaxWithTimestamp(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
+    if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
+    return this._computedHistory.reduce(
+      (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
+        if (point[1] === null) return acc;
+        if (point[0] > end || point[0] < start) return acc;
+        if (acc.max[1] === null || acc.max[1] < point[1]) acc.max = point;
+        if (acc.min[1] === null || (point[1] !== null && acc.min[1] > point[1])) acc.min = point;
+        return acc;
+      },
+      { min: [0, null], max: [0, null] },
+    );
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
