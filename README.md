@@ -180,6 +180,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in NEXT_VERSION), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
+| `extremas` | boolean | `false` | NEXT_VERSION | If enabled, will show the min and the max of the serie in the chart |
 
 
 ### Main `show` Options

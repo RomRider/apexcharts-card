@@ -30,6 +30,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     in_chart: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
+    extremas?: boolean;
   };
 }
 
@@ -40,7 +41,9 @@ export interface EntityEntryCache {
   data: EntityCachePoints;
 }
 
-export type EntityCachePoints = Array<[number, number | null]>;
+export type EntityCachePoints = Array<HistoryPoint>;
+
+export type HistoryPoint = [number, number | null];
 
 export type HassHistory = Array<[HassHistoryEntry] | undefined>;
 
