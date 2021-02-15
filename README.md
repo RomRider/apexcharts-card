@@ -165,7 +165,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `transform` | string | | v1.5.0 | Transform your raw data in any way you like. See [transform](#transform-option) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
-| `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... |
+| `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
@@ -180,7 +180,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in NEXT_VERSION), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
-| `extremas` | boolean | `false` | NEXT_VERSION | If enabled, will show the min and the max of the serie in the chart |
+| `extremas` | boolean | `false` | NEXT_VERSION | If enabled, will show the min and the max of the serie in the chart. This feature doesn't work with `stacked: true`. |
 
 
 ### Main `show` Options
@@ -252,7 +252,7 @@ The position of the marker will only update when the card updates (state change 
 | ---- | :---: | ----------- |
 | `start` | v1.2.0 | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
 | `end` | v1.2.0 | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year` |
-| `offset` | v1.2.0 | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... |
+| `offset` | v1.2.0 | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
 
 Span enables you to:
 * Offset the graph by an amount of time
