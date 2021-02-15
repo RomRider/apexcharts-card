@@ -100,7 +100,7 @@ views:
                 group_by:
                   duration: 1m
                   func: last
-                transform: console.log(entity);  return x/10;
+                transform: return x/10;
                 color_threshold:
                   - value: 33
                     color: '#00ff00'
@@ -550,11 +550,17 @@ views:
                 transform: "return x === 'on' ? 1 : 0;"
           - type: custom:apexcharts-card
             graph_span: 30min
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
             experimental:
               color_threshold: true
             series:
               - entity: sensor.random0_100
                 transform: return x / 2 - 15;
+                show:
+                  header_color_threshold: true
                 color_threshold:
                   - value: -10
                     # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)
@@ -573,12 +579,18 @@ views:
             graph_span: 30min
             experimental:
               color_threshold: true
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
             series:
               - entity: sensor.random0_100
                 type: area
                 stroke_width: 0
                 opacity: 0.5
                 transform: return x / 2 - 15;
+                show:
+                  header_color_threshold: true
                 invert: true
                 color_threshold:
                   - value: -10
@@ -596,6 +608,10 @@ views:
                     color: orange
           - type: custom:apexcharts-card
             graph_span: 30min
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
             experimental:
               color_threshold: true
             series:
@@ -603,6 +619,8 @@ views:
                 type: column
                 # stroke_width: 0
                 transform: return x / 2 - 15;
+                show:
+                  header_color_threshold: true
                 color_threshold:
                   - value: -10
                     # color can be a color name, rgb(r, g, b), '#0000ff' or var(--color-variable)

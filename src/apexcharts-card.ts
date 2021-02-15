@@ -457,13 +457,7 @@ class ChartsCard extends LitElement {
             return html`
               <div id="states__state">
                 <div id="state__value">
-                  <span
-                    id="state"
-                    style="${this._config?.header?.colorize_states &&
-                    this._headerColors &&
-                    this._headerColors.length > 0
-                      ? `color: ${this._headerColors[index]};`
-                      : ''}"
+                  <span id="state" style="${this._computeHeaderStateColor(serie, this._headerState?.[index])}"
                     >${this._headerState?.[index] === 0
                       ? 0
                       : serie.show.as_duration
@@ -786,6 +780,46 @@ class ChartsCard extends LitElement {
       };
     });
     return invert ? result : result.reverse();
+  }
+
+  private _computeHeaderStateColor(serie: ChartCardSeriesConfig, value: number | null): string {
+    let color = '';
+    if (this._config?.header?.colorize_states) {
+      if (
+        this._config.experimental?.color_threshold &&
+        serie.show.header_color_threshold &&
+        serie.color_threshold &&
+        serie.color_threshold.length > 0 &&
+        value !== null
+      ) {
+        const index = serie.color_threshold.findIndex((thres) => {
+          return thres.value > value;
+        });
+        if (index < 0) {
+          color = computeColor(
+            serie.color_threshold[serie.color_threshold.length - 1].color || this._headerColors[serie.index],
+          );
+        } else if (index === 0) {
+          color = computeColor(serie.color_threshold[0].color || this._headerColors[serie.index]);
+        } else {
+          const prev = serie.color_threshold[index - 1];
+          const next = serie.color_threshold[index];
+          if (serie.type === 'column') {
+            color = computeColor(prev.color || this._headerColors[serie.index], false);
+          } else {
+            const factor = (value - prev.value) / (next.value - prev.value);
+            color = interpolateColor(
+              computeColor(prev.color || this._headerColors[serie.index], false),
+              computeColor(next.color || this._headerColors[serie.index], false),
+              factor,
+            );
+          }
+        }
+      } else {
+        return this._headerColors && this._headerColors.length > 0 ? `color: ${this._headerColors[serie.index]};` : '';
+      }
+    }
+    return color ? `color: ${color};` : '';
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {
