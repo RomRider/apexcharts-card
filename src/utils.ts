@@ -147,11 +147,9 @@ export function validateOffset(interval: string, prefix: string): number {
 
 export function offsetData(data: EntityCachePoints, offset: number | undefined): EntityCachePoints {
   if (offset) {
-    const lData = JSON.parse(JSON.stringify(data));
-    lData.forEach((entry) => {
-      entry[0] = entry[0] - offset;
+    return data.map((entry) => {
+      return [entry[0] - offset, entry[1]];
     });
-    return lData;
   }
   return data;
 }
