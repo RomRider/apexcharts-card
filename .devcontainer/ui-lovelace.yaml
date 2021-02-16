@@ -649,7 +649,7 @@ views:
             series:
               - entity: sensor.temperature
                 fill_raw: last
-                type: area
+                type: column
                 color_threshold:
                   - value: -10
                     color: blue
@@ -658,6 +658,150 @@ views:
                     color: cyan
                   - value: 15
                     color: green
-                    opacity: 1
                   - value: 25
                     color: orange
+                data_generator: |
+                  let res = [];
+                  let i = -6;
+                  start = new Date(start.getTime() - 4 * 1000 * 60 * 60);
+                  Array.from(Array(28).keys()).forEach((entry, index) => {
+                    res.push([new Date(start.getTime() + index * 1000 * 60 * 60).getTime(), i]);
+                    i += 2;
+                    if (i >= 28) i = -15;
+                  });
+                  return res;
+
+          - type: 'custom:apexcharts-card'
+            experimental:
+              color_threshold: true
+            graph_span: 12h
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.temperature
+                show:
+                  header_color_threshold: true
+                curve: smooth
+                color_threshold:
+                  - value: 300
+                    color: green
+                  - value: 700
+                    color: '#82ed82'
+                  - value: 1100
+                    color: '#e8e041'
+                  - value: 1600
+                    color: '#e88941'
+                  - value: 2100
+                    color: '#e84141'
+                data_generator: |
+                  let res = [];
+                  let i = 400;
+                  start = new Date(start.getTime() - 4 * 1000 * 60 * 60);
+                  Array.from(Array(28).keys()).forEach((entry, index) => {
+                    res.push([new Date(start.getTime() + index * 1000 * 60 * 60).getTime(), i]);
+                    i += 200;
+                    if (i >= 1401) i = 400;
+                  });
+                  return res;
+            now:
+              show: true
+              label: now
+            apex_config:
+              chart:
+                height: 250px
+          - type: 'custom:apexcharts-card'
+            show:
+              loading: false
+            apex_config:
+              chart:
+                height: 350
+              fill:
+                type: gradient
+                gradient:
+                  type: vertical
+                  fill: dark
+                  shadeIntensity: 0
+                  stops:
+                    - 20
+                    - 100
+                  opacityFrom:
+                    - 0.1
+                    - 0.1
+                    - 1
+                  opacityTo:
+                    - 0.6
+                    - 0.6
+                    - 0.3
+              plotOptions:
+                bar:
+                  columnWidth: 50%
+              yaxis:
+                - show: true
+                  title: Temp
+                  min: -20
+                  max: 30
+                - show: false
+                  title: Temp
+                  min: -20
+                  max: 30
+                - show: true
+                  title: Snow
+                  min: 0
+                  max: 40
+                  opposite: true
+                - show: false
+                  min: 0
+                  max: 40
+            graph_span: 6d
+            span:
+              start: day
+            header:
+              show: true
+              title: Weather Forecast
+            series:
+              - entity: weather.home
+                type: area
+                fill_raw: last
+                extend_to_end: false
+                color: var(--yellowish)
+                name: Max
+                stroke_width: 2
+                data_generator: |
+                  return entity.attributes.forecast.map((entry) => {
+                    return [new Date(entry.datetime).getTime(), entry.temperature];
+                  });
+              - entity: weather.home
+                type: area
+                fill_raw: last
+                extend_to_end: false
+                color: var(--cyanish)
+                name: Min
+                stroke_width: 2
+                data_generator: |
+                  return entity.attributes.forecast.map((entry) => {
+                    return [new Date(entry.datetime).getTime(), entry.templow];
+                  });
+              - entity: weather.home
+                type: column
+                fill_raw: last
+                extend_to_end: false
+                color: 'rgba(255, 255, 255, 1)'
+                name: Snow
+                stroke_width: 0
+                data_generator: |
+                  return entity.attributes.forecast.map((entry) => {
+                    return [new Date(entry.datetime).getTime(), entry.snow];
+                  });
+              - entity: weather.home
+                type: column
+                fill_raw: last
+                extend_to_end: false
+                color: var(--cyanish)
+                name: Rain
+                stroke_width: 0
+                data_generator: |
+                  return entity.attributes.forecast.map((entry) => {
+                    return [new Date(entry.datetime).getTime(), entry.precipitation];
+                  });
