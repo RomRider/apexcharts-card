@@ -642,3 +642,22 @@ views:
             series:
               - entity: sensor.temperature
               - entity: sensor.temperature
+
+          - type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            series:
+              - entity: sensor.temperature
+                fill_raw: last
+                type: area
+                color_threshold:
+                  - value: -10
+                    color: blue
+                    opacity: 1
+                  - value: 0
+                    color: cyan
+                  - value: 15
+                    color: green
+                    opacity: 1
+                  - value: 25
+                    color: orange

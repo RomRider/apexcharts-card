@@ -730,7 +730,13 @@ class ChartsCard extends LitElement {
     if (!serie.color_threshold) return undefined;
     const scale = max - min;
 
-    const result = serie.color_threshold.map((thres, index, arr) => {
+    const result = serie.color_threshold.flatMap((thres, index, arr) => {
+      if (
+        (thres.value > max && arr[index - 1] && arr[index - 1].value > max) ||
+        (thres.value < min && arr[index + 1] && arr[index + 1].value < min)
+      ) {
+        return [];
+      }
       let color: string | undefined = undefined;
       const defaultOp = serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
       let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
@@ -772,12 +778,14 @@ class ChartsCard extends LitElement {
       }
       color = color || tinycolor(thres.color || defColor).toHexString();
       if ([undefined, 'line'].includes(serie.type)) color = tinycolor(color).setAlpha(opacity).toHex8String();
-      return {
-        color: color || tinycolor(thres.color || defColor).toHexString(),
-        offset:
-          scale <= 0 ? 0 : invert ? 100 - (max - thres.value) * (100 / scale) : (max - thres.value) * (100 / scale),
-        opacity,
-      };
+      return [
+        {
+          color: color || tinycolor(thres.color || defColor).toHexString(),
+          offset:
+            scale <= 0 ? 0 : invert ? 100 - (max - thres.value) * (100 / scale) : (max - thres.value) * (100 / scale),
+          opacity,
+        },
+      ];
     });
     return invert ? result : result.reverse();
   }
