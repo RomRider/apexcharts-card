@@ -1,3 +1,31 @@
+## [1.7.0](https://github.com/RomRider/apexcharts-card/compare/v1.6.0...v1.7.0) (2021-02-16)
+
+
+### Features
+
+* **datalabels:** Option to display total when chart is stacked ([#75](https://github.com/RomRider/apexcharts-card/issues/75)) ([e1c5b01](https://github.com/RomRider/apexcharts-card/commit/e1c5b015bd753c2d2b5a33dd564f0b150d66f2d8)), closes [#73](https://github.com/RomRider/apexcharts-card/issues/73)
+* **experimental:** Header color can now follow `color_threshold` ([#88](https://github.com/RomRider/apexcharts-card/issues/88)) ([074bfc3](https://github.com/RomRider/apexcharts-card/commit/074bfc30f1dc1ac88ba08edb4f749e0744d9a722)), closes [#78](https://github.com/RomRider/apexcharts-card/issues/78)
+* **locale:** Inherit locale from Home-Assistant, deprecate `hours_12` ([#70](https://github.com/RomRider/apexcharts-card/issues/70)) ([af2d201](https://github.com/RomRider/apexcharts-card/commit/af2d2013f57540dc35471dad90b09b93f4b9dc4f)), closes [#68](https://github.com/RomRider/apexcharts-card/issues/68)
+* **series.show:** Display your serie's extremas on the chart ([#85](https://github.com/RomRider/apexcharts-card/issues/85)) ([f64169a](https://github.com/RomRider/apexcharts-card/commit/f64169ad0583aa754370d09d3567e2ba4d0ec9c8))
+* **series.show:** Option to show the raw data in the header ([#76](https://github.com/RomRider/apexcharts-card/issues/76)) ([87b56f5](https://github.com/RomRider/apexcharts-card/commit/87b56f576389964fcf08ec0968589d6dd89407b1)), closes [#69](https://github.com/RomRider/apexcharts-card/issues/69)
+* **transform:** Provide the full state as `entity` to the function ([#77](https://github.com/RomRider/apexcharts-card/issues/77)) ([9919c10](https://github.com/RomRider/apexcharts-card/commit/9919c10543b70220f5c7e6dab972324e807c095c)), closes [#71](https://github.com/RomRider/apexcharts-card/issues/71)
+
+
+### Bug Fixes
+
+* **config_templates:** Was supposed to support a string ([f36d9b1](https://github.com/RomRider/apexcharts-card/commit/f36d9b17eb5e768e1850a5d20e12374739f0fa4e)), closes [#87](https://github.com/RomRider/apexcharts-card/issues/87)
+* color with alpha would render area opaque ([100b6d4](https://github.com/RomRider/apexcharts-card/commit/100b6d4e72272127783c65b1132dbefb0b349f95))
+* Support for `rgba` colors ([7ecfafd](https://github.com/RomRider/apexcharts-card/commit/7ecfafdbeca0813d8983c061a03d375c5378142b))
+* truncate floats in total datalabels ([917a20a](https://github.com/RomRider/apexcharts-card/commit/917a20a47e1b25cf4367770e31399a177334d345)), closes [#73](https://github.com/RomRider/apexcharts-card/issues/73)
+* Wrong labels in tooltip in some cases ([8f0aca1](https://github.com/RomRider/apexcharts-card/commit/8f0aca1832f98d034990d75f8f09b195869b788c))
+
+
+### Documentation
+
+* Better info about month and year as offset units ([c194f87](https://github.com/RomRider/apexcharts-card/commit/c194f87cf419371b779602a9cda7f1927bf55757)), closes [#65](https://github.com/RomRider/apexcharts-card/issues/65)
+* **config_templates:** Fix wrong config example ([ea1fef4](https://github.com/RomRider/apexcharts-card/commit/ea1fef45736b11fa79a78ca1ac59e7c80c42b39a))
+* Card is now available in HACS by default ([1200abd](https://github.com/RomRider/apexcharts-card/commit/1200abd7909fb6d522d69cf9eb8cdfdab25a0a59))
+
 ## [1.7.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.7.0-dev.3...v1.7.0-dev.4) (2021-02-15)
 
 

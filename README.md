@@ -80,7 +80,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.6.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.7.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -91,7 +91,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.6.0
+  - url: /local/apexcharts-card.js?v=1.7.0
     type: module
 ```
 
@@ -132,7 +132,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
-| ~~`hours_12`~~ | ~~boolean~~ | ~~`false`~~ | ~~v1.5.0~~ | **Deprecated since NEXT_VERSION** ~~Display time in 12h format instead of the default 24h format~~ |
+| ~~`hours_12`~~ | ~~boolean~~ | ~~`false`~~ | ~~v1.5.0~~ | **Deprecated since v1.7.0** ~~Display time in 12h format instead of the default 24h format~~ |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
@@ -141,7 +141,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
-| `locale` | string | | NEXT_VERSION | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
+| `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
 
 
 
@@ -176,12 +176,12 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header. If set to `raw` (introduced in NEXT_VERSION), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. |
-| `header_color_threshold` | boolean | `false` | NEXT_VERSION | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
+| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. |
+| `header_color_threshold` | boolean | `false` | v1.7.0 | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
-| `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in NEXT_VERSION), it will display the stacked total value (only works when `stacked: true`) |
+| `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
-| `extremas` | boolean | `false` | NEXT_VERSION | If enabled, will show the min and the max of the serie in the chart. This feature doesn't work with `stacked: true`. |
+| `extremas` | boolean | `false` | v1.7.0 | If enabled, will show the min and the max of the serie in the chart. This feature doesn't work with `stacked: true`. |
 
 
 ### Main `show` Options
