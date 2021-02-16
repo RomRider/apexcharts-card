@@ -8,7 +8,6 @@ import * as pjson from '../package.json';
 import {
   computeColor,
   computeColors,
-  computeColorsWithAlpha,
   computeName,
   computeTextColor,
   computeUom,
@@ -694,10 +693,7 @@ class ChartsCard extends LitElement {
   }
 
   private _computeChartColors(): (string | (({ value }) => string))[] {
-    const defaultColors: (string | (({ value }) => string))[] = computeColorsWithAlpha(
-      this._colors,
-      this._config?.series_in_graph,
-    );
+    const defaultColors: (string | (({ value }) => string))[] = computeColors(this._colors);
     this._config?.series_in_graph.forEach((serie, index) => {
       if (
         this._config?.experimental?.color_threshold &&
@@ -813,12 +809,12 @@ class ChartsCard extends LitElement {
           const prev = serie.color_threshold[index - 1];
           const next = serie.color_threshold[index];
           if (serie.type === 'column') {
-            color = computeColor(prev.color || this._headerColors[serie.index], false);
+            color = computeColor(prev.color || this._headerColors[serie.index]);
           } else {
             const factor = (value - prev.value) / (next.value - prev.value);
             color = interpolateColor(
-              computeColor(prev.color || this._headerColors[serie.index], false),
-              computeColor(next.color || this._headerColors[serie.index], false),
+              computeColor(prev.color || this._headerColors[serie.index]),
+              computeColor(next.color || this._headerColors[serie.index]),
               factor,
             );
           }
