@@ -1,3 +1,10 @@
+### [1.7.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.7.0...v1.7.1-dev.1) (2021-02-16)
+
+
+### Bug Fixes
+
+* **color_threshold:** Sometimes it would break the card ([65b5419](https://github.com/RomRider/apexcharts-card/commit/65b54191a2bd7ce03aaae97835043c4901e72fc7))
+
 ## [1.7.0](https://github.com/RomRider/apexcharts-card/compare/v1.6.0...v1.7.0) (2021-02-16)
 
 
