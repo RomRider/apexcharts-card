@@ -1,3 +1,11 @@
+### [1.7.1](https://github.com/RomRider/apexcharts-card/compare/v1.7.0...v1.7.1) (2021-02-17)
+
+
+### Bug Fixes
+
+* Disable support for colors with alpha channel ([#91](https://github.com/RomRider/apexcharts-card/issues/91)) ([522363a](https://github.com/RomRider/apexcharts-card/commit/522363aaa681777f53d744330355f46d9fa5042a)), closes [#90](https://github.com/RomRider/apexcharts-card/issues/90)
+* **color_threshold:** Sometimes it would break the card ([65b5419](https://github.com/RomRider/apexcharts-card/commit/65b54191a2bd7ce03aaae97835043c4901e72fc7))
+
 ### [1.7.1-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.7.1-dev.1...v1.7.1-dev.2) (2021-02-16)
 
 
