@@ -1,3 +1,16 @@
+## [1.8.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.7.1...v1.8.0-dev.1) (2021-02-18)
+
+
+### Features
+
+* **extremas:** Display the time on top of your extremas ([#97](https://github.com/RomRider/apexcharts-card/issues/97)) ([d127b37](https://github.com/RomRider/apexcharts-card/commit/d127b376fb1c3931c5c9c95129347144eb5ea791))
+
+
+### Bug Fixes
+
+* **extremas:** Multi y-axis support ([#98](https://github.com/RomRider/apexcharts-card/issues/98)) ([5c7d742](https://github.com/RomRider/apexcharts-card/commit/5c7d7424e100b5a3327d94800e36f31e9931cfe8)), closes [#89](https://github.com/RomRider/apexcharts-card/issues/89)
+* extremas was not working with `invert: true` ([4d06ef6](https://github.com/RomRider/apexcharts-card/commit/4d06ef68b72cd99777b18f6c7b7e0aa32cf32c1c)), closes [#96](https://github.com/RomRider/apexcharts-card/issues/96)
+
 ### [1.7.1](https://github.com/RomRider/apexcharts-card/compare/v1.7.0...v1.7.1) (2021-02-17)
 
 
