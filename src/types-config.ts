@@ -66,7 +66,7 @@ export interface ChartCardAllSeriesExternalConfig {
     in_chart?: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
-    extremas?: boolean;
+    extremas?: boolean | 'time';
   };
   group_by?: {
     duration?: string;
@@ -107,7 +107,7 @@ export interface ChartCardSeriesExternalConfig {
     in_chart?: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
-    extremas?: boolean;
+    extremas?: boolean | 'time';
   };
   group_by?: {
     duration?: string;

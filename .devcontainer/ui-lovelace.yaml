@@ -59,7 +59,7 @@ views:
                 type: area
                 curve: straight
                 show:
-                  extremas: true
+                  extremas: time
               # - entity: sensor.random_0_1000
               #   name: Sensor 2
               #   type: area
@@ -337,6 +337,7 @@ views:
                   datalabels: true
 
           - type: custom:apexcharts-card
+            graph_span: 24h
             span:
               start: day
             y_axis_precision: 5
@@ -351,7 +352,7 @@ views:
               - entity: sensor.pvpc
                 float_precision: 5
                 show:
-                  extremas: true
+                  extremas: time
                 data_generator: |
                   return [...Array(22).keys()].map((hour) => {
                     const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';

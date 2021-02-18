@@ -31,7 +31,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     in_chart: boolean;
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
-    extremas?: boolean;
+    extremas?: boolean | 'time';
   };
 }
 
