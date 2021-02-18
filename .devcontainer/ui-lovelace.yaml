@@ -768,6 +768,9 @@ views:
             header:
               show: true
               title: Weather Forecast
+            all_series_config:
+              show:
+                extremas: time
             series:
               - entity: weather.home
                 type: area
@@ -800,7 +803,7 @@ views:
                 stroke_width: 0
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
-                    return [new Date(entry.datetime).getTime(), entry.snow];
+                    return [new Date(entry.datetime).getTime(), entry.temperature];
                   });
               - entity: weather.home
                 type: column
@@ -811,5 +814,5 @@ views:
                 stroke_width: 0
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
-                    return [new Date(entry.datetime).getTime(), entry.precipitation];
+                    return [new Date(entry.datetime).getTime(), entry.templow];
                   });
