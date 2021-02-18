@@ -630,8 +630,8 @@ class ChartsCard extends LitElement {
           const txtColor = computeTextColor(bgColor);
           if (!min[0] || !max[0]) return [];
           return [
-            this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index),
-            this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index),
+            this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index, serie.invert),
+            this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index, serie.invert),
           ];
         } else {
           return [];
@@ -646,10 +646,11 @@ class ChartsCard extends LitElement {
     txtColor: string,
     serie: ChartCardSeriesConfig,
     index: number,
+    invert = false,
   ) {
     return {
       x: value[0],
-      y: value[1],
+      y: invert && value[1] ? -value[1] : value[1],
       seriesIndex: index,
       marker: {
         strokeColor: bgColor,

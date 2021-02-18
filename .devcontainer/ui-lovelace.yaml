@@ -54,10 +54,17 @@ views:
                 show:
                   extremas: true
               - entity: sensor.random_0_1000
-                name: Sensor 2
-                type: area
-                offset: -1d
+                name: Sensor 1
                 invert: true
+                type: area
+                curve: straight
+                show:
+                  extremas: true
+              # - entity: sensor.random_0_1000
+              #   name: Sensor 2
+              #   type: area
+              #   offset: -1d
+              #   invert: true
             graph_span: 15min
             cache: true
             layout: minimal
