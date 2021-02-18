@@ -619,6 +619,10 @@ class ChartsCard extends LitElement {
   }
 
   private _computeMinMaxPointsAnnotations(start: Date, end: Date) {
+    const sameDay =
+      start.getFullYear() === end.getFullYear() &&
+      start.getMonth() === end.getMonth() &&
+      start.getDate() === end.getDate();
     return {
       points: this._config?.series_in_graph.flatMap((serie, index) => {
         if (serie.show.extremas) {
@@ -630,8 +634,8 @@ class ChartsCard extends LitElement {
           const txtColor = computeTextColor(bgColor);
           if (!min[0] || !max[0]) return [];
           return [
-            this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index, serie.invert),
-            this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index, serie.invert),
+            ...this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index, serie.invert, sameDay),
+            ...this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index, serie.invert, sameDay),
           ];
         } else {
           return [];
@@ -647,8 +651,11 @@ class ChartsCard extends LitElement {
     serie: ChartCardSeriesConfig,
     index: number,
     invert = false,
+    sameDay: boolean,
   ) {
-    return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const points: any = [];
+    points.push({
       x: value[0],
       y: invert && value[1] ? -value[1] : value[1],
       seriesIndex: index,
@@ -665,7 +672,41 @@ class ChartsCard extends LitElement {
           color: txtColor,
         },
       },
-    };
+    });
+    if (serie.show.extremas === 'time') {
+      let bgColorTime = tinycolor(computeColor('var(--card-background-color)'));
+      bgColorTime =
+        bgColorTime.isValid && bgColorTime.getLuminance() > 0.5 ? bgColorTime.darken(20) : bgColorTime.lighten(20);
+      const txtColorTime = computeTextColor(bgColorTime.toHexString());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const options: any = { timeStyle: 'medium' };
+      if (!sameDay) {
+        options.dateStyle = 'medium';
+      }
+      points.push({
+        x: value[0],
+        y: invert && value[1] ? -value[1] : value[1],
+        seriesIndex: index,
+        marker: {
+          size: 0,
+        },
+        label: {
+          text: `${Intl.DateTimeFormat(this._config?.locale || this._hass?.language || 'en', options).format(
+            value[0],
+          )}`,
+          borderColor: 'var(--card-background-color)',
+          offsetY: -22,
+          borderWidth: 0,
+          style: {
+            background: bgColorTime.toHexString(),
+            color: txtColorTime,
+            fontSize: '8px',
+            fontWeight: 200,
+          },
+        },
+      });
+    }
+    return points;
   }
 
   private _computeNowAnnotation() {
