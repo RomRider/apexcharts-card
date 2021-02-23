@@ -45,6 +45,7 @@ export const ChartCardSpanExtConfig = t.iface([], {
 });
 
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
+  "entity": t.opt("string"),
   "attribute": t.opt("string"),
   "name": t.opt("string"),
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
@@ -80,41 +81,8 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
 });
 
-export const ChartCardSeriesExternalConfig = t.iface([], {
+export const ChartCardSeriesExternalConfig = t.iface(["ChartCardAllSeriesExternalConfig"], {
   "entity": "string",
-  "attribute": t.opt("string"),
-  "name": t.opt("string"),
-  "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
-  "color": t.opt("string"),
-  "opacity": t.opt("number"),
-  "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
-  "stroke_width": t.opt("number"),
-  "extend_to_end": t.opt("boolean"),
-  "unit": t.opt("string"),
-  "invert": t.opt("boolean"),
-  "data_generator": t.opt("string"),
-  "float_precision": t.opt("number"),
-  "min": t.opt("number"),
-  "max": t.opt("number"),
-  "offset": t.opt("string"),
-  "fill_raw": t.opt("GroupByFill"),
-  "show": t.opt(t.iface([], {
-    "as_duration": t.opt("ChartCardPrettyTime"),
-    "legend_value": t.opt("boolean"),
-    "in_header": t.opt(t.union("boolean", t.lit('raw'))),
-    "header_color_threshold": t.opt("boolean"),
-    "in_chart": t.opt("boolean"),
-    "datalabels": t.opt(t.union("boolean", t.lit('total'))),
-    "hidden_by_default": t.opt("boolean"),
-    "extremas": t.opt(t.union("boolean", t.lit('time'))),
-  })),
-  "group_by": t.opt(t.iface([], {
-    "duration": t.opt("string"),
-    "func": t.opt("GroupByFunc"),
-    "fill": t.opt("GroupByFill"),
-  })),
-  "transform": t.opt("string"),
-  "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
 });
 
 export const ChartCardPrettyTime = t.union(t.lit('millisecond'), t.lit('second'), t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'));

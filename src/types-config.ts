@@ -42,6 +42,7 @@ export interface ChartCardSpanExtConfig {
 }
 
 export interface ChartCardAllSeriesExternalConfig {
+  entity?: string;
   attribute?: string;
   name?: string;
   type?: 'line' | 'column' | 'area';
@@ -77,45 +78,8 @@ export interface ChartCardAllSeriesExternalConfig {
   color_threshold?: ChartCardColorThreshold[];
 }
 
-// Need to duplicate because of https://github.com/gristlabs/ts-interface-checker/issues/35
-// export interface ChartCardSeriesExternalConfig extends ChartCardAllSeriesExternalConfig {
-//   entity: string;
-// }
-export interface ChartCardSeriesExternalConfig {
+export interface ChartCardSeriesExternalConfig extends ChartCardAllSeriesExternalConfig {
   entity: string;
-  attribute?: string;
-  name?: string;
-  type?: 'line' | 'column' | 'area';
-  color?: string;
-  opacity?: number;
-  curve?: 'smooth' | 'straight' | 'stepline';
-  stroke_width?: number;
-  extend_to_end?: boolean;
-  unit?: string;
-  invert?: boolean;
-  data_generator?: string;
-  float_precision?: number;
-  min?: number;
-  max?: number;
-  offset?: string;
-  fill_raw?: GroupByFill;
-  show?: {
-    as_duration?: ChartCardPrettyTime;
-    legend_value?: boolean;
-    in_header?: boolean | 'raw';
-    header_color_threshold?: boolean;
-    in_chart?: boolean;
-    datalabels?: boolean | 'total';
-    hidden_by_default?: boolean;
-    extremas?: boolean | 'time';
-  };
-  group_by?: {
-    duration?: string;
-    func?: GroupByFunc;
-    fill?: GroupByFill;
-  };
-  transform?: string;
-  color_threshold?: ChartCardColorThreshold[];
 }
 
 export type ChartCardPrettyTime = 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';

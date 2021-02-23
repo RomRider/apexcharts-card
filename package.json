@@ -44,7 +44,7 @@
     "parse-duration": "^0.4.4",
     "spark-md5": "^3.0.1",
     "tinycolor": "^0.0.1",
-    "ts-interface-checker": "^0.1.13"
+    "ts-interface-checker": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
