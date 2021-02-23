@@ -235,6 +235,7 @@ function getDateTimeFormatter(hours12: boolean | undefined): unknown {
 function getXTooltipFormatter(
   config: ChartCardConfig,
   lang: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ((val: number, _a: any, _b: any) => string) | undefined {
   if (config.apex_config?.tooltip?.x?.format) return undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -245,12 +246,12 @@ function getXTooltipFormatter(
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return parse(config.graph_span)! < HOUR_24 && !config.span?.offset
     ? function (val, _a, _b, hours_12 = hours12) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Intl.DateTimeFormat(lang, {
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
           ...hours_12,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any).format(val);
       }
     : function (val, _a, _b, hours_12 = hours12) {
@@ -263,6 +264,7 @@ function getXTooltipFormatter(
           minute: 'numeric',
           second: 'numeric',
           ...hours_12,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any).format(val);
       };
 }
