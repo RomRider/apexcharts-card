@@ -271,8 +271,12 @@ function getXTooltipFormatter(
 
 function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (value, opts, conf = config, hass2 = hass) {
+    let lValue = value;
+    if (conf.series_in_graph[opts.seriesIndex]?.invert && lValue) {
+      lValue = -lValue;
+    }
     if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
-      value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
+      lValue = truncateFloat(lValue, conf.series_in_graph[opts.seriesIndex].float_precision);
     }
     const uom = computeUom(
       opts.seriesIndex,
@@ -282,8 +286,8 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
     );
     return conf.series_in_graph[opts.seriesIndex]?.show.as_duration
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        [`<strong>${prettyPrintTime(value, conf.series_in_graph[opts.seriesIndex].show.as_duration!)}</strong>`]
-      : [`<strong>${value} ${uom}</strong>`];
+        [`<strong>${prettyPrintTime(lValue, conf.series_in_graph[opts.seriesIndex].show.as_duration!)}</strong>`]
+      : [`<strong>${lValue} ${uom}</strong>`];
   };
 }
 
@@ -296,7 +300,11 @@ function getDataLabelsFormatter(config: ChartCardConfig) {
       );
     }
     if (value === null) return;
-    return truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
+    let lValue = value;
+    if (conf.series_in_graph[opts.seriesIndex]?.invert && lValue) {
+      lValue = -lValue;
+    }
+    return truncateFloat(lValue, conf.series_in_graph[opts.seriesIndex].float_precision);
   };
 }
 
@@ -326,6 +334,9 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       let value = TIMESERIES_TYPES.includes(config.chart_type)
         ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0]
         : opts.w.globals.series[opts.seriesIndex];
+      if (conf.series_in_graph[opts.seriesIndex]?.invert && value) {
+        value = -value;
+      }
       if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
         value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
       }

@@ -317,7 +317,7 @@ views:
                   func: avg
                   fill: 'last'
                 show:
-                  legend_value: false
+                  legend_value: true
                   datalabels: true
               - entity: sensor.random0_100
                 extend_to_end: false
