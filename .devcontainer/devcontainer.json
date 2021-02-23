@@ -1,12 +1,9 @@
 {
-  "name": "Mini Graph Card Development",
+  "name": "ApexCharts-card Development",
   "image": "ghcr.io/ludeeus/devcontainer/generic:latest",
   "context": "..",
   "remoteUser": "vscode",
-  "appPort": [
-    "8123:8123",
-    "5000:5000",
-  ],
+  "appPort": ["8123:8123", "5000:5000"],
   "postCreateCommand": "npm install && sudo container install",
   "extensions": [
     "github.vscode-pull-request-github",
@@ -16,7 +13,7 @@
     "yzhang.markdown-all-in-one",
     "esbenp.prettier-vscode",
     "bierner.lit-html",
-    "cschleiden.vscode-github-actions",
+    "cschleiden.vscode-github-actions"
   ],
   "settings": {
     "files.eol": "\n",
@@ -35,6 +32,6 @@
       "**/.hg/store/**": true,
       "**/.rpt2_cache/**": true
     },
-    "markdown.extension.tableFormatter.enabled": false,
+    "markdown.extension.tableFormatter.enabled": false
   }
 }
