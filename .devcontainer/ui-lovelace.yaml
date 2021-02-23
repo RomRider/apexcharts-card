@@ -816,3 +816,20 @@ views:
                   return entity.attributes.forecast.map((entry) => {
                     return [new Date(entry.datetime).getTime(), entry.templow];
                   });
+          - type: 'custom:apexcharts-card'
+            span:
+              end: day
+            hours_12: false
+            header:
+              show: true
+              show_states: true
+              colorize_states: true
+            all_series_config:
+              stroke_width: 2
+            series:
+              - entity: sensor.pvpc
+                name: Daikin
+                type: column
+                group_by:
+                  func: sum
+                  duration: 120min

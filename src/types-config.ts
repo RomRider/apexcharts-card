@@ -8,6 +8,7 @@ export interface ChartCardExternalConfig {
     disable_config_validation?: boolean;
     hidden_by_default?: boolean;
   };
+  hours_12?: boolean;
   chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
   update_interval?: string;
   update_delay?: string;

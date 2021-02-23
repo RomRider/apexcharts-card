@@ -190,7 +190,7 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
 
 function getXAxis(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
-    const hours12 = is12Hour(config.locale || hass?.language || 'en');
+    const hours12 = config.hours_12 !== undefined ? config.hours_12 : is12Hour(config.locale || hass?.language || 'en');
     return {
       type: 'datetime',
       // range: getMilli(config.hours_to_show),
@@ -232,17 +232,38 @@ function getDateTimeFormatter(hours12: boolean | undefined): unknown {
   }
 }
 
-function getXTooltipFormatter(config: ChartCardConfig, lang: string): ((val: number) => string) | undefined {
+function getXTooltipFormatter(
+  config: ChartCardConfig,
+  lang: string,
+): ((val: number, _a: any, _b: any) => string) | undefined {
   if (config.apex_config?.tooltip?.x?.format) return undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let hours12: any = undefined;
+  if (config.hours_12 !== undefined) {
+    hours12 = config.hours_12 ? { hour12: true } : { hourCycle: 'h23' };
+  }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return parse(config.graph_span)! < HOUR_24 && !config.span?.offset
-    ? function (val) {
+    ? function (val, _a, _b, hours_12 = hours12) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return new Intl.DateTimeFormat(lang, { timeStyle: 'medium' } as any).format(val);
+        return new Intl.DateTimeFormat(lang, {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          ...hours_12,
+        } as any).format(val);
       }
-    : function (val) {
+    : function (val, _a, _b, hours_12 = hours12) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return new Intl.DateTimeFormat(lang, { dateStyle: 'medium', timeStyle: 'medium' } as any).format(val);
+        return new Intl.DateTimeFormat(lang, {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          ...hours_12,
+        } as any).format(val);
       };
 }
 

@@ -14,6 +14,7 @@ export const ChartCardExternalConfig = t.iface([], {
     "disable_config_validation": t.opt("boolean"),
     "hidden_by_default": t.opt("boolean"),
   })),
+  "hours_12": t.opt("boolean"),
   "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
   "update_interval": t.opt("string"),
   "update_delay": t.opt("string"),
