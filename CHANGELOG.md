@@ -1,3 +1,10 @@
+## [1.8.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2021-02-23)
+
+
+### Bug Fixes
+
+* Display non inverted numbers in legend/tooltip/datalabels when `invert: true` ([331fe04](https://github.com/RomRider/apexcharts-card/commit/331fe044f7c7cd1ed324c0be24a4469fcdfaaad1)), closes [#96](https://github.com/RomRider/apexcharts-card/issues/96)
+
 ## [1.8.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2021-02-23)
 
 
