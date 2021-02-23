@@ -353,6 +353,7 @@ views:
                 float_precision: 5
                 show:
                   extremas: time
+                  in_header: true
                 data_generator: |
                   return [...Array(22).keys()].map((hour) => {
                     const attr = 'price_' + `${hour}`.padStart(2, '0') + 'h';
@@ -391,7 +392,7 @@ views:
                 extend_to_end: false
                 unit: °C
                 show:
-                  in_header: false
+                  in_header: after_now
                 data_generator: |
                   return entity.attributes.forecast.map((entry) => {
                     return [new Date(entry.datetime).getTime(), entry.temperature];

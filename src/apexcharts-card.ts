@@ -512,12 +512,18 @@ class ChartsCard extends LitElement {
         graphData = {
           series: this._graphs.flatMap((graph, index) => {
             if (!graph) return [];
-            if (this._config?.series[index].show.in_header !== 'raw') {
+            const inHeader = this._config?.series[index].show.in_header;
+            if (inHeader && inHeader !== 'raw') {
+              // not raw
               if (graph.history.length === 0) {
                 this._headerState[index] = null;
-              } else {
+              } else if (inHeader === true) {
+                // last
                 const lastState = graph.history[graph.history.length - 1][1];
                 this._headerState[index] = lastState;
+              } else {
+                // before_now / after_now
+                this._headerState[index] = graph.nowValue(inHeader === 'before_now');
               }
             }
             if (!this._config?.series[index].show.in_chart) {

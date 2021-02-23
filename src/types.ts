@@ -26,7 +26,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
   show: {
     as_duration?: ChartCardPrettyTime;
     legend_value: boolean;
-    in_header: boolean | 'raw';
+    in_header: boolean | 'raw' | 'before_now' | 'after_now';
     header_color_threshold?: boolean;
     in_chart: boolean;
     datalabels?: boolean | 'total';

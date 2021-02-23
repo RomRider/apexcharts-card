@@ -108,6 +108,18 @@ export default class GraphEntry {
     this._cache = cache;
   }
 
+  public nowValue(before: boolean): number | null {
+    if (this.history.length === 0) return null;
+    const now = new Date().getTime();
+    const index = this.history.findIndex((point, index, arr) => {
+      if (!before && point[0] > now) return true;
+      if (before && point[0] < now && arr[index + 1] && arr[index + 1][0] > now) return true;
+      return false;
+    });
+    if (index === -1) return null;
+    return this.history[index][1];
+  }
+
   get min(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
     return Math.min(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
