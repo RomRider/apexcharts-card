@@ -1,3 +1,11 @@
+## [1.8.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2021-02-23)
+
+
+### Features
+
+* **series.show:** Display the value before/after the current time in the header ([2855403](https://github.com/RomRider/apexcharts-card/commit/2855403ee1c025326015793367f0ff3b34dc8827)), closes [#86](https://github.com/RomRider/apexcharts-card/issues/86)
+* Bring back `hours_12` from the dead ([676bdb7](https://github.com/RomRider/apexcharts-card/commit/676bdb7f3b60a39dc4eeb4fa0a424f15648315db))
+
 ## [1.8.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.7.1...v1.8.0-dev.1) (2021-02-18)
 
 
