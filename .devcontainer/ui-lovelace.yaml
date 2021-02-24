@@ -834,3 +834,11 @@ views:
                 group_by:
                   func: sum
                   duration: 120min
+
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            series:
+              - entity: sensor.random0_100
+                stroke_width: 2
+                show:
+                  in_brush: true

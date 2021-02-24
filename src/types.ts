@@ -10,6 +10,7 @@ import {
 export interface ChartCardConfig extends ChartCardExternalConfig {
   series: ChartCardSeriesConfig[];
   series_in_graph: ChartCardSeriesConfig[];
+  series_in_brush: ChartCardSeriesConfig[];
   graph_span: string;
   cache: boolean;
   useCompress: boolean;
@@ -32,6 +33,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
     extremas?: boolean | 'time';
+    in_brush?: boolean;
   };
 }
 

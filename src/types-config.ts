@@ -9,7 +9,7 @@ export interface ChartCardExternalConfig {
     hidden_by_default?: boolean;
   };
   hours_12?: boolean;
-  chart_type?: 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
+  chart_type?: ChartCardChartType;
   update_interval?: string;
   update_delay?: string;
   all_series_config?: ChartCardAllSeriesExternalConfig;
@@ -34,6 +34,15 @@ export interface ChartCardExternalConfig {
   // Support to define style (card-mod or picture-entity)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
+  brush?: ChartCardBrushExtConfig;
+}
+
+export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
+
+export interface ChartCardBrushExtConfig {
+  initial_span?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apex_config?: any;
 }
 
 export interface ChartCardSpanExtConfig {
@@ -69,6 +78,7 @@ export interface ChartCardAllSeriesExternalConfig {
     datalabels?: boolean | 'total';
     hidden_by_default?: boolean;
     extremas?: boolean | 'time';
+    in_brush?: boolean;
   };
   group_by?: {
     duration?: string;

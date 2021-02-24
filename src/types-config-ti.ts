@@ -15,7 +15,7 @@ export const ChartCardExternalConfig = t.iface([], {
     "hidden_by_default": t.opt("boolean"),
   })),
   "hours_12": t.opt("boolean"),
-  "chart_type": t.opt(t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'))),
+  "chart_type": t.opt("ChartCardChartType"),
   "update_interval": t.opt("string"),
   "update_delay": t.opt("string"),
   "all_series_config": t.opt("ChartCardAllSeriesExternalConfig"),
@@ -37,6 +37,14 @@ export const ChartCardExternalConfig = t.iface([], {
   "apex_config": t.opt("any"),
   "header": t.opt("ChartCardHeaderExternalConfig"),
   "style": t.opt("any"),
+  "brush": t.opt("ChartCardBrushExtConfig"),
+});
+
+export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'));
+
+export const ChartCardBrushExtConfig = t.iface([], {
+  "initial_span": t.opt("string"),
+  "apex_config": t.opt("any"),
 });
 
 export const ChartCardSpanExtConfig = t.iface([], {
@@ -72,6 +80,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
     "datalabels": t.opt(t.union("boolean", t.lit('total'))),
     "hidden_by_default": t.opt("boolean"),
     "extremas": t.opt(t.union("boolean", t.lit('time'))),
+    "in_brush": t.opt("boolean"),
   })),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
@@ -108,6 +117,8 @@ export const ChartCardColorThreshold = t.iface([], {
 
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
+  ChartCardChartType,
+  ChartCardBrushExtConfig,
   ChartCardSpanExtConfig,
   ChartCardAllSeriesExternalConfig,
   ChartCardSeriesExternalConfig,

@@ -403,14 +403,11 @@ export default class GraphEntry {
       (buckets[buckets.length - 1].data.length > 0 &&
         buckets[buckets.length - 1].data[buckets[buckets.length - 1].data.length - 1][1] === null)
     )
-      buckets = buckets
-        .reverse()
-        .flatMap((bucket) => {
-          if (bucket.data[1] === null) return [];
-          if (bucket.data.length === 0) return [];
-          else return [bucket];
-        })
-        .reverse();
+      buckets = buckets.flatMap((bucket) => {
+        if (bucket.data[1] === null) return [];
+        if (bucket.data.length === 0) return [];
+        else return [bucket];
+      });
     return buckets;
   }
 

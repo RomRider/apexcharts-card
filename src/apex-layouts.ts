@@ -158,6 +158,107 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
   return config.apex_config ? mergeDeep(mergeDeep(def, conf), config.apex_config) : mergeDeep(def, conf);
 }
 
+export function getBrushLayoutConfig(
+  config: ChartCardConfig,
+  hass: HomeAssistant | undefined = undefined,
+  id: string,
+): unknown {
+  const locales = {
+    ca: ca,
+    cs: cs,
+    de: de,
+    el: el,
+    en: en,
+    es: es,
+    fi: fi,
+    fr: fr,
+    he: he,
+    hi: hi,
+    hr: hr,
+    hy: hy,
+    id: id,
+    it: it,
+    ka: ka,
+    ko: ko,
+    lt: lt,
+    nb: nb,
+    nl: nl,
+    pl: pl,
+    'pt-br': pt_br,
+    pt: pt,
+    rs: rs,
+    ru: ru,
+    se: se,
+    sk: sk,
+    sl: sl,
+    sq: sq,
+    th: th,
+    tr: tr,
+    ua: ua,
+    'zh-cn': zh_cn,
+  };
+  const def = {
+    chart: {
+      locales: [(config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || en],
+      defaultLocale:
+        (config.locale && locales[config.locale] && config.locale) ||
+        (hass?.language && locales[hass.language] && hass.language) ||
+        'en',
+      type: config.chart_type || DEFAULT_SERIE_TYPE,
+      stacked: config?.stacked,
+      foreColor: 'var(--primary-text-color)',
+      width: '100%',
+      height: '120px',
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+      id: Math.random().toString(36).substring(7),
+      brush: {
+        target: id,
+        enabled: true,
+      },
+    },
+    grid: {
+      strokeDashArray: 3,
+    },
+    fill: {
+      opacity: getFillOpacity(config),
+      type: getFillType(config),
+    },
+    series: getSeries(config, hass),
+    xaxis: getXAxis(config, hass),
+    yaxis: {
+      tickAmount: 2,
+    },
+    tooltip: {
+      enabled: false,
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    stroke: {
+      curve: getStrokeCurve(config),
+      lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
+      colors:
+        config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
+      width: getStrokeWidth(config),
+    },
+    markers: {
+      showNullDataPoints: false,
+    },
+    noData: {
+      text: 'Loading...',
+    },
+  };
+  return config.brush?.apex_config ? mergeDeep(def, config.brush.apex_config) : def;
+}
+
 function getFillOpacity(config: ChartCardConfig): number[] {
   return config.series_in_graph.map((serie) => {
     return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
