@@ -834,3 +834,30 @@ views:
                 group_by:
                   func: sum
                   duration: 120min
+
+          - type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+              brush: true
+            graph_span: 2h
+            brush:
+              selection_span: 10m
+            series:
+              - entity: sensor.random0_100
+                color: blue
+                type: area
+                stroke_width: 1
+                color_threshold:
+                  - value: 0
+                    color: red
+                  - value: 50
+                    color: yellow
+                  - value: 100
+                    color: green
+              - entity: sensor.random0_100
+                color: blue
+                stroke_width: 1
+                float_precision: 0
+                show:
+                  in_brush: true
+                  in_chart: false

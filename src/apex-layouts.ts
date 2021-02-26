@@ -12,77 +12,15 @@ import {
 import { ChartCardConfig } from './types';
 import { computeName, computeUom, is12Hour, mergeDeep, prettyPrintTime, truncateFloat } from './utils';
 import { layoutMinimal } from './layouts/minimal';
-import * as ca from 'apexcharts/dist/locales/ca.json';
-import * as cs from 'apexcharts/dist/locales/cs.json';
-import * as de from 'apexcharts/dist/locales/de.json';
-import * as el from 'apexcharts/dist/locales/el.json';
-import * as en from 'apexcharts/dist/locales/en.json';
-import * as es from 'apexcharts/dist/locales/es.json';
-import * as fi from 'apexcharts/dist/locales/fi.json';
-import * as fr from 'apexcharts/dist/locales/fr.json';
-import * as he from 'apexcharts/dist/locales/he.json';
-import * as hi from 'apexcharts/dist/locales/hi.json';
-import * as hr from 'apexcharts/dist/locales/hr.json';
-import * as hy from 'apexcharts/dist/locales/hy.json';
-import * as id from 'apexcharts/dist/locales/id.json';
-import * as it from 'apexcharts/dist/locales/it.json';
-import * as ka from 'apexcharts/dist/locales/ka.json';
-import * as ko from 'apexcharts/dist/locales/ko.json';
-import * as lt from 'apexcharts/dist/locales/lt.json';
-import * as nb from 'apexcharts/dist/locales/nb.json';
-import * as nl from 'apexcharts/dist/locales/nl.json';
-import * as pl from 'apexcharts/dist/locales/pl.json';
-import * as pt_br from 'apexcharts/dist/locales/pt-br.json';
-import * as pt from 'apexcharts/dist/locales/pt.json';
-import * as rs from 'apexcharts/dist/locales/rs.json';
-import * as ru from 'apexcharts/dist/locales/ru.json';
-import * as se from 'apexcharts/dist/locales/se.json';
-import * as sk from 'apexcharts/dist/locales/sk.json';
-import * as sl from 'apexcharts/dist/locales/sl.json';
-import * as sq from 'apexcharts/dist/locales/sq.json';
-import * as th from 'apexcharts/dist/locales/th.json';
-import * as tr from 'apexcharts/dist/locales/tr.json';
-import * as ua from 'apexcharts/dist/locales/ua.json';
-import * as zh_cn from 'apexcharts/dist/locales/zh-cn.json';
+import { getLocales, getDefaultLocale } from './locales';
 
 export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
-  const locales = {
-    ca: ca,
-    cs: cs,
-    de: de,
-    el: el,
-    en: en,
-    es: es,
-    fi: fi,
-    fr: fr,
-    he: he,
-    hi: hi,
-    hr: hr,
-    hy: hy,
-    id: id,
-    it: it,
-    ka: ka,
-    ko: ko,
-    lt: lt,
-    nb: nb,
-    nl: nl,
-    pl: pl,
-    'pt-br': pt_br,
-    pt: pt,
-    rs: rs,
-    ru: ru,
-    se: se,
-    sk: sk,
-    sl: sl,
-    sq: sq,
-    th: th,
-    tr: tr,
-    ua: ua,
-    'zh-cn': zh_cn,
-  };
+  const locales = getLocales();
   const def = {
     chart: {
-      locales: [(config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || en],
+      locales: [
+        (config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || getDefaultLocale(),
+      ],
       defaultLocale:
         (config.locale && locales[config.locale] && config.locale) ||
         (hass?.language && locales[hass.language] && hass.language) ||
@@ -102,10 +40,10 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       strokeDashArray: 3,
     },
     fill: {
-      opacity: getFillOpacity(config),
-      type: getFillType(config),
+      opacity: getFillOpacity(config, false),
+      type: getFillType(config, false),
     },
-    series: getSeries(config, hass),
+    series: getSeries(config, hass, false),
     labels: getLabels(config, hass),
     xaxis: getXAxis(config, hass),
     yaxis: getYAxis(config),
@@ -131,11 +69,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       formatter: getLegendFormatter(config, hass),
     },
     stroke: {
-      curve: getStrokeCurve(config),
+      curve: getStrokeCurve(config, false),
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
-      width: getStrokeWidth(config),
+      width: getStrokeWidth(config, false),
     },
     markers: {
       showNullDataPoints: false,
@@ -158,17 +96,90 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
   return config.apex_config ? mergeDeep(mergeDeep(def, conf), config.apex_config) : mergeDeep(def, conf);
 }
 
-function getFillOpacity(config: ChartCardConfig): number[] {
-  return config.series_in_graph.map((serie) => {
+export function getBrushLayoutConfig(
+  config: ChartCardConfig,
+  hass: HomeAssistant | undefined = undefined,
+  id: string,
+): unknown {
+  const locales = getLocales();
+  const def = {
+    chart: {
+      locales: [
+        (config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || getDefaultLocale(),
+      ],
+      defaultLocale:
+        (config.locale && locales[config.locale] && config.locale) ||
+        (hass?.language && locales[hass.language] && hass.language) ||
+        'en',
+      type: config.chart_type || DEFAULT_SERIE_TYPE,
+      stacked: config?.stacked,
+      foreColor: 'var(--primary-text-color)',
+      width: '100%',
+      height: '120px',
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+      id: Math.random().toString(36).substring(7),
+      brush: {
+        target: id,
+        enabled: true,
+      },
+    },
+    grid: {
+      strokeDashArray: 3,
+    },
+    fill: {
+      opacity: getFillOpacity(config, true),
+      type: getFillType(config, true),
+    },
+    series: getSeries(config, hass, true),
+    xaxis: getXAxis(config, hass),
+    yaxis: {
+      tickAmount: 2,
+      decimalsInFloat: DEFAULT_FLOAT_PRECISION,
+    },
+    tooltip: {
+      enabled: false,
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    stroke: {
+      curve: getStrokeCurve(config, true),
+      lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
+      colors:
+        config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
+      width: getStrokeWidth(config, true),
+    },
+    markers: {
+      showNullDataPoints: false,
+    },
+    noData: {
+      text: 'Loading...',
+    },
+  };
+  return config.brush?.apex_config ? mergeDeep(def, config.brush.apex_config) : def;
+}
+
+function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
   });
 }
 
-function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
+function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, brush: boolean) {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
-    return config?.series_in_graph.map((serie, index) => {
+    return series.map((serie, index) => {
       return {
-        name: computeName(index, config.series_in_graph, undefined, hass?.states[serie.entity]),
+        name: computeName(index, series, undefined, hass?.states[serie.entity]),
         type: serie.type,
         data: [],
       };
@@ -365,8 +376,9 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
   };
 }
 
-function getStrokeCurve(config: ChartCardConfig) {
-  return config.series_in_graph.map((serie) => {
+function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     return serie.curve || 'smooth';
   });
 }
@@ -377,10 +389,11 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
   });
 }
 
-function getStrokeWidth(config: ChartCardConfig) {
+function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
   if (config.chart_type !== undefined && config.chart_type !== 'line')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
-  return config.series_in_graph.map((serie) => {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     if (serie.stroke_width !== undefined) {
       return serie.stroke_width;
     }
@@ -388,11 +401,12 @@ function getStrokeWidth(config: ChartCardConfig) {
   });
 }
 
-function getFillType(config: ChartCardConfig) {
+function getFillType(config: ChartCardConfig, brush: boolean) {
   if (!config.experimental?.color_threshold) {
-    return config.apex_config?.fill?.type || 'solid';
+    return brush ? config.brush?.apex_config?.fill?.type || 'solid' : config.apex_config?.fill?.type || 'solid';
   } else {
-    return config.series_in_graph.map((serie) => {
+    const series = brush ? config.series_in_brush : config.series_in_graph;
+    return series.map((serie) => {
       if (
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         !PLAIN_COLOR_TYPES.includes(config.chart_type!) &&

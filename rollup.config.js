@@ -60,5 +60,8 @@ export default [
     watch: {
       exclude: 'node_modules/**',
     },
+    globals: {
+      apexcharts: 'ApexCharts',
+    },
   },
 ];

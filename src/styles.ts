@@ -22,6 +22,10 @@ export const styles: CSSResult = css`
     grid-area: graph;
   }
 
+  #brush {
+    margin-top: -30px;
+  }
+
   /* Needed for minimal layout */
   svg:not(:root) {
     overflow: visible !important;
