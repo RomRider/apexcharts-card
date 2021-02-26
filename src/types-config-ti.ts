@@ -13,6 +13,7 @@ export const ChartCardExternalConfig = t.iface([], {
     "color_threshold": t.opt("boolean"),
     "disable_config_validation": t.opt("boolean"),
     "hidden_by_default": t.opt("boolean"),
+    "brush": t.opt("boolean"),
   })),
   "hours_12": t.opt("boolean"),
   "chart_type": t.opt("ChartCardChartType"),
@@ -43,7 +44,7 @@ export const ChartCardExternalConfig = t.iface([], {
 export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'));
 
 export const ChartCardBrushExtConfig = t.iface([], {
-  "initial_span": t.opt("string"),
+  "selection_span": t.opt("string"),
   "apex_config": t.opt("any"),
 });
 

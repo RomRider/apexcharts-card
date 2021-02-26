@@ -7,6 +7,7 @@ export interface ChartCardExternalConfig {
     color_threshold?: boolean;
     disable_config_validation?: boolean;
     hidden_by_default?: boolean;
+    brush?: boolean;
   };
   hours_12?: boolean;
   chart_type?: ChartCardChartType;
@@ -40,7 +41,7 @@ export interface ChartCardExternalConfig {
 export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
 
 export interface ChartCardBrushExtConfig {
-  initial_span?: string;
+  selection_span?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
 }

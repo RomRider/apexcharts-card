@@ -102,10 +102,10 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       strokeDashArray: 3,
     },
     fill: {
-      opacity: getFillOpacity(config),
-      type: getFillType(config),
+      opacity: getFillOpacity(config, false),
+      type: getFillType(config, false),
     },
-    series: getSeries(config, hass),
+    series: getSeries(config, hass, false),
     labels: getLabels(config, hass),
     xaxis: getXAxis(config, hass),
     yaxis: getYAxis(config),
@@ -131,11 +131,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       formatter: getLegendFormatter(config, hass),
     },
     stroke: {
-      curve: getStrokeCurve(config),
+      curve: getStrokeCurve(config, false),
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
-      width: getStrokeWidth(config),
+      width: getStrokeWidth(config, false),
     },
     markers: {
       showNullDataPoints: false,
@@ -225,13 +225,14 @@ export function getBrushLayoutConfig(
       strokeDashArray: 3,
     },
     fill: {
-      opacity: getFillOpacity(config),
-      type: getFillType(config),
+      opacity: getFillOpacity(config, true),
+      type: getFillType(config, true),
     },
-    series: getSeries(config, hass),
+    series: getSeries(config, hass, true),
     xaxis: getXAxis(config, hass),
     yaxis: {
       tickAmount: 2,
+      decimalsInFloat: DEFAULT_FLOAT_PRECISION,
     },
     tooltip: {
       enabled: false,
@@ -243,11 +244,11 @@ export function getBrushLayoutConfig(
       show: false,
     },
     stroke: {
-      curve: getStrokeCurve(config),
+      curve: getStrokeCurve(config, true),
       lineCap: config.chart_type === 'radialBar' ? 'round' : 'butt',
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
-      width: getStrokeWidth(config),
+      width: getStrokeWidth(config, true),
     },
     markers: {
       showNullDataPoints: false,
@@ -259,17 +260,19 @@ export function getBrushLayoutConfig(
   return config.brush?.apex_config ? mergeDeep(def, config.brush.apex_config) : def;
 }
 
-function getFillOpacity(config: ChartCardConfig): number[] {
-  return config.series_in_graph.map((serie) => {
+function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
   });
 }
 
-function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined) {
+function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, brush: boolean) {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
-    return config?.series_in_graph.map((serie, index) => {
+    return series.map((serie, index) => {
       return {
-        name: computeName(index, config.series_in_graph, undefined, hass?.states[serie.entity]),
+        name: computeName(index, series, undefined, hass?.states[serie.entity]),
         type: serie.type,
         data: [],
       };
@@ -466,8 +469,9 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
   };
 }
 
-function getStrokeCurve(config: ChartCardConfig) {
-  return config.series_in_graph.map((serie) => {
+function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     return serie.curve || 'smooth';
   });
 }
@@ -478,10 +482,11 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
   });
 }
 
-function getStrokeWidth(config: ChartCardConfig) {
+function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
   if (config.chart_type !== undefined && config.chart_type !== 'line')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
-  return config.series_in_graph.map((serie) => {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
     if (serie.stroke_width !== undefined) {
       return serie.stroke_width;
     }
@@ -489,11 +494,12 @@ function getStrokeWidth(config: ChartCardConfig) {
   });
 }
 
-function getFillType(config: ChartCardConfig) {
+function getFillType(config: ChartCardConfig, brush: boolean) {
   if (!config.experimental?.color_threshold) {
-    return config.apex_config?.fill?.type || 'solid';
+    return brush ? config.brush?.apex_config?.fill?.type || 'solid' : config.apex_config?.fill?.type || 'solid';
   } else {
-    return config.series_in_graph.map((serie) => {
+    const series = brush ? config.series_in_brush : config.series_in_graph;
+    return series.map((serie) => {
       if (
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         !PLAIN_COLOR_TYPES.includes(config.chart_type!) &&
