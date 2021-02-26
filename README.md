@@ -49,6 +49,7 @@ However, some things might be broken :grin:
   - [Configuration options](#configuration-options)
   - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
   - [`hidden_by_default` experimental feature](#hidden_by_default-experimental-feature)
+  - [`brush` experimental feature](#brush-experimental-feature)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
 - [Examples](#examples)
@@ -142,6 +143,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
+| `brush` | object | | NEXT_VERSION | See [brush](#brush-experimental-feature) |
 
 
 
@@ -182,6 +184,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
 | `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart. If the value is `time`, it will display also the time of the min/max value on top of the value. This feature doesn't work with `stacked: true`. |
+| `in_brush` | boolean | `false` | NEXT_VERSION | See [brush](#brush-experimental-feature) |
 
 
 ### Main `show` Options
@@ -580,6 +583,7 @@ Generates the same result as repeating the configuration in each series:
 | `color_threshold` | boolean | `false` | v1.6.0 | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
 | `disable_config_validation` | boolean | `false` | v1.6.0 | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
+| `brush` | boolean | `false` | NEXT_VERSION | Will display a brush which allows you to select a portion time to display on the main chart. See [brush](#brush-experimental-feature) |
 
 ### `color_threshold` experimental feature
 
@@ -644,6 +648,58 @@ series:
     show:
       hidden_by_default: true
   - entity: sensor.temperature_office
+```
+
+### `brush` experimental feature
+
+`brush` will allow you to display a small chart on the bottom of the card to select a time frame to display on the main chart.
+
+![brush_image](docs/brush.png)
+
+Things to know:
+* You might have some glitches if you are using colums in either the top or the bottom of the chart. There's nothing I can do about it.
+* All the features from normal series can be applied to the brush series
+* You can configure the bottom chart the way you want with another specific `apex_config` also
+* It might be compute heavy and slow with a lot of history data points
+* It is recommended to not show too much data on the bottom chart for the sake of lisibility
+
+Here is how to use it (this represents the chart above):
+```yaml
+type: custom:apexcharts-card
+experimental:
+  color_threshold: true
+  brush: true # This is required
+graph_span: 2h # This will represent the span of the brush
+brush:
+  # selection_span: optional
+  # defines the default selected span in the brush
+  # Defaults to 1/4 of the `graph_span`
+  selection_span: 10m
+  # apex_config: optional
+  apex_config:
+    # Any ApexCharts settings you want to apply to the brush
+    # Same as the standard apex_config
+series:
+  - entity: sensor.random0_100
+    color: blue
+    type: area
+    stroke_width: 1
+    color_threshold:
+      - value: 0
+        color: red
+      - value: 50
+        color: yellow
+      - value: 100
+        color: green
+  - entity: sensor.random0_100
+    color: blue
+    stroke_width: 1
+    float_precision: 0
+    show:
+      # in_brush: set it to true and the serie will show up in the brush
+      in_brush: true
+      # add this also if you want your serie to only show up in the brush
+      in_chart: false
 ```
 
 ## Known issues
