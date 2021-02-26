@@ -1,3 +1,16 @@
+## [1.8.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2021-02-26)
+
+
+### Features
+
+* **brush:** Support for a timeframe selection chart ([#102](https://github.com/RomRider/apexcharts-card/issues/102)) ([c8dedf7](https://github.com/RomRider/apexcharts-card/commit/c8dedf7de96171e8332cdcc9269eccc70043eb1e))
+* **header:** Standard header title home-assistant format using `standard_format` ([35c5391](https://github.com/RomRider/apexcharts-card/commit/35c5391c0425c1d195f2f35b885aa8689c02129d)), closes [#35](https://github.com/RomRider/apexcharts-card/issues/35)
+
+
+### Bug Fixes
+
+* Support for card-mod >= 3.0 ([8348119](https://github.com/RomRider/apexcharts-card/commit/8348119be517ad3cc90bbce1821d0e2d836fa2ed)), closes [#104](https://github.com/RomRider/apexcharts-card/issues/104)
+
 ## [1.8.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2021-02-23)
 
 
