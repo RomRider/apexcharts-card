@@ -38,6 +38,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "apex_config": t.opt("any"),
   "header": t.opt("ChartCardHeaderExternalConfig"),
   "style": t.opt("any"),
+  "card_mod": t.opt("any"),
   "brush": t.opt("ChartCardBrushExtConfig"),
 });
 
