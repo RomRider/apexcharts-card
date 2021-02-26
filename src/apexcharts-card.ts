@@ -1,5 +1,6 @@
 import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
+import { ifDefined } from 'lit-html/directives/if-defined';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
 import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HistoryPoint } from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
@@ -431,8 +432,10 @@ class ChartsCard extends LitElement {
       'with-header': this._config.header?.show || true,
     };
 
+    const standardHeaderTitle = this._config.header?.standard_format ? this._config.header?.title : undefined;
+
     return html`
-      <ha-card>
+      <ha-card header=${ifDefined(standardHeaderTitle)}>
         <div id="spinner-wrapper">
           <div id="spinner" class=${classMap(spinnerClass)}>
             <div></div>
@@ -442,7 +445,9 @@ class ChartsCard extends LitElement {
           </div>
         </div>
         <div class=${classMap(wrapperClasses)}>
-          ${this._config.header?.show ? this._renderHeader() : html``}
+          ${this._config.header?.show && (this._config.header.show_states || !this._config.header.standard_format)
+            ? this._renderHeader()
+            : html``}
           <div id="graph-wrapper">
             <div id="graph"></div>
             ${this._config.series_in_brush.length ? html`<div id="brush"></div>` : ``}
@@ -473,7 +478,9 @@ class ChartsCard extends LitElement {
     };
     return html`
       <div id="header" class=${classMap(classes)}>
-        ${this._config?.header?.title ? html`<div id="header__title">${this._config.header.title}</div>` : html``}
+        ${!this._config?.header?.standard_format && this._config?.header?.title
+          ? html`<div id="header__title">${this._config.header.title}</div>`
+          : html``}
         ${this._config?.header?.show_states ? this._renderStates() : html``}
       </div>
     `;

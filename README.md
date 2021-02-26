@@ -185,6 +185,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
 | `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart. If the value is `time`, it will display also the time of the min/max value on top of the value. This feature doesn't work with `stacked: true`. |
 | `in_brush` | boolean | `false` | NEXT_VERSION | See [brush](#brush-experimental-feature) |
+| `standard_format` | boolean | `false` | NEXT_VERSION | Display the title using the standard Home-Assistant card format |
 
 
 ### Main `show` Options

@@ -842,6 +842,11 @@ views:
             graph_span: 2h
             brush:
               selection_span: 10m
+            header:
+              show: true
+              title: test
+              standard_format: true
+              show_states: false
             series:
               - entity: sensor.random0_100
                 color: blue
@@ -861,3 +866,7 @@ views:
                 show:
                   in_brush: true
                   in_chart: false
+          - type: entities
+            title: test
+            entities:
+              - sensor.random0_100

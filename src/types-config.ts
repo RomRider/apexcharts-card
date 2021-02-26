@@ -108,6 +108,7 @@ export interface ChartCardHeaderExternalConfig {
   title?: string;
   show_states?: boolean;
   colorize_states?: boolean;
+  standard_format?: boolean;
 }
 
 export interface ChartCardColorThreshold {
