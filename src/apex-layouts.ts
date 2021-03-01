@@ -56,7 +56,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       },
     },
     dataLabels: {
-      enabled: true,
+      enabled: getDataLabelsEnabled(config),
       enabledOnSeries: getDataLabels_enabledOnSeries(config),
       formatter: getDataLabelsFormatter(config),
     },
@@ -300,6 +300,15 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
         [`<strong>${prettyPrintTime(lValue, conf.series_in_graph[opts.seriesIndex].show.as_duration!)}</strong>`]
       : [`<strong>${lValue} ${uom}</strong>`];
   };
+}
+
+function getDataLabelsEnabled(config: ChartCardConfig): boolean {
+  return (
+    !TIMESERIES_TYPES.includes(config.chart_type) ||
+    config.series_in_graph.some((serie) => {
+      return serie.show.datalabels;
+    })
+  );
 }
 
 function getDataLabelsFormatter(config: ChartCardConfig) {
