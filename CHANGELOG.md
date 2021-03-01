@@ -1,3 +1,18 @@
+## [1.8.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.4...v1.8.0-dev.5) (2021-03-01)
+
+
+### Features
+
+* **group_by:** With `start_with_last`, each bucket will start with the last data from the previous bucket ([8669411](https://github.com/RomRider/apexcharts-card/commit/8669411142a320139b1bed6200e670d173a47bac))
+* **span:** Add support for `isoWeek` ([7abc750](https://github.com/RomRider/apexcharts-card/commit/7abc75027600de2ee937ad07e510a78aa28125ed)), closes [#106](https://github.com/RomRider/apexcharts-card/issues/106)
+
+
+### Bug Fixes
+
+* **start_with_last:** `start_with_last` would sometimes throw ([f5aa2e3](https://github.com/RomRider/apexcharts-card/commit/f5aa2e36e1d792a5c73fb69a028ad5e71e9a0d68))
+* bug introduced by 591add ([b9c9297](https://github.com/RomRider/apexcharts-card/commit/b9c929727182e2101fb3747e0e82982450ffd9f6))
+* Optimize `extend_to_end` when used with `group_by` ([591add8](https://github.com/RomRider/apexcharts-card/commit/591add86317a288c8935daa2264ae831ca392d29))
+
 ## [1.8.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2021-02-26)
 
 
