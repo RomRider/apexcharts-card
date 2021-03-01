@@ -256,8 +256,8 @@ The position of the marker will only update when the card updates (state change 
 
 | Name | Since | Description |
 | ---- | :---: | ----------- |
-| `start` | v1.2.0 | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year` |
-| `end` | v1.2.0 | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year` |
+| `start` | v1.2.0 | Display the graph from the begining of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the start of the week according to ISO 8601 |
+| `end` | v1.2.0 | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the end of the week according to ISO 8601 |
 | `offset` | v1.2.0 | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
 
 Span enables you to:

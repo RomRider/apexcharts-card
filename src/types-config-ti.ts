@@ -50,10 +50,12 @@ export const ChartCardBrushExtConfig = t.iface([], {
 });
 
 export const ChartCardSpanExtConfig = t.iface([], {
-  "start": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
-  "end": t.opt(t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'))),
+  "start": t.opt("ChartCardStartEnd"),
+  "end": t.opt("ChartCardStartEnd"),
   "offset": t.opt("string"),
 });
+
+export const ChartCardStartEnd = t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'), t.lit('isoWeek'));
 
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
@@ -124,6 +126,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   ChartCardChartType,
   ChartCardBrushExtConfig,
   ChartCardSpanExtConfig,
+  ChartCardStartEnd,
   ChartCardAllSeriesExternalConfig,
   ChartCardSeriesExternalConfig,
   ChartCardPrettyTime,

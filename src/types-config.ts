@@ -49,10 +49,12 @@ export interface ChartCardBrushExtConfig {
 }
 
 export interface ChartCardSpanExtConfig {
-  start?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
-  end?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  start?: ChartCardStartEnd;
+  end?: ChartCardStartEnd;
   offset?: string;
 }
+
+export type ChartCardStartEnd = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year' | 'isoWeek';
 
 export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
