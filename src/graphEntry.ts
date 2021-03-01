@@ -352,7 +352,7 @@ export default class GraphEntry {
   private _dataBucketer(history: EntityEntryCache, timeRange: DateRange): HistoryBuckets {
     const ranges = Array.from(timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
-    let buckets: HistoryBuckets = [];
+    const buckets: HistoryBuckets = [];
     ranges.forEach((range, index) => {
       buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
@@ -395,19 +395,12 @@ export default class GraphEntry {
       }
     });
     buckets.pop();
-    // Could probably do better than double reverse...
-    // This is to stip any value at the end which is empty or null
-    // to make extend_to_end work with buckets
-    if (
+    while (
       (buckets.length > 0 && buckets[buckets.length - 1].data.length === 0) ||
-      (buckets[buckets.length - 1].data.length > 0 &&
-        buckets[buckets.length - 1].data[buckets[buckets.length - 1].data.length - 1][1] === null)
-    )
-      buckets = buckets.flatMap((bucket) => {
-        if (bucket.data[1] === null) return [];
-        if (bucket.data.length === 0) return [];
-        else return [bucket];
-      });
+      (buckets[buckets.length - 1].data.length === 1 && buckets[buckets.length - 1].data[0][1] === null)
+    ) {
+      buckets.pop();
+    }
     return buckets;
   }
 
