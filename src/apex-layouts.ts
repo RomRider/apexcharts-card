@@ -360,12 +360,15 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
         value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
       }
-      const uom = computeUom(
-        opts.seriesIndex,
-        conf.series_in_graph,
-        undefined,
-        hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
-      );
+      const uom =
+        config.chart_type === 'radialBar'
+          ? '%'
+          : computeUom(
+              opts.seriesIndex,
+              conf.series_in_graph,
+              undefined,
+              hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
+            );
       let valueString = '';
       if (value === undefined || value === null) {
         valueString = `<strong>${NO_VALUE} ${uom}</strong>`;

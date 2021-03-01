@@ -427,9 +427,13 @@ views:
               show: true
               title: radialBar
             chart_type: radialBar
+            header:
+              show: true
+              show_states: true
             series:
               - entity: sensor.random0_100
               - entity: sensor.random_0_1000
+                unit: Mbits/s
                 min: 0
                 max: 1000
           - type: custom:apexcharts-card
