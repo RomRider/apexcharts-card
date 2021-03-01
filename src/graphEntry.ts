@@ -411,8 +411,9 @@ export default class GraphEntry {
     });
     buckets.pop();
     while (
-      (buckets.length > 0 && buckets[buckets.length - 1].data.length === 0) ||
-      (buckets[buckets.length - 1].data.length === 1 && buckets[buckets.length - 1].data[0][1] === null)
+      buckets.length > 0 &&
+      (buckets[buckets.length - 1].data.length === 0 ||
+        (buckets[buckets.length - 1].data.length === 1 && buckets[buckets.length - 1].data[0][1] === null))
     ) {
       buckets.pop();
     }
