@@ -223,6 +223,7 @@ The position of the marker will only update when the card updates (state change 
 | `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
 | `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
 | `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
+| `start_with_last` | boolean | `false` | NEXT_VERSION | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
 
 ### `func` Options
 

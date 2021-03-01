@@ -371,8 +371,7 @@ export default class GraphEntry {
       }
 
       buckets.some((bucket, index) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (bucket.timestamp > properEntry![0] && index > 0) {
+        if (bucket.timestamp > properEntry[0] && index > 0) {
           buckets[index - 1].data.push(properEntry);
           return true;
         }
@@ -381,7 +380,7 @@ export default class GraphEntry {
     });
     let lastNonNullBucketValue: number | null = null;
     const now = new Date().getTime();
-    buckets.forEach((bucket) => {
+    buckets.forEach((bucket, index) => {
       if (bucket.data.length === 0) {
         if (this._config.group_by.fill === 'last' && bucket.timestamp <= now) {
           bucket.data[0] = [bucket.timestamp, lastNonNullBucketValue];
@@ -392,6 +391,22 @@ export default class GraphEntry {
         }
       } else {
         lastNonNullBucketValue = bucket.data.slice(-1)[0][1];
+      }
+      if (this._config.group_by.start_with_last) {
+        if (index > 0) {
+          if (bucket.data[0][0] !== bucket.timestamp) {
+            const prevBucketData = buckets[index - 1].data;
+            bucket.data.unshift([bucket.timestamp, prevBucketData[prevBucketData.length - 1][1]]);
+          }
+        } else {
+          const firstIndexAfter = history.data.findIndex((entry) => {
+            if (entry[0] > bucket.timestamp) return true;
+            return false;
+          });
+          if (firstIndexAfter > 0) {
+            bucket.data.unshift([bucket.timestamp, history.data[firstIndexAfter - 1][1]]);
+          }
+        }
       }
     });
     buckets.pop();

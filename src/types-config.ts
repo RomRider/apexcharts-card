@@ -87,6 +87,7 @@ export interface ChartCardAllSeriesExternalConfig {
     duration?: string;
     func?: GroupByFunc;
     fill?: GroupByFill;
+    start_with_last?: boolean;
   };
   transform?: string;
   color_threshold?: ChartCardColorThreshold[];

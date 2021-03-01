@@ -23,6 +23,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     duration: string;
     func: GroupByFunc;
     fill: GroupByFill;
+    start_with_last?: boolean;
   };
   show: {
     as_duration?: ChartCardPrettyTime;

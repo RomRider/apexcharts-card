@@ -88,6 +88,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),
     "fill": t.opt("GroupByFill"),
+    "start_with_last": t.opt("boolean"),
   })),
   "transform": t.opt("string"),
   "color_threshold": t.opt(t.array("ChartCardColorThreshold")),

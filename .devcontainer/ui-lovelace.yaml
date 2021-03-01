@@ -866,7 +866,19 @@ views:
                 show:
                   in_brush: true
                   in_chart: false
-          - type: entities
-            title: test
-            entities:
-              - sensor.random0_100
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            all_series_config:
+              type: column
+            series:
+              - entity: sensor.random0_100
+                name: last
+                group_by:
+                  func: last
+                  duration: 10min
+              - entity: sensor.random0_100
+                name: first
+                group_by:
+                  func: first
+                  duration: 10min
+                  start_with_last: true
