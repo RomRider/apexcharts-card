@@ -394,7 +394,7 @@ export default class GraphEntry {
       }
       if (this._config.group_by.start_with_last) {
         if (index > 0) {
-          if (bucket.data[0][0] !== bucket.timestamp) {
+          if (bucket.data.length === 0 || bucket.data[0][0] !== bucket.timestamp) {
             const prevBucketData = buckets[index - 1].data;
             bucket.data.unshift([bucket.timestamp, prevBucketData[prevBucketData.length - 1][1]]);
           }

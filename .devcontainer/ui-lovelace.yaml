@@ -882,3 +882,24 @@ views:
                   func: first
                   duration: 10min
                   start_with_last: true
+          - type: custom:apexcharts-card
+            graph_span: 1 week
+            span:
+              end: week
+            all_series_config:
+              type: column
+              extend_to_end: false
+              group_by:
+                fill: 'null'
+            series:
+              - entity: sensor.random0_100
+                name: last
+                group_by:
+                  func: last
+                  duration: 10min
+              - entity: sensor.random0_100
+                name: first
+                group_by:
+                  func: first
+                  duration: 10min
+                  start_with_last: true
