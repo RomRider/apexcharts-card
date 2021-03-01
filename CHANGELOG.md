@@ -1,3 +1,10 @@
+## [1.8.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.5...v1.8.0-dev.6) (2021-03-01)
+
+
+### Bug Fixes
+
+* header units for `radialBar` ([6883a8f](https://github.com/RomRider/apexcharts-card/commit/6883a8f1913ee9935b862eb28b75a6fe5229e2f5)), closes [#105](https://github.com/RomRider/apexcharts-card/issues/105)
+
 ## [1.8.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.4...v1.8.0-dev.5) (2021-03-01)
 
 
