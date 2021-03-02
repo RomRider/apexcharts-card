@@ -1,3 +1,11 @@
+## [1.8.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2021-03-02)
+
+
+### Features
+
+* **series.show:** Hide the name of a serie in the header ([b20133d](https://github.com/RomRider/apexcharts-card/commit/b20133df7827abbf8ef0954bfaefbef39840f2f3)), closes [#111](https://github.com/RomRider/apexcharts-card/issues/111)
+* **series.show:** Hide the offset from the name of the serie ([a46c3f0](https://github.com/RomRider/apexcharts-card/commit/a46c3f06982056f5349a0f4f31427b246401b407)), closes [#112](https://github.com/RomRider/apexcharts-card/issues/112)
+
 ## [1.8.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.5...v1.8.0-dev.6) (2021-03-01)
 
 
