@@ -79,6 +79,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
     "as_duration": t.opt("ChartCardPrettyTime"),
     "legend_value": t.opt("boolean"),
     "in_header": t.opt(t.union("boolean", t.lit('raw'), t.lit('before_now'), t.lit('after_now'))),
+    "name_in_header": t.opt("boolean"),
     "header_color_threshold": t.opt("boolean"),
     "in_chart": t.opt("boolean"),
     "datalabels": t.opt(t.union("boolean", t.lit('total'))),

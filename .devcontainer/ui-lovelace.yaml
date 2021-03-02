@@ -158,6 +158,7 @@ views:
                   as_duration: millisecond
                   in_header: true
                   in_chart: false
+                  name_in_header: false
                 group_by:
                   duration: 10min
                   func: avg

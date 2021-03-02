@@ -39,6 +39,7 @@ import {
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
   DEFAULT_SHOW_LEGEND_VALUE,
+  DEFAULT_SHOW_NAME_IN_HEADER,
   DEFAULT_UPDATE_DELAY,
   moment,
   NO_VALUE,
@@ -352,6 +353,7 @@ class ChartsCard extends LitElement {
               legend_value: DEFAULT_SHOW_LEGEND_VALUE,
               in_header: DEFAULT_SHOW_IN_HEADER,
               in_chart: DEFAULT_SHOW_IN_CHART,
+              name_in_header: DEFAULT_SHOW_NAME_IN_HEADER,
             };
           } else {
             serie.show.legend_value =
@@ -363,6 +365,8 @@ class ChartsCard extends LitElement {
                   ? false
                   : DEFAULT_SHOW_IN_HEADER
                 : serie.show.in_header;
+            serie.show.name_in_header =
+              serie.show.name_in_header === undefined ? DEFAULT_SHOW_NAME_IN_HEADER : serie.show.name_in_header;
           }
           validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
           if (serie.color_threshold && serie.color_threshold.length > 0) {
@@ -504,7 +508,9 @@ class ChartsCard extends LitElement {
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
                     : ''}
                 </div>
-                <div id="state__name">${computeName(index, this._config?.series, this._entities)}</div>
+                ${serie.show.name_in_header
+                  ? html`<div id="state__name">${computeName(index, this._config?.series, this._entities)}</div>`
+                  : ''}
               </div>
             `;
           } else {
