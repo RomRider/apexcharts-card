@@ -908,3 +908,17 @@ views:
                   func: first
                   duration: 10min
                   start_with_last: true
+
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            header:
+              show: true
+              show_states: true
+            series:
+              - entity: sensor.random0_100
+                name: last hour
+              - entity: sensor.random0_100
+                name: previous hour
+                offset: -1h
+                show:
+                  offset_in_name: false

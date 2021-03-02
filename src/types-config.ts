@@ -74,18 +74,7 @@ export interface ChartCardAllSeriesExternalConfig {
   max?: number;
   offset?: string;
   fill_raw?: GroupByFill;
-  show?: {
-    as_duration?: ChartCardPrettyTime;
-    legend_value?: boolean;
-    in_header?: boolean | 'raw' | 'before_now' | 'after_now';
-    name_in_header?: boolean;
-    header_color_threshold?: boolean;
-    in_chart?: boolean;
-    datalabels?: boolean | 'total';
-    hidden_by_default?: boolean;
-    extremas?: boolean | 'time';
-    in_brush?: boolean;
-  };
+  show?: ChartCardSeriesShowConfigExt;
   group_by?: {
     duration?: string;
     func?: GroupByFunc;
@@ -94,6 +83,20 @@ export interface ChartCardAllSeriesExternalConfig {
   };
   transform?: string;
   color_threshold?: ChartCardColorThreshold[];
+}
+
+export interface ChartCardSeriesShowConfigExt {
+  as_duration?: ChartCardPrettyTime;
+  legend_value?: boolean;
+  in_header?: boolean | 'raw' | 'before_now' | 'after_now';
+  name_in_header?: boolean;
+  header_color_threshold?: boolean;
+  in_chart?: boolean;
+  datalabels?: boolean | 'total';
+  hidden_by_default?: boolean;
+  extremas?: boolean | 'time';
+  in_brush?: boolean;
+  offset_in_name?: boolean;
 }
 
 export interface ChartCardSeriesExternalConfig extends ChartCardAllSeriesExternalConfig {

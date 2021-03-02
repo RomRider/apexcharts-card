@@ -75,18 +75,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "max": t.opt("number"),
   "offset": t.opt("string"),
   "fill_raw": t.opt("GroupByFill"),
-  "show": t.opt(t.iface([], {
-    "as_duration": t.opt("ChartCardPrettyTime"),
-    "legend_value": t.opt("boolean"),
-    "in_header": t.opt(t.union("boolean", t.lit('raw'), t.lit('before_now'), t.lit('after_now'))),
-    "name_in_header": t.opt("boolean"),
-    "header_color_threshold": t.opt("boolean"),
-    "in_chart": t.opt("boolean"),
-    "datalabels": t.opt(t.union("boolean", t.lit('total'))),
-    "hidden_by_default": t.opt("boolean"),
-    "extremas": t.opt(t.union("boolean", t.lit('time'))),
-    "in_brush": t.opt("boolean"),
-  })),
+  "show": t.opt("ChartCardSeriesShowConfigExt"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
     "func": t.opt("GroupByFunc"),
@@ -95,6 +84,20 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   })),
   "transform": t.opt("string"),
   "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
+});
+
+export const ChartCardSeriesShowConfigExt = t.iface([], {
+  "as_duration": t.opt("ChartCardPrettyTime"),
+  "legend_value": t.opt("boolean"),
+  "in_header": t.opt(t.union("boolean", t.lit('raw'), t.lit('before_now'), t.lit('after_now'))),
+  "name_in_header": t.opt("boolean"),
+  "header_color_threshold": t.opt("boolean"),
+  "in_chart": t.opt("boolean"),
+  "datalabels": t.opt(t.union("boolean", t.lit('total'))),
+  "hidden_by_default": t.opt("boolean"),
+  "extremas": t.opt(t.union("boolean", t.lit('time'))),
+  "in_brush": t.opt("boolean"),
+  "offset_in_name": t.opt("boolean"),
 });
 
 export const ChartCardSeriesExternalConfig = t.iface(["ChartCardAllSeriesExternalConfig"], {
@@ -129,6 +132,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   ChartCardSpanExtConfig,
   ChartCardStartEnd,
   ChartCardAllSeriesExternalConfig,
+  ChartCardSeriesShowConfigExt,
   ChartCardSeriesExternalConfig,
   ChartCardPrettyTime,
   GroupByFill,

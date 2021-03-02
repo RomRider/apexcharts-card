@@ -186,8 +186,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
 | `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart. If the value is `time`, it will display also the time of the min/max value on top of the value. This feature doesn't work with `stacked: true`. |
 | `in_brush` | boolean | `false` | NEXT_VERSION | See [brush](#brush-experimental-feature) |
-| `standard_format` | boolean | `false` | NEXT_VERSION | Display the title using the standard Home-Assistant card format |
-
+| `offset_in_name` | boolean | `true` | NEXT_VERSION | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
 ### Main `show` Options
 
@@ -204,6 +203,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
+| `standard_format` | boolean | `false` | NEXT_VERSION | Display the title using the standard Home-Assistant card format |
 
 ### `now` Options
 

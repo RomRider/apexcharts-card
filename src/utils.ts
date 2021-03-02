@@ -73,7 +73,7 @@ export function computeName(
     name =
       series[index].name || entities[index]?.attributes?.friendly_name || entities[entities[index]]?.entity_id || '';
   }
-  return name + (series[index].offset ? ` (${series[index].offset})` : '');
+  return name + (series[index].show?.offset_in_name && series[index].offset ? ` (${series[index].offset})` : '');
 }
 
 export function computeUom(

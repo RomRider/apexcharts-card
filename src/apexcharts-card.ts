@@ -40,6 +40,7 @@ import {
   DEFAULT_SHOW_IN_HEADER,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
+  DEFAULT_SHOW_OFFSET_IN_NAME,
   DEFAULT_UPDATE_DELAY,
   moment,
   NO_VALUE,
@@ -354,6 +355,7 @@ class ChartsCard extends LitElement {
               in_header: DEFAULT_SHOW_IN_HEADER,
               in_chart: DEFAULT_SHOW_IN_CHART,
               name_in_header: DEFAULT_SHOW_NAME_IN_HEADER,
+              offset_in_name: DEFAULT_SHOW_OFFSET_IN_NAME,
             };
           } else {
             serie.show.legend_value =
@@ -367,6 +369,8 @@ class ChartsCard extends LitElement {
                 : serie.show.in_header;
             serie.show.name_in_header =
               serie.show.name_in_header === undefined ? DEFAULT_SHOW_NAME_IN_HEADER : serie.show.name_in_header;
+            serie.show.offset_in_name =
+              serie.show.offset_in_name === undefined ? DEFAULT_SHOW_OFFSET_IN_NAME : serie.show.offset_in_name;
           }
           validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
           if (serie.color_threshold && serie.color_threshold.length > 0) {

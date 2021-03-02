@@ -3,6 +3,7 @@ import {
   ChartCardExternalConfig,
   ChartCardPrettyTime,
   ChartCardSeriesExternalConfig,
+  ChartCardSeriesShowConfigExt,
   GroupByFill,
   GroupByFunc,
 } from './types-config';
@@ -25,18 +26,15 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     fill: GroupByFill;
     start_with_last?: boolean;
   };
-  show: {
-    as_duration?: ChartCardPrettyTime;
-    legend_value: boolean;
-    in_header: boolean | 'raw' | 'before_now' | 'after_now';
-    name_in_header: boolean;
-    header_color_threshold?: boolean;
-    in_chart: boolean;
-    datalabels?: boolean | 'total';
-    hidden_by_default?: boolean;
-    extremas?: boolean | 'time';
-    in_brush?: boolean;
-  };
+  show: ChartCardSeriesShowConfig;
+}
+
+export interface ChartCardSeriesShowConfig extends ChartCardSeriesShowConfigExt {
+  legend_value: boolean;
+  in_header: boolean | 'raw' | 'before_now' | 'after_now';
+  name_in_header: boolean;
+  in_chart: boolean;
+  offset_in_name: boolean;
 }
 
 export interface EntityEntryCache {
