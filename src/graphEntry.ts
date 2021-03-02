@@ -1,5 +1,6 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import {
+  CandlestrickData,
   ChartCardSeriesConfig,
   EntityCachePoints,
   EntityEntryCache,
@@ -20,6 +21,8 @@ import * as pjson from '../package.json';
 
 export default class GraphEntry {
   private _computedHistory?: EntityCachePoints;
+
+  private _computedCandlestick?: CandlestrickData;
 
   private _hass?: HomeAssistant;
 
@@ -90,6 +93,10 @@ export default class GraphEntry {
 
   get history(): EntityCachePoints {
     return this._computedHistory || [];
+  }
+
+  get candlestick(): CandlestrickData {
+    return this._computedCandlestick || [];
   }
 
   get index(): number {
@@ -282,12 +289,18 @@ export default class GraphEntry {
       this._computedHistory = undefined;
       return false;
     }
-    if (this._config.group_by.func !== 'raw') {
-      this._computedHistory = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
-        return [bucket.timestamp, this._func(bucket.data)];
-      });
+    if (this._config.type !== 'candlestick') {
+      if (this._config.group_by.func !== 'raw') {
+        this._computedHistory = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
+          return [bucket.timestamp, this._func(bucket.data)];
+        });
+      } else {
+        this._computedHistory = history.data;
+      }
     } else {
-      this._computedHistory = history.data;
+      this._computedCandlestick = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
+        return { x: bucket.timestamp, y: this._buildCandleStrick(bucket.data) };
+      });
     }
     this._updating = false;
     return true;
@@ -500,5 +513,14 @@ export default class GraphEntry {
 
   private _filterNulls(items: EntityCachePoints): EntityCachePoints {
     return items.filter((item) => item[1] !== null);
+  }
+
+  private _buildCandleStrick(items: EntityCachePoints) {
+    const noNulls = this._filterNulls(items);
+    const open = noNulls.length > 0 ? noNulls[0][1] : null;
+    const close = noNulls.length > 0 ? noNulls[noNulls.length - 1][1] : null;
+    const high = this._maximum(noNulls);
+    const low = this._minimum(noNulls);
+    return [open, high, low, close];
   }
 }

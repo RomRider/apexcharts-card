@@ -423,12 +423,10 @@ views:
                   - value: 1000
                     color: red
           - type: custom:apexcharts-card
-            header:
-              show: true
-              title: radialBar
             chart_type: radialBar
             header:
               show: true
+              title: radialBar
               show_states: true
             series:
               - entity: sensor.random0_100
@@ -907,3 +905,15 @@ views:
                   func: first
                   duration: 10min
                   start_with_last: true
+
+          - type: custom:apexcharts-card
+            graph_span: 6h
+            span:
+              end: hour
+
+            series:
+              - entity: sensor.random0_100
+                type: candlestick
+                group_by:
+                  duration: 10min
+                  fill: 'null'

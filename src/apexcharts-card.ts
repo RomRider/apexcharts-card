@@ -2,7 +2,14 @@ import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HistoryPoint } from './types';
+import {
+  CandlestrickData,
+  ChartCardConfig,
+  ChartCardSeriesConfig,
+  EntityCachePoints,
+  EntityEntryCache,
+  HistoryPoint,
+} from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -19,6 +26,7 @@ import {
   mergeConfigTemplates,
   mergeDeep,
   mergeDeepConfig,
+  offsetCandleStick,
   offsetData,
   prettyPrintTime,
   truncateFloat,
@@ -357,12 +365,20 @@ class ChartsCard extends LitElement {
             serie.show.legend_value =
               serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
             serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
-            serie.show.in_header =
-              serie.show.in_header === undefined
-                ? !serie.show.in_chart && serie.show.in_brush
-                  ? false
-                  : DEFAULT_SHOW_IN_HEADER
-                : serie.show.in_header;
+            if (
+              serie.type === 'candlestick' &&
+              serie.show.in_header !== false &&
+              (serie.show.in_chart || (!serie.show.in_chart && !serie.show.in_brush))
+            ) {
+              serie.show.in_header = 'raw';
+            }
+            if (serie.show.in_header === undefined) {
+              if (!serie.show.in_chart && serie.show.in_brush) {
+                serie.show.in_header = false;
+              } else {
+                serie.show.in_header = DEFAULT_SHOW_IN_HEADER;
+              }
+            }
           }
           validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
           if (serie.color_threshold && serie.color_threshold.length > 0) {
@@ -581,16 +597,24 @@ class ChartsCard extends LitElement {
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
             return;
           }
-          if (graph.history.length === 0) return [{ data: [] }];
-          let data: EntityCachePoints = [];
-          if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+          let data: EntityCachePoints | CandlestrickData = [];
+          if (this._config.series[index].type !== 'candlestick') {
+            if (graph.history.length === 0) return [{ data: [] }];
+            if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+            } else {
+              data = graph.history;
+            }
+            data = offsetData(data, this._seriesOffset[index]);
           } else {
-            data = graph.history;
+            data = graph.candlestick;
+            data = offsetCandleStick(data, this._seriesOffset[index]);
           }
-          data = offsetData(data, this._seriesOffset[index]);
-          const result = this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
+          const result =
+            this._config?.series[index].invert && this._config?.series[index].type !== 'candlestick'
+              ? { data: this._invertData(data as EntityCachePoints) }
+              : { data };
           if (this._config?.series[index].show.in_chart) graphData.series.push(result);
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;

@@ -64,3 +64,10 @@ export interface HistoryBucket {
 }
 
 export type HistoryBuckets = Array<HistoryBucket>;
+
+export type CandlestrickData = CandlestrickPoint[];
+
+export interface CandlestrickPoint {
+  x: number;
+  y: (number | null)[];
+}

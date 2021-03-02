@@ -1,6 +1,6 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { EntityCachePoints } from './types';
+import { CandlestrickData, EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
@@ -138,6 +138,15 @@ export function offsetData(data: EntityCachePoints, offset: number | undefined):
   if (offset) {
     return data.map((entry) => {
       return [entry[0] - offset, entry[1]];
+    });
+  }
+  return data;
+}
+
+export function offsetCandleStick(data: CandlestrickData, offset: number | undefined): CandlestrickData {
+  if (offset) {
+    return data.map((entry) => {
+      return { x: entry.x - offset, y: entry.y };
     });
   }
   return data;

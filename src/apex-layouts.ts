@@ -62,6 +62,11 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     },
     plotOptions: {
       radialBar: getPlotOptions_radialBar(config),
+      candlestick: {
+        wick: {
+          useFillColor: true,
+        },
+      },
     },
     legend: {
       position: 'bottom',
@@ -409,6 +414,7 @@ function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
     if (serie.stroke_width !== undefined) {
       return serie.stroke_width;
     }
+    if (serie.type === 'candlestick') return 1;
     return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
   });
 }

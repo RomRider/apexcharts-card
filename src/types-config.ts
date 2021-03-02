@@ -60,7 +60,7 @@ export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
   attribute?: string;
   name?: string;
-  type?: 'line' | 'column' | 'area';
+  type?: 'line' | 'column' | 'area' | 'candlestick';
   color?: string;
   opacity?: number;
   curve?: 'smooth' | 'straight' | 'stepline';
