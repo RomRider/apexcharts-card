@@ -1,3 +1,31 @@
+## [1.8.0](https://github.com/RomRider/apexcharts-card/compare/v1.7.1...v1.8.0) (2021-03-03)
+
+
+### Features
+
+* **brush:** Support for a timeframe selection chart ([#102](https://github.com/RomRider/apexcharts-card/issues/102)) ([c8dedf7](https://github.com/RomRider/apexcharts-card/commit/c8dedf7de96171e8332cdcc9269eccc70043eb1e))
+* **extremas:** Display the time on top of your extremas ([#97](https://github.com/RomRider/apexcharts-card/issues/97)) ([d127b37](https://github.com/RomRider/apexcharts-card/commit/d127b376fb1c3931c5c9c95129347144eb5ea791))
+* **group_by:** With `start_with_last`, each bucket will start with the last data from the previous bucket ([8669411](https://github.com/RomRider/apexcharts-card/commit/8669411142a320139b1bed6200e670d173a47bac))
+* **header:** Standard header title home-assistant format using `standard_format` ([35c5391](https://github.com/RomRider/apexcharts-card/commit/35c5391c0425c1d195f2f35b885aa8689c02129d)), closes [#35](https://github.com/RomRider/apexcharts-card/issues/35)
+* **series.show:** Display the value before/after the current time in the header ([2855403](https://github.com/RomRider/apexcharts-card/commit/2855403ee1c025326015793367f0ff3b34dc8827)), closes [#86](https://github.com/RomRider/apexcharts-card/issues/86)
+* **series.show:** Hide the name of a serie in the header ([b20133d](https://github.com/RomRider/apexcharts-card/commit/b20133df7827abbf8ef0954bfaefbef39840f2f3)), closes [#111](https://github.com/RomRider/apexcharts-card/issues/111)
+* **series.show:** Hide the offset from the name of the serie ([a46c3f0](https://github.com/RomRider/apexcharts-card/commit/a46c3f06982056f5349a0f4f31427b246401b407)), closes [#112](https://github.com/RomRider/apexcharts-card/issues/112)
+* **span:** Add support for `isoWeek` ([7abc750](https://github.com/RomRider/apexcharts-card/commit/7abc75027600de2ee937ad07e510a78aa28125ed)), closes [#106](https://github.com/RomRider/apexcharts-card/issues/106)
+* Bring back `hours_12` from the dead ([676bdb7](https://github.com/RomRider/apexcharts-card/commit/676bdb7f3b60a39dc4eeb4fa0a424f15648315db))
+
+
+### Bug Fixes
+
+* `group_by` would sometimes not work with `data_generator` ([cfa6871](https://github.com/RomRider/apexcharts-card/commit/cfa687146628518677f6ec625d4561fb0cafac93))
+* header units for `radialBar` ([6883a8f](https://github.com/RomRider/apexcharts-card/commit/6883a8f1913ee9935b862eb28b75a6fe5229e2f5)), closes [#105](https://github.com/RomRider/apexcharts-card/issues/105)
+* **start_with_last:** `start_with_last` would sometimes throw ([f5aa2e3](https://github.com/RomRider/apexcharts-card/commit/f5aa2e36e1d792a5c73fb69a028ad5e71e9a0d68))
+* bug introduced by 591add ([b9c9297](https://github.com/RomRider/apexcharts-card/commit/b9c929727182e2101fb3747e0e82982450ffd9f6))
+* Display non inverted numbers in legend/tooltip/datalabels when `invert: true` ([331fe04](https://github.com/RomRider/apexcharts-card/commit/331fe044f7c7cd1ed324c0be24a4469fcdfaaad1)), closes [#96](https://github.com/RomRider/apexcharts-card/issues/96)
+* extremas was not working with `invert: true` ([4d06ef6](https://github.com/RomRider/apexcharts-card/commit/4d06ef68b72cd99777b18f6c7b7e0aa32cf32c1c)), closes [#96](https://github.com/RomRider/apexcharts-card/issues/96)
+* Optimize `extend_to_end` when used with `group_by` ([591add8](https://github.com/RomRider/apexcharts-card/commit/591add86317a288c8935daa2264ae831ca392d29))
+* Support for card-mod >= 3.0 ([8348119](https://github.com/RomRider/apexcharts-card/commit/8348119be517ad3cc90bbce1821d0e2d836fa2ed)), closes [#104](https://github.com/RomRider/apexcharts-card/issues/104)
+* **extremas:** Multi y-axis support ([#98](https://github.com/RomRider/apexcharts-card/issues/98)) ([5c7d742](https://github.com/RomRider/apexcharts-card/commit/5c7d7424e100b5a3327d94800e36f31e9931cfe8)), closes [#89](https://github.com/RomRider/apexcharts-card/issues/89)
+
 ## [1.8.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2021-03-02)
 
 

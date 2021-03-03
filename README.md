@@ -81,7 +81,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.7.1/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.8.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -92,7 +92,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.7.1
+  - url: /local/apexcharts-card.js?v=1.8.0
     type: module
 ```
 
@@ -133,7 +133,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
-| `hours_12` | boolean | | NEXT_VERSION | If undefined, it will follow Home-Assistant's locale. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
+| `hours_12` | boolean | | v1.8.0 | If undefined, it will follow Home-Assistant's locale. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
@@ -143,7 +143,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
-| `brush` | object | | NEXT_VERSION | See [brush](#brush-experimental-feature) |
+| `brush` | object | | v1.8.0 | See [brush](#brush-experimental-feature) |
 
 
 
@@ -178,15 +178,15 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. If the graph spans into the future (using `data_generator`): `before_now` would display the value just before the current time and `after_now` would display the value just after the current time (Introduced in NEXT_VERSION) |
-| `name_in_header` | boolean | `true` | NEXT_VERSION | Only valid if `in_header: true`. If `false`, it will hide the name of the serie under the its state in the header |
+| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific serie in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. If the graph spans into the future (using `data_generator`): `before_now` would display the value just before the current time and `after_now` would display the value just after the current time (Introduced in v1.8.0) |
+| `name_in_header` | boolean | `true` | v1.8.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the serie under the its state in the header |
 | `header_color_threshold` | boolean | `false` | v1.7.0 | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`) |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
 | `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart. If the value is `time`, it will display also the time of the min/max value on top of the value. This feature doesn't work with `stacked: true`. |
-| `in_brush` | boolean | `false` | NEXT_VERSION | See [brush](#brush-experimental-feature) |
-| `offset_in_name` | boolean | `true` | NEXT_VERSION | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
+| `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
+| `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
 ### Main `show` Options
 
@@ -203,7 +203,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
-| `standard_format` | boolean | `false` | NEXT_VERSION | Display the title using the standard Home-Assistant card format |
+| `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |
 
 ### `now` Options
 
@@ -224,7 +224,7 @@ The position of the marker will only update when the card updates (state change 
 | `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
 | `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over `duration` period of time. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
 | `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
-| `start_with_last` | boolean | `false` | NEXT_VERSION | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
+| `start_with_last` | boolean | `false` | v1.8.0 | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
 
 ### `func` Options
 
@@ -586,7 +586,7 @@ Generates the same result as repeating the configuration in each series:
 | `color_threshold` | boolean | `false` | v1.6.0 | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
 | `disable_config_validation` | boolean | `false` | v1.6.0 | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
-| `brush` | boolean | `false` | NEXT_VERSION | Will display a brush which allows you to select a portion time to display on the main chart. See [brush](#brush-experimental-feature) |
+| `brush` | boolean | `false` | v1.8.0 | Will display a brush which allows you to select a portion time to display on the main chart. See [brush](#brush-experimental-feature) |
 
 ### `color_threshold` experimental feature
 
