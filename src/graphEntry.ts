@@ -382,9 +382,9 @@ export default class GraphEntry {
     const now = new Date().getTime();
     buckets.forEach((bucket, index) => {
       if (bucket.data.length === 0) {
-        if (this._config.group_by.fill === 'last' && bucket.timestamp <= now) {
+        if (this._config.group_by.fill === 'last' && (bucket.timestamp <= now || this._config.data_generator)) {
           bucket.data[0] = [bucket.timestamp, lastNonNullBucketValue];
-        } else if (this._config.group_by.fill === 'zero' && bucket.timestamp <= now) {
+        } else if (this._config.group_by.fill === 'zero' && (bucket.timestamp <= now || this._config.data_generator)) {
           bucket.data[0] = [bucket.timestamp, 0];
         } else if (this._config.group_by.fill === 'null') {
           bucket.data[0] = [bucket.timestamp, null];
@@ -410,12 +410,20 @@ export default class GraphEntry {
       }
     });
     buckets.pop();
+    // Remove nulls at the end
     while (
       buckets.length > 0 &&
       (buckets[buckets.length - 1].data.length === 0 ||
         (buckets[buckets.length - 1].data.length === 1 && buckets[buckets.length - 1].data[0][1] === null))
     ) {
       buckets.pop();
+    }
+    // Remove nulls at the beginning
+    while (
+      buckets.length > 0 &&
+      (buckets[0].data.length === 0 || (buckets[0].data.length === 1 && buckets[0].data[0][1] === null))
+    ) {
+      buckets.shift();
     }
     return buckets;
   }
