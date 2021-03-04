@@ -1,3 +1,10 @@
+### [1.8.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.0...v1.8.1) (2021-03-04)
+
+
+### Bug Fixes
+
+* **in_header:** `after/before_now` not working with offsetted series ([960b43c](https://github.com/RomRider/apexcharts-card/commit/960b43cd1a183230e89c6d63baa07723b5acf0ec))
+
 ## [1.8.0](https://github.com/RomRider/apexcharts-card/compare/v1.7.1...v1.8.0) (2021-03-03)
 
 
