@@ -555,6 +555,7 @@ class ChartsCard extends LitElement {
     if (!this._config || !this._apexChart || !this._graphs) return;
 
     const { start, end } = this._getSpanDates();
+    const now = new Date();
     const editMode = getLovelace()?.editMode;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const caching = editMode === true ? false : this._config!.cache;
@@ -585,7 +586,10 @@ class ChartsCard extends LitElement {
               this._headerState[index] = lastState;
             } else {
               // before_now / after_now
-              this._headerState[index] = graph.nowValue(inHeader === 'before_now');
+              this._headerState[index] = graph.nowValue(
+                now.getTime() + (this._seriesOffset[index] ? this._seriesOffset[index] : 0),
+                inHeader === 'before_now',
+              );
             }
           }
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
@@ -605,7 +609,7 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;
         });
-        graphData.annotations = this._computeAnnotations(start, end);
+        graphData.annotations = this._computeAnnotations(start, end, now);
         if (!this._apexBrush) {
           graphData.xaxis = {
             min: start.getTime(),
@@ -745,10 +749,10 @@ class ChartsCard extends LitElement {
     this._updating = false;
   }
 
-  private _computeAnnotations(start: Date, end: Date) {
+  private _computeAnnotations(start: Date, end: Date, now: Date) {
     return {
       ...this._computeMinMaxPointsAnnotations(start, end),
-      ...this._computeNowAnnotation(),
+      ...this._computeNowAnnotation(now),
     };
   }
 
@@ -849,14 +853,14 @@ class ChartsCard extends LitElement {
     return points;
   }
 
-  private _computeNowAnnotation() {
+  private _computeNowAnnotation(now: Date) {
     if (this._config?.now?.show) {
       const color = computeColor(this._config.now.color || 'var(--primary-color)');
       const textColor = computeTextColor(color);
       return {
         xaxis: [
           {
-            x: new Date().getTime(),
+            x: now.getTime(),
             strokeDashArray: 3,
             label: {
               text: this._config.now.label,

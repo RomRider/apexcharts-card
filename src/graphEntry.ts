@@ -108,9 +108,8 @@ export default class GraphEntry {
     this._cache = cache;
   }
 
-  public nowValue(before: boolean): number | null {
+  public nowValue(now: number, before: boolean): number | null {
     if (this.history.length === 0) return null;
-    const now = new Date().getTime();
     const index = this.history.findIndex((point, index, arr) => {
       if (!before && point[0] > now) return true;
       if (before && point[0] < now && arr[index + 1] && arr[index + 1][0] > now) return true;

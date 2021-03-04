@@ -920,3 +920,26 @@ views:
                 offset: -1h
                 show:
                   offset_in_name: false
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: Irradiance
+              show_states: true
+              colorize_states: true
+            now:
+              show: true
+            graph_span: 1d
+            span:
+              start: day
+            series:
+              - entity: sensor.random0_100
+                group_by:
+                  func: avg
+                  duration: 1h
+              - entity: sensor.random0_100
+                offset: -1d
+                group_by:
+                  func: avg
+                  duration: 1h
+                show:
+                  in_header: before_now
