@@ -1,7 +1,6 @@
 import { ApexOptions } from 'apexcharts';
 import {
   ChartCardExternalConfig,
-  ChartCardPrettyTime,
   ChartCardSeriesExternalConfig,
   ChartCardSeriesShowConfigExt,
   GroupByFill,
