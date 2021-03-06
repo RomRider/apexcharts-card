@@ -1,3 +1,10 @@
+### [1.8.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.1...v1.8.2) (2021-03-06)
+
+
+### Bug Fixes
+
+* Chart not displayed properly or at all with layout-card ([e5840fb](https://github.com/RomRider/apexcharts-card/commit/e5840fb60c1121a237daa189453e2cb1d3bb22f9)), closes [#121](https://github.com/RomRider/apexcharts-card/issues/121)
+
 ### [1.8.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.0...v1.8.1) (2021-03-04)
 
 
