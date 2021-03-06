@@ -595,7 +595,11 @@ class ChartsCard extends LitElement {
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
             return;
           }
-          if (graph.history.length === 0) return [{ data: [] }];
+          if (graph.history.length === 0) {
+            if (this._config?.series[index].show.in_chart) graphData.series.push({ data: [] });
+            if (this._config?.series[index].show.in_brush) brushData.series.push({ data: [] });
+            return;
+          }
           let data: EntityCachePoints = [];
           if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
