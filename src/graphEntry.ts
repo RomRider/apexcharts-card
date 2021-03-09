@@ -222,10 +222,8 @@ export default class GraphEntry {
         const newStateHistory: EntityCachePoints = newHistory[0].map((item) => {
           let currentState: unknown = null;
           if (this._config.attribute) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            if (item.attributes && item.attributes![this._config.attribute]) {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              currentState = item.attributes![this._config.attribute];
+            if (item.attributes && item.attributes[this._config.attribute] !== undefined) {
+              currentState = item.attributes[this._config.attribute];
             }
           } else {
             currentState = item.state;

@@ -53,7 +53,8 @@ export interface HassHistoryEntry {
   last_updated: string;
   state: string;
   last_changed: string;
-  attributes?: never;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attributes?: any;
 }
 
 export interface HistoryBucket {
