@@ -1,3 +1,10 @@
+### [1.8.3-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.2...v1.8.3-dev.1) (2021-03-09)
+
+
+### Bug Fixes
+
+* graph might be wrong when using `attributes` if value was 0 ([e200323](https://github.com/RomRider/apexcharts-card/commit/e2003234f0b5a620c60a4a3e197c3b9577fd51ba))
+
 ### [1.8.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.1...v1.8.2) (2021-03-06)
 
 
