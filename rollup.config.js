@@ -55,13 +55,13 @@ export default [
       dir: './dist',
       format: 'es',
       sourcemap: dev ? true : false,
+      globals: {
+        apexcharts: 'ApexCharts',
+      },
     },
     plugins: [...plugins],
     watch: {
       exclude: 'node_modules/**',
-    },
-    globals: {
-      apexcharts: 'ApexCharts',
     },
   },
 ];
