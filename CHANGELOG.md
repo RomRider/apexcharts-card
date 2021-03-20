@@ -1,3 +1,11 @@
+### [1.8.3-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.1...v1.8.3-dev.2) (2021-03-20)
+
+
+### Bug Fixes
+
+* **group_by:** `group_by` reporting erronerous values for the first bucket of data ([8303b84](https://github.com/RomRider/apexcharts-card/commit/8303b84a935ed3f1a7c72642777052c487003e0f)), closes [#110](https://github.com/RomRider/apexcharts-card/issues/110)
+* **group_by:** When group_by was used with lines, the end of the chart was showing an empty slot (display bug only) ([0163f9e](https://github.com/RomRider/apexcharts-card/commit/0163f9ebbf511c809573c4f567a4e67750a99e38))
+
 ### [1.8.3-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.2...v1.8.3-dev.1) (2021-03-09)
 
 
