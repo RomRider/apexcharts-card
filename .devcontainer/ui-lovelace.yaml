@@ -257,10 +257,13 @@ views:
               - entity: sensor.humidity
                 type: line
                 name: Outside Humidity
+                fill_raw: last
                 group_by:
                   func: avg
+                  fill: last
                   duration: 30min
               - entity: sensor.random0_100
+                fill_raw: last
                 type: column
                 name: Office Humidity
                 group_by:
@@ -540,7 +543,7 @@ views:
             series:
               - entity: sensor.outside_temperature
                 curve: stepline
-                extend_to_end: false
+                extend_to_end: true
 
           - type: custom:apexcharts-card
             update_delay: 3s
@@ -943,3 +946,19 @@ views:
                   duration: 1h
                 show:
                   in_header: before_now
+
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: Shouldn't show a spike at the begining
+            graph_span: 60m
+            update_interval: 1m
+            span:
+              end: hour
+            series:
+              - entity: sensor.counter
+                type: column
+                # offset: +5min
+                group_by:
+                  func: diff
+                  duration: 10s

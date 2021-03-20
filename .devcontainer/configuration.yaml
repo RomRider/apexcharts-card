@@ -38,7 +38,23 @@ sensor:
     name: random_0_1000
     minimum: 0
     maximum: 1000
+  - platform: template
+    sensors:
+      counter:
+        friendly_name: 'Counter'
+        unit_of_measurement: 's'
+        value_template: '{{ as_timestamp(now()) }}'
 
 input_boolean:
   test_boolean:
     name: Test Input Boolean
+
+automation:
+  - alias: 'Update counter'
+    trigger:
+      - platform: time_pattern
+        seconds: '/1'
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.counter

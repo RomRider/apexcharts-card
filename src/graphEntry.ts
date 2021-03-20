@@ -164,8 +164,8 @@ export default class GraphEntry {
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
-      const nbBuckets = Math.abs(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
-      startHistory = new Date(end.getTime() - nbBuckets * this._groupByDurationMs);
+      const nbBuckets = Math.floor(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
+      startHistory = new Date(end.getTime() - (nbBuckets + 1) * this._groupByDurationMs);
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
@@ -182,7 +182,9 @@ export default class GraphEntry {
       history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
 
       if (history && history.span === this._graphSpan) {
-        const currDataIndex = history.data.findIndex((item) => item && new Date(item[0]).getTime() > start.getTime());
+        const currDataIndex = history.data.findIndex(
+          (item) => item && new Date(item[0]).getTime() > startHistory.getTime(),
+        );
         if (currDataIndex !== -1) {
           // skip initial state when fetching recent/not-cached data
           skipInitialState = true;
@@ -197,12 +199,18 @@ export default class GraphEntry {
       } else {
         history = undefined;
       }
+      const usableCache = !!(
+        history &&
+        history.data &&
+        history.data.length !== 0 &&
+        history.data[history.data.length - 1]
+      );
       const newHistory = await this._fetchRecent(
         // if data in cache, get data from last data's time + 1ms
-        history && history.data && history.data.length !== 0 && history.data.slice(-1)[0]
+        usableCache
           ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            new Date(history.data.slice(-1)[0]![0] + 1)
-          : startHistory,
+            new Date(history!.data[history!.data.length - 1][0] + 1)
+          : new Date(startHistory.getTime() + (this._config.group_by.func !== 'raw' ? 0 : -1)),
         end,
         this._config.attribute || this._config.transform ? false : skipInitialState,
         this._config.attribute || this._config.transform ? true : false,
@@ -353,24 +361,13 @@ export default class GraphEntry {
     ranges.forEach((range, index) => {
       buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
-    let lastNotNullValue: number | null = null;
     history?.data.forEach((entry) => {
-      let properEntry = entry;
-      // Fill null values
-      if (properEntry[1] === null) {
-        if (this._config.group_by.fill === 'last') {
-          properEntry = [entry[0], lastNotNullValue];
-        } else if (this._config.group_by.fill === 'zero') {
-          properEntry = [entry[0], 0];
-        }
-      } else {
-        lastNotNullValue = properEntry[1];
-      }
-
       buckets.some((bucket, index) => {
-        if (bucket.timestamp > properEntry[0] && index > 0) {
-          buckets[index - 1].data.push(properEntry);
-          return true;
+        if (bucket.timestamp > entry[0] && index > 0) {
+          if (entry[0] >= buckets[index - 1].timestamp) {
+            buckets[index - 1].data.push(entry);
+            return true;
+          }
         }
         return false;
       });
@@ -406,6 +403,7 @@ export default class GraphEntry {
         }
       }
     });
+    buckets.shift();
     buckets.pop();
     // Remove nulls at the end
     while (
@@ -414,13 +412,6 @@ export default class GraphEntry {
         (buckets[buckets.length - 1].data.length === 1 && buckets[buckets.length - 1].data[0][1] === null))
     ) {
       buckets.pop();
-    }
-    // Remove nulls at the beginning
-    while (
-      buckets.length > 0 &&
-      (buckets[0].data.length === 0 || (buckets[0].data.length === 1 && buckets[0].data[0][1] === null))
-    ) {
-      buckets.shift();
     }
     return buckets;
   }
