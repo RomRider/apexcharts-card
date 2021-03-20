@@ -1029,10 +1029,10 @@ class ChartsCard extends LitElement {
     const localEnd = new Date(end);
     let offsetEnd: number | undefined = 0;
     const series = brush ? this._config?.series_in_brush : this._config?.series_in_graph;
-    const onlyBars = series?.reduce((acc, serie) => {
-      return acc && serie.type === 'column' && serie.group_by.func !== 'raw';
+    const onlyGroupBy = series?.reduce((acc, serie) => {
+      return acc && serie.group_by.func !== 'raw';
     }, series?.length > 0);
-    if (onlyBars) {
+    if (onlyGroupBy) {
       offsetEnd = series?.reduce((acc, serie) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const dur = parse(serie.group_by.duration)!;
