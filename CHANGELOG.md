@@ -1,3 +1,10 @@
+## [1.9.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.3...v1.9.0-dev.1) (2021-03-21)
+
+
+### Features
+
+* **apex_config:** Support for functions in `apex_config` ([cebc03b](https://github.com/RomRider/apexcharts-card/commit/cebc03b53a0bbf3131076422dd11660d440209dd)), closes [#81](https://github.com/RomRider/apexcharts-card/issues/81)
+
 ### [1.8.3-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.2...v1.8.3-dev.3) (2021-03-21)
 
 
