@@ -970,3 +970,24 @@ views:
             graph_span: 1m
             series:
               - entity: sensor.counter_no_significant_update
+
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: Significant Updates
+            graph_span: 1h
+            apex_config:
+              xaxis:
+                labels:
+                  formatter: >
+                    EVAL:function(value) {
+                      return "42";
+                    }
+              yaxis:
+                labels:
+                  formatter: |
+                    EVAL:function(value) {
+                      return "42";
+                    }
+            series:
+              - entity: sensor.random0_100

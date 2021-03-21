@@ -439,6 +439,22 @@ apex_config:
       enabled: true
 ```
 
+Some options in ApexCharts can take a javascript function as an argument. To make this possible, you'll have to prefix your function with `EVAL:`.
+
+:warning: While using this `EVAL:` feature, there is no safeguard so use at your own risk.
+
+Here is an example:
+
+```yaml
+apex_config:
+  yaxis:
+    labels:
+      formatter: |
+        EVAL:function(value) {
+          return "42";
+        }
+```
+
 ### Layouts
 
 For now, only `minimal` is supported: It will remove the grid, the axis and display the legend at the top. But you can use the `apex_config` to do whatever you want.

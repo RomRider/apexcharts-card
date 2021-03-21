@@ -93,7 +93,9 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
       break;
   }
 
-  return config.apex_config ? mergeDeep(mergeDeep(def, conf), config.apex_config) : mergeDeep(def, conf);
+  return config.apex_config
+    ? mergeDeep(mergeDeep(def, conf), evalApexConfig(config.apex_config))
+    : mergeDeep(def, conf);
 }
 
 export function getBrushLayoutConfig(
@@ -164,7 +166,7 @@ export function getBrushLayoutConfig(
       text: 'Loading...',
     },
   };
-  return config.brush?.apex_config ? mergeDeep(def, config.brush.apex_config) : def;
+  return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config)) : def;
 }
 
 function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
@@ -431,4 +433,18 @@ function getFillType(config: ChartCardConfig, brush: boolean) {
       return 'solid';
     });
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function evalApexConfig(apexConfig: any): any {
+  const eval2 = eval;
+  Object.keys(apexConfig).forEach((key) => {
+    if (typeof apexConfig[key] === 'string' && apexConfig[key].trim().startsWith('EVAL:')) {
+      apexConfig[key] = eval2(`(${apexConfig[key].trim().slice(5)})`);
+    }
+    if (typeof apexConfig[key] === 'object') {
+      apexConfig[key] = evalApexConfig(apexConfig[key]);
+    }
+  });
+  return apexConfig;
 }
