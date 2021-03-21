@@ -213,7 +213,6 @@ export default class GraphEntry {
           : new Date(startHistory.getTime() + (this._config.group_by.func !== 'raw' ? 0 : -1)),
         end,
         this._config.attribute || this._config.transform ? false : skipInitialState,
-        this._config.attribute || this._config.transform ? true : false,
       );
       if (newHistory && newHistory[0] && newHistory[0].length > 0) {
         /*
@@ -311,15 +310,13 @@ export default class GraphEntry {
     start: Date | undefined,
     end: Date | undefined,
     skipInitialState: boolean,
-    withAttributes = false,
   ): Promise<HassHistory | undefined> {
     let url = 'history/period';
     if (start) url += `/${start.toISOString()}`;
     url += `?filter_entity_id=${this._entityID}`;
     if (end) url += `&end_time=${end.toISOString()}`;
     if (skipInitialState) url += '&skip_initial_state';
-    if (!withAttributes) url += '&minimal_response';
-    if (withAttributes) url += '&significant_changes_only=0';
+    url += '&significant_changes_only=0';
     return this._hass?.callApi('GET', url);
   }
 

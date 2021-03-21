@@ -45,6 +45,12 @@ sensor:
         unit_of_measurement: 's'
         value_template: '{{ as_timestamp(now()) }}'
 
+  - platform: rest
+    name: counter_no_significant_update
+    resource: https://jsonplaceholder.typicode.com/posts/1
+    value_template: '{{ value_json.id | int }}'
+    force_update: true
+
 input_boolean:
   test_boolean:
     name: Test Input Boolean
@@ -57,4 +63,14 @@ automation:
     action:
       - service: homeassistant.update_entity
         target:
-          entity_id: sensor.counter
+          entity_id:
+            - sensor.counter
+  - alias: 'Update counter 2'
+    trigger:
+      - platform: time_pattern
+        seconds: '/10'
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.counter_no_significant_update
