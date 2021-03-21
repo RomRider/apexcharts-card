@@ -1,3 +1,10 @@
+### [1.8.3-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.2...v1.8.3-dev.3) (2021-03-21)
+
+
+### Bug Fixes
+
+* always get all state changes, not only significant ones ([3b2f9c8](https://github.com/RomRider/apexcharts-card/commit/3b2f9c8670d55324019901556d1c50775807f505))
+
 ### [1.8.3-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.1...v1.8.3-dev.2) (2021-03-20)
 
 
