@@ -75,9 +75,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, false),
     },
-    markers: {
-      showNullDataPoints: false,
-    },
+    markers: getMarkers(config, false),
     noData: {
       text: 'Loading...',
     },
@@ -159,9 +157,7 @@ export function getBrushLayoutConfig(
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, true),
     },
-    markers: {
-      showNullDataPoints: false,
-    },
+    markers: getMarkers(config, true),
     noData: {
       text: 'Loading...',
     },
@@ -413,6 +409,29 @@ function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
     }
     return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
   });
+}
+
+function getMarkers(config: ChartCardConfig, brush: boolean) {
+  if (config.chart_type !== undefined && config.chart_type !== 'line')
+    return {
+      showNullDataPoints: false,
+    };
+
+  let markers = brush ? config?.brush_markers : config?.markers;
+
+  return {
+    size: markers?.size,
+    colors: markers?.colors,
+    strokeColors: markers?.stroke_colors,
+    strokeOpacticy: markers?.stroke_opacity,
+    strokeWidth: markers?.stroke_width,
+    strokeDashArray: markers?.stroke_dash_array,
+    fillOpacity: markers?.fill_opacity,
+    radius: markers?.radius,
+    shape: markers?.shape,
+    showNullDataPoints: markers?.show_null_data_points || false,
+  };
+  return markers;
 }
 
 function getFillType(config: ChartCardConfig, brush: boolean) {

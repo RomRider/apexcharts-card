@@ -35,12 +35,27 @@ export interface ChartCardExternalConfig {
   // Support to define style (card-mod/card-mod-v3.0 or picture-entity)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
+  markers?: ChartCardMarkerExtConfig;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   card_mod?: any;
   brush?: ChartCardBrushExtConfig;
+  brush_markers?: ChartCardMarkerExtConfig;
 }
 
 export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
+
+export interface ChartCardMarkerExtConfig {
+  size?: number | number[];
+  colors?: string | string[];
+  stroke_colors?: string | string[];
+  stroke_opacity?: number | number[];
+  stroke_width?: number | number[];
+  stroke_dash_array?: number | number[];
+  fill_opacity?: number | number[];
+  radius?: number;
+  shape?: 'circle' | 'square';
+  show_null_data_points?: boolean;
+}
 
 export interface ChartCardBrushExtConfig {
   selection_span?: string;

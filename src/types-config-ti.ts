@@ -38,11 +38,26 @@ export const ChartCardExternalConfig = t.iface([], {
   "apex_config": t.opt("any"),
   "header": t.opt("ChartCardHeaderExternalConfig"),
   "style": t.opt("any"),
+  "markers": t.opt("ChartCardMarkerExtConfig"),
   "card_mod": t.opt("any"),
   "brush": t.opt("ChartCardBrushExtConfig"),
+  "brush_markers": t.opt("ChartCardMarkerExtConfig"),
 });
 
 export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'));
+
+export const ChartCardMarkerExtConfig = t.iface([], {
+  "size": t.opt(t.union("number", t.array("number"))),
+  "colors": t.opt(t.union("string", t.array("string"))),
+  "stroke_colors": t.opt(t.union("string", t.array("string"))),
+  "stroke_opacity": t.opt(t.union("number", t.array("number"))),
+  "stroke_width": t.opt(t.union("number", t.array("number"))),
+  "stroke_dash_array": t.opt(t.union("number", t.array("number"))),
+  "fill_opacity": t.opt(t.union("number", t.array("number"))),
+  "radius": t.opt("number"),
+  "shape": t.opt(t.union(t.lit('circle'), t.lit('square'))),
+  "show_null_data_points": t.opt("boolean"),
+});
 
 export const ChartCardBrushExtConfig = t.iface([], {
   "selection_span": t.opt("string"),
@@ -128,6 +143,7 @@ export const ChartCardColorThreshold = t.iface([], {
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardChartType,
+  ChartCardMarkerExtConfig,
   ChartCardBrushExtConfig,
   ChartCardSpanExtConfig,
   ChartCardStartEnd,
