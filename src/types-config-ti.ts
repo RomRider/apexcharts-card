@@ -39,6 +39,9 @@ export const ChartCardExternalConfig = t.iface([], {
   "header": t.opt("ChartCardHeaderExternalConfig"),
   "style": t.opt("any"),
   "card_mod": t.opt("any"),
+  "view_layout": t.opt("any"),
+  "index": t.opt("number"),
+  "view_index": t.opt("number"),
   "brush": t.opt("ChartCardBrushExtConfig"),
 });
 
