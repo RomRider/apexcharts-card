@@ -172,7 +172,7 @@ export default class GraphEntry {
     let history: EntityEntryCache | undefined = undefined;
 
     if (this._config.data_generator) {
-      history = this._generateData(start, end);
+      history = await this._generateData(start, end);
     } else {
       this._realStart = new Date(start);
       this._realEnd = new Date(end);
@@ -320,17 +320,19 @@ export default class GraphEntry {
     return this._hass?.callApi('GET', url);
   }
 
-  private _generateData(start: Date, end: Date): EntityEntryCache {
+  private async _generateData(start: Date, end: Date): Promise<EntityEntryCache> {
+    const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
     let data;
     try {
-      data = new Function(
+      const datafn = new AsyncFunction(
         'entity',
         'start',
         'end',
         'hass',
         'moment',
         `'use strict'; ${this._config.data_generator}`,
-      ).call(this, this._entityState, start, end, this._hass, moment);
+      );
+      data = await datafn(this._entityState, start, end, this._hass, moment);
     } catch (e) {
       const funcTrimmed =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
