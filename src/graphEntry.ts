@@ -321,6 +321,7 @@ export default class GraphEntry {
   }
 
   private async _generateData(start: Date, end: Date): Promise<EntityEntryCache> {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
     let data;
     try {
