@@ -443,8 +443,8 @@ You can have as many y-axis as there are series defined in your configuration or
 #### Min/Max Format
 
 `min` and `max` support multiple types of format:
+* not set or `auto` (this is the default): if it is set to `auto`, the min or max will be automatically calculated
 * any number: if a number is set, the min or max will be fixed on the y-axis
-* `auto`: if it is set to `auto`, the min or max will be automatically calculated
 * `~90`: if the format is `~` followed by a number, the min or max will be defined as a soft bounds
   * `min: ~90` and the min of the data in the series is `120`: the y-axis min value will be `90`
   * `min: ~90` and the min of the data in the series is `60`: the y-axis min value will be `60`
