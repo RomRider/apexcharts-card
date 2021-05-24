@@ -1,3 +1,10 @@
+## [1.9.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.3...v1.9.0-dev.4) (2021-05-24)
+
+
+### Features
+
+* soft bounds and extended bounds for yaxis min/max ([#161](https://github.com/RomRider/apexcharts-card/issues/161)) ([c57278b](https://github.com/RomRider/apexcharts-card/commit/c57278b59becef474264d2e0bf76a18a312a377f))
+
 ## [1.9.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.2...v1.9.0-dev.3) (2021-05-24)
 
 
