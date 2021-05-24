@@ -970,8 +970,8 @@ class ChartsCard extends LitElement {
           }
           return lMinMax;
         });
-        let min: number | null = 0;
-        let max: number | null = 0;
+        let min: number | null = null;
+        let max: number | null = null;
         minMax?.forEach((elt) => {
           if (!elt) return;
           if (min === undefined || min === null) {

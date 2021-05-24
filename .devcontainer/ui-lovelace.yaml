@@ -997,8 +997,6 @@ views:
             all_series_config:
               stroke_width: 2
             series:
-              - entity: sensor.random0_100
-                yaxis_id: first
               - entity: sensor.random_0_1000
                 yaxis_id: second
               - entity: sensor.random0_100
@@ -1006,7 +1004,7 @@ views:
                 transform: 'return Number(x) + 30;'
               - entity: sensor.random0_100
                 yaxis_id: first
-                transform: 'return Number(x) - 30;'
+                transform: 'return Number(x) + 60;'
             yaxis:
               - id: first
                 apex_config:
