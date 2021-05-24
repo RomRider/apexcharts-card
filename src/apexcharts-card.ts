@@ -9,6 +9,7 @@ import {
   EntityCachePoints,
   EntityEntryCache,
   HistoryPoint,
+  minmax_type,
 } from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
@@ -358,6 +359,10 @@ class ChartsCard extends LitElement {
               yaxis: yAxisConfig,
             };
           }
+          this._yAxisConfig?.forEach((yaxis) => {
+            [yaxis.min, yaxis.min_type] = this._getTypeOfMinMax(yaxis.min);
+            [yaxis.max, yaxis.max_type] = this._getTypeOfMinMax(yaxis.max);
+          });
         }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
@@ -957,7 +962,7 @@ class ChartsCard extends LitElement {
   private _computeYAxisAutoMinMax(start: Date, end: Date) {
     if (!this._config) return;
     this._yAxisConfig?.map((yaxis) => {
-      if (typeof yaxis.min !== 'number' || typeof yaxis.max !== 'number') {
+      if (yaxis.min_type !== minmax_type.FIXED || yaxis.max_type !== minmax_type.FIXED) {
         const minMax = yaxis.series_id?.map((id) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const lMinMax = this._graphs![id]?.minMaxWithTimestamp(start.getTime(), end.getTime());
@@ -986,14 +991,69 @@ class ChartsCard extends LitElement {
           }
         });
         yaxis.series_id?.forEach((id) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          if (yaxis.min === undefined || yaxis.min === 'auto') this._config!.apex_config!.yaxis![id].min = min;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          if (yaxis.max === undefined || yaxis.max === 'auto') this._config!.apex_config!.yaxis![id].max = max;
+          if (min !== null) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this._config!.apex_config!.yaxis![id].min = this._getMinMaxBasedOnType(
+              true,
+              min,
+              yaxis.min as number,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              yaxis.min_type!,
+            );
+          }
+          if (max !== null) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this._config!.apex_config!.yaxis![id].max = this._getMinMaxBasedOnType(
+              false,
+              max,
+              yaxis.max as number,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              yaxis.max_type!,
+            );
+          }
         });
       }
     });
     return this._config?.apex_config?.yaxis;
+  }
+
+  private _getMinMaxBasedOnType(isMin: boolean, value: number, configMinMax: number, type: minmax_type): number {
+    switch (type) {
+      case minmax_type.AUTO:
+        return value;
+      case minmax_type.SOFT:
+        if ((isMin && value > configMinMax) || (!isMin && value < configMinMax)) {
+          return configMinMax;
+        } else {
+          return value;
+        }
+      case minmax_type.ABSOLUTE:
+        return value + configMinMax;
+      default:
+        return value;
+    }
+  }
+
+  private _getTypeOfMinMax(value?: 'auto' | number | string): [number | undefined, minmax_type] {
+    const regexFloat = /[+-]?\d+(\.\d+)?/g;
+    if (typeof value === 'number') {
+      return [value, minmax_type.FIXED];
+    } else if (value === undefined || value === 'auto') {
+      return [undefined, minmax_type.AUTO];
+    }
+    if (typeof value === 'string' && value !== 'auto') {
+      const matched = value.match(regexFloat);
+      if (!matched || matched.length !== 1) {
+        throw new Error(`Bad yaxis min/max format: ${value}`);
+      }
+      const floatValue = parseFloat(matched[0]);
+      if (value.startsWith('~')) {
+        return [floatValue, minmax_type.SOFT];
+      } else if (value.startsWith('|') && value.endsWith('|')) {
+        return [floatValue, minmax_type.ABSOLUTE];
+      }
+    }
+    throw new Error(`Bad yaxis min/max format: ${value}`);
   }
 
   private _computeChartColors(brush: boolean): (string | (({ value }) => string))[] {

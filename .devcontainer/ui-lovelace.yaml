@@ -1010,6 +1010,8 @@ views:
                 apex_config:
                   tickAmount: 4
               - id: second
+                max: '|+100|'
+                min: ~100
                 opposite: true
                 show: true
                 apex_config:

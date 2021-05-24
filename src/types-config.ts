@@ -134,8 +134,8 @@ export interface ChartCardYAxisExternal {
   id: string;
   show?: boolean;
   opposite?: boolean;
-  min?: 'auto' | number;
-  max?: 'auto' | number;
+  min?: 'auto' | number | string;
+  max?: 'auto' | number | string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
 }
