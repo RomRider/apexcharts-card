@@ -1,3 +1,16 @@
+## [1.9.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.1...v1.9.0-dev.2) (2021-05-24)
+
+
+### Features
+
+* make datagenerator async ([#157](https://github.com/RomRider/apexcharts-card/issues/157)) ([b9049fc](https://github.com/RomRider/apexcharts-card/commit/b9049fcd70ba633575127a86de6982d6f46d8831))
+* Native multi y-axis support with auto-scale ([#160](https://github.com/RomRider/apexcharts-card/issues/160)) ([e08aa14](https://github.com/RomRider/apexcharts-card/commit/e08aa14416fd1724fc379a7b0d991e6ed53cdc03)), closes [#158](https://github.com/RomRider/apexcharts-card/issues/158)
+
+
+### Bug Fixes
+
+* Support for custom views config parameters (`view_layout`) ([76a8023](https://github.com/RomRider/apexcharts-card/commit/76a8023a12fbdf920309ed1751e1e8d488e90ca1))
+
 ## [1.9.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.8.3-dev.3...v1.9.0-dev.1) (2021-03-21)
 
 
