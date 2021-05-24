@@ -1,3 +1,23 @@
+## [1.9.0](https://github.com/RomRider/apexcharts-card/compare/v1.8.2...v1.9.0) (2021-05-24)
+
+
+### Features
+
+* make datagenerator async ([#157](https://github.com/RomRider/apexcharts-card/issues/157)) ([b9049fc](https://github.com/RomRider/apexcharts-card/commit/b9049fcd70ba633575127a86de6982d6f46d8831))
+* Native multi y-axis support with auto-scale ([#160](https://github.com/RomRider/apexcharts-card/issues/160)) ([e08aa14](https://github.com/RomRider/apexcharts-card/commit/e08aa14416fd1724fc379a7b0d991e6ed53cdc03)), closes [#158](https://github.com/RomRider/apexcharts-card/issues/158)
+* soft bounds and extended bounds for yaxis min/max ([#161](https://github.com/RomRider/apexcharts-card/issues/161)) ([c57278b](https://github.com/RomRider/apexcharts-card/commit/c57278b59becef474264d2e0bf76a18a312a377f))
+* **apex_config:** Support for functions in `apex_config` ([cebc03b](https://github.com/RomRider/apexcharts-card/commit/cebc03b53a0bbf3131076422dd11660d440209dd)), closes [#81](https://github.com/RomRider/apexcharts-card/issues/81)
+
+
+### Bug Fixes
+
+* always get all state changes, not only significant ones ([3b2f9c8](https://github.com/RomRider/apexcharts-card/commit/3b2f9c8670d55324019901556d1c50775807f505))
+* graph might be wrong when using `attributes` if value was 0 ([e200323](https://github.com/RomRider/apexcharts-card/commit/e2003234f0b5a620c60a4a3e197c3b9577fd51ba))
+* Support for custom views config parameters (`view_layout`) ([76a8023](https://github.com/RomRider/apexcharts-card/commit/76a8023a12fbdf920309ed1751e1e8d488e90ca1))
+* yaxis would always start at 0 ([50ef9e4](https://github.com/RomRider/apexcharts-card/commit/50ef9e41d563d981b408382615c0939b7f330469)), closes [#158](https://github.com/RomRider/apexcharts-card/issues/158)
+* **group_by:** `group_by` reporting erronerous values for the first bucket of data ([8303b84](https://github.com/RomRider/apexcharts-card/commit/8303b84a935ed3f1a7c72642777052c487003e0f)), closes [#110](https://github.com/RomRider/apexcharts-card/issues/110)
+* **group_by:** When group_by was used with lines, the end of the chart was showing an empty slot (display bug only) ([0163f9e](https://github.com/RomRider/apexcharts-card/commit/0163f9ebbf511c809573c4f567a4e67750a99e38))
+
 ## [1.9.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.3...v1.9.0-dev.4) (2021-05-24)
 
 

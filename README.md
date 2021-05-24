@@ -84,7 +84,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.8.2/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.9.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -95,7 +95,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.8.2
+  - url: /local/apexcharts-card.js?v=1.9.0
     type: module
 ```
 
@@ -143,7 +143,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `header` | object | | v1.0.0 | See [header](#header-options) |
 | `now` | object | | v1.5.0 | See [now](#now-options) |
 | `y_axis_precision` | number | `1` | v1.2.0 | The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined. |
-| `yaxis` | array | | NEXT_VERSION | See [yaxis](#yaxis-options-multi-y-axis) |
+| `yaxis` | array | | v1.9.0 | See [yaxis](#yaxis-options-multi-y-axis) |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
@@ -175,7 +175,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
-| `yaxis_id` | string | | NEXT_VERSION | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
+| `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
 
 ### series' `show` Options
@@ -433,12 +433,12 @@ You can have as many y-axis as there are series defined in your configuration or
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `id` | string | | NEXT_VERSION | The identification name of the yaxis used to map it to a serie. Needs to be unique. |
-| `show` | boolean | `true` | NEXT_VERSION | Whether to show or not the axis on the chart |
-| `opposite` | boolean | `false` | NEXT_VERSION | If `true`, the axis will be shown on the right side of the chart |
-| `min` | `auto`, number or string | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
-| `max` | `auto`, number or string | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
-| `apex_config` | object | | NEXT_VERSION | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
+| :white_check_mark: `id` | string | | v1.9.0 | The identification name of the yaxis used to map it to a serie. Needs to be unique. |
+| `show` | boolean | `true` | v1.9.0 | Whether to show or not the axis on the chart |
+| `opposite` | boolean | `false` | v1.9.0 | If `true`, the axis will be shown on the right side of the chart |
+| `min` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
+| `max` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
+| `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
 
 #### Min/Max Format
 
