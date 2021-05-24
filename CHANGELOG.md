@@ -1,3 +1,10 @@
+## [1.9.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.2...v1.9.0-dev.3) (2021-05-24)
+
+
+### Bug Fixes
+
+* yaxis would always start at 0 ([50ef9e4](https://github.com/RomRider/apexcharts-card/commit/50ef9e41d563d981b408382615c0939b7f330469)), closes [#158](https://github.com/RomRider/apexcharts-card/issues/158)
+
 ## [1.9.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.9.0-dev.1...v1.9.0-dev.2) (2021-05-24)
 
 
