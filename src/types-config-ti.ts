@@ -43,6 +43,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "index": t.opt("number"),
   "view_index": t.opt("number"),
   "brush": t.opt("ChartCardBrushExtConfig"),
+  "yaxis": t.opt(t.array("ChartCardYAxisExternal")),
 });
 
 export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'));
@@ -87,6 +88,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   })),
   "transform": t.opt("string"),
   "color_threshold": t.opt(t.array("ChartCardColorThreshold")),
+  "yaxis_id": t.opt("string"),
 });
 
 export const ChartCardSeriesShowConfigExt = t.iface([], {
@@ -128,6 +130,15 @@ export const ChartCardColorThreshold = t.iface([], {
   "opacity": t.opt("number"),
 });
 
+export const ChartCardYAxisExternal = t.iface([], {
+  "id": "string",
+  "show": t.opt("boolean"),
+  "opposite": t.opt("boolean"),
+  "min": t.opt(t.union(t.lit('auto'), "number", "string")),
+  "max": t.opt(t.union(t.lit('auto'), "number", "string")),
+  "apex_config": t.opt("any"),
+});
+
 const exportedTypeSuite: t.ITypeSuite = {
   ChartCardExternalConfig,
   ChartCardChartType,
@@ -142,5 +153,6 @@ const exportedTypeSuite: t.ITypeSuite = {
   GroupByFunc,
   ChartCardHeaderExternalConfig,
   ChartCardColorThreshold,
+  ChartCardYAxisExternal,
 };
 export default exportedTypeSuite;

@@ -131,6 +131,8 @@ export default class GraphEntry {
 
   public minMaxWithTimestamp(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
+    if (this._computedHistory.length === 1)
+      return { min: [start, this._computedHistory[0][1]], max: [end, this._computedHistory[0][1]] };
     return this._computedHistory.reduce(
       (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
         if (point[1] === null) return acc;
