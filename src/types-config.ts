@@ -42,6 +42,7 @@ export interface ChartCardExternalConfig {
   index?: number;
   view_index?: number;
   brush?: ChartCardBrushExtConfig;
+  yaxis?: ChartCardYAxisExternal[];
 }
 
 export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
@@ -87,6 +88,7 @@ export interface ChartCardAllSeriesExternalConfig {
   };
   transform?: string;
   color_threshold?: ChartCardColorThreshold[];
+  yaxis_id?: string;
 }
 
 export interface ChartCardSeriesShowConfigExt {
@@ -126,4 +128,14 @@ export interface ChartCardColorThreshold {
   value: number;
   color?: string;
   opacity?: number;
+}
+
+export interface ChartCardYAxisExternal {
+  id: string;
+  show?: boolean;
+  opposite?: boolean;
+  min?: 'auto' | number;
+  max?: 'auto' | number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apex_config?: any;
 }

@@ -3,6 +3,7 @@ import {
   ChartCardExternalConfig,
   ChartCardSeriesExternalConfig,
   ChartCardSeriesShowConfigExt,
+  ChartCardYAxisExternal,
   GroupByFill,
   GroupByFunc,
 } from './types-config';
@@ -15,6 +16,7 @@ export interface ChartCardConfig extends ChartCardExternalConfig {
   cache: boolean;
   useCompress: boolean;
   apex_config?: ApexOptions;
+  yaxis?: ChartCardYAxis[];
 }
 
 export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
@@ -63,3 +65,7 @@ export interface HistoryBucket {
 }
 
 export type HistoryBuckets = Array<HistoryBucket>;
+
+export interface ChartCardYAxis extends ChartCardYAxisExternal {
+  series_id?: number[];
+}

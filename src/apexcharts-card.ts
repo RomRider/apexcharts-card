@@ -2,7 +2,14 @@ import 'array-flat-polyfill';
 import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { ifDefined } from 'lit-html/directives/if-defined';
 import { ClassInfo, classMap } from 'lit-html/directives/class-map';
-import { ChartCardConfig, ChartCardSeriesConfig, EntityCachePoints, EntityEntryCache, HistoryPoint } from './types';
+import {
+  ChartCardConfig,
+  ChartCardSeriesConfig,
+  ChartCardYAxis,
+  EntityCachePoints,
+  EntityEntryCache,
+  HistoryPoint,
+} from './types';
 import { getLovelace, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
@@ -136,6 +143,8 @@ class ChartsCard extends LitElement {
   private _brushInit = false;
 
   private _brushSelectionSpan = 0;
+
+  private _yAxisConfig?: ChartCardYAxis[];
 
   @property({ type: Boolean }) private _warning = false;
 
@@ -331,6 +340,25 @@ class ChartsCard extends LitElement {
 
       const defColors = this._config?.color_list || DEFAULT_COLORS;
       if (this._config) {
+        if (this._config.yaxis && this._config.yaxis.length > 1) {
+          if (
+            this._config.series.some((serie) => {
+              return !serie.yaxis_id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
+          }
+        }
+        if (this._config.yaxis) {
+          const yAxisConfig = this._generateYAxisConfig(this._config);
+          if (this._config.apex_config) {
+            this._config.apex_config.yaxis = yAxisConfig;
+          } else {
+            this._config.apex_config = {
+              yaxis: yAxisConfig,
+            };
+          }
+        }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
           if (!this._headerColors[index]) {
@@ -419,6 +447,47 @@ class ChartsCard extends LitElement {
     }
     // Full reset only happens in editor mode
     this._reset();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _generateYAxisConfig(config: ChartCardConfig): any {
+    if (!config.yaxis) return undefined;
+    const burned: boolean[] = [];
+    this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
+    const yaxisConfig = config.series.map((serie, serieIndex) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const idx = config.yaxis!.findIndex((yaxis) => {
+        return yaxis.id === serie.yaxis_id;
+      });
+      if (idx < 0) {
+        throw new Error(`yaxis_id: ${serie.yaxis_id} doesn't exist.`);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      let yAxisDup: ChartCardYAxis = JSON.parse(JSON.stringify(config.yaxis![idx]));
+      delete yAxisDup.apex_config;
+      if (this._yAxisConfig?.[idx].series_id) {
+        this._yAxisConfig?.[idx].series_id?.push(serieIndex);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this._yAxisConfig![idx].series_id! = [serieIndex];
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      if (config.yaxis![idx].apex_config) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        yAxisDup = mergeDeep(JSON.parse(JSON.stringify(config.yaxis![idx])), config.yaxis![idx].apex_config);
+      }
+      if (typeof yAxisDup.min !== 'number') delete yAxisDup.min;
+      if (typeof yAxisDup.max !== 'number') delete yAxisDup.max;
+      if (burned[idx]) {
+        yAxisDup.show = false;
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        yAxisDup.show = config.yaxis![idx].show === undefined ? true : config.yaxis![idx].show;
+        burned[idx] = true;
+      }
+      return yAxisDup;
+    });
+    return yaxisConfig;
   }
 
   static get styles(): CSSResult {
@@ -614,6 +683,9 @@ class ChartsCard extends LitElement {
           return;
         });
         graphData.annotations = this._computeAnnotations(start, end, now);
+        if (this._yAxisConfig) {
+          graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
+        }
         if (!this._apexBrush) {
           graphData.xaxis = {
             min: start.getTime(),
@@ -880,6 +952,48 @@ class ChartsCard extends LitElement {
       };
     }
     return {};
+  }
+
+  private _computeYAxisAutoMinMax(start: Date, end: Date) {
+    if (!this._config) return;
+    this._yAxisConfig?.map((yaxis) => {
+      if (typeof yaxis.min !== 'number' || typeof yaxis.max !== 'number') {
+        const minMax = yaxis.series_id?.map((id) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const lMinMax = this._graphs![id]?.minMaxWithTimestamp(start.getTime(), end.getTime());
+          if (!lMinMax) return undefined;
+          if (this._config?.series[id].invert && lMinMax.min[1] !== null) {
+            lMinMax.min[1] = -lMinMax.min[1];
+          }
+          if (this._config?.series[id].invert && lMinMax.max[1] !== null) {
+            lMinMax.min[1] = -lMinMax.max[1];
+          }
+          return lMinMax;
+        });
+        let min: number | null = 0;
+        let max: number | null = 0;
+        minMax?.forEach((elt) => {
+          if (!elt) return;
+          if (min === undefined || min === null) {
+            min = elt.min[1];
+          } else if (elt.min[1] !== null && min > elt.min[1]) {
+            min = elt.min[1];
+          }
+          if (max === undefined || max === null) {
+            max = elt.max[1];
+          } else if (elt.max[1] !== null && max < elt.max[1]) {
+            max = elt.max[1];
+          }
+        });
+        yaxis.series_id?.forEach((id) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          if (yaxis.min === undefined || yaxis.min === 'auto') this._config!.apex_config!.yaxis![id].min = min;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          if (yaxis.max === undefined || yaxis.max === 'auto') this._config!.apex_config!.yaxis![id].max = max;
+        });
+      }
+    });
+    return this._config?.apex_config?.yaxis;
   }
 
   private _computeChartColors(brush: boolean): (string | (({ value }) => string))[] {

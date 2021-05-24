@@ -991,3 +991,28 @@ views:
                     }
             series:
               - entity: sensor.random0_100
+
+          - type: custom:apexcharts-card
+            graph_span: 20min
+            all_series_config:
+              stroke_width: 2
+            series:
+              - entity: sensor.random0_100
+                yaxis_id: first
+              - entity: sensor.random_0_1000
+                yaxis_id: second
+              - entity: sensor.random0_100
+                yaxis_id: first
+                transform: 'return Number(x) + 30;'
+              - entity: sensor.random0_100
+                yaxis_id: first
+                transform: 'return Number(x) - 30;'
+            yaxis:
+              - id: first
+                apex_config:
+                  tickAmount: 4
+              - id: second
+                opposite: true
+                show: true
+                apex_config:
+                  tickAmount: 4

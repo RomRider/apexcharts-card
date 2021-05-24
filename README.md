@@ -30,7 +30,7 @@ However, some things might be broken :grin:
 - [Using the card](#using-the-card)
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
-  - [`series.show` Options](#seriesshow-options)
+  - [series' `show` Options](#series-show-options)
   - [Main `show` Options](#main-show-options)
   - [`header` Options](#header-options)
   - [`now` Options](#now-options)
@@ -40,6 +40,7 @@ However, some things might be broken :grin:
   - [`span` Options](#span-options)
   - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
+  - [`yaxis` Options. Multi-Y axis](#yaxis-options-multi-y-axis)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
   - [Configuration Templates](#configuration-templates)
@@ -139,7 +140,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
 | `now` | object | | v1.5.0 | See [now](#now-options) |
-| `y_axis_precision` | numnber | `1` | v1.2.0 | The float precision used to display numbers on the Y axis |
+| `y_axis_precision` | number | `1` | v1.2.0 | The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined. |
+| `yaxis` | array | | NEXT_VERSION | See [yaxis](#yaxis-options-multi-y-axis) |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if locale is unknown. |
@@ -171,8 +173,10 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
+| `yaxis_id` | string | | NEXT_VERSION | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
+| `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
 
-### `series.show` Options
+### series' `show` Options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
@@ -418,6 +422,55 @@ Let's take this example:
   `[[1611718980000, 4.99], [1611743040000, 1.41], [1611763320000, 4.96], ...]`
 
 * And this is all you need :tada:
+
+### `yaxis` Options. Multi-Y axis
+
+:warning: If this option is used, you can't define `yaxis` in the main `apex_config` option as it will be overriden.
+
+You can have as many y-axis as there are series defined in your configuration or less.
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| :white_check_mark: `id` | string | | NEXT_VERSION | The identification name of the yaxis used to map it to a serie. Needs to be unique. |
+| `show` | boolean | `true` | NEXT_VERSION | Whether to show or not the axis on the chart |
+| `opposite` | boolean | `false` | NEXT_VERSION | If `true`, the axis will be shown on the right side of the chart |
+| `min` | `auto` or number | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. If a number is set, the min will be forced to this number |
+| `max` | `auto` or number | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. If a number is set, the max will be forced to this number |
+| `apex_config` | object | | NEXT_VERSION | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
+
+In this example, we have 2 sensors:
+* `sensor.random0_100`: goes from `0` to `100`
+* `sensor.random_0_1000`: goes from `0` to `1000`
+
+The `min` and `max` of both y-axis are auto calculated based on the spread of the data associated with each axis.
+
+![multi_y_axis](docs/multi_y_axis.png)
+
+```yaml
+type: custom:apexcharts-card
+graph_span: 20min
+yaxis:
+  - id: first # identification name of the first y-axis
+    apex_config:
+      tickAmount: 4
+  - id: second # identification name of the second y-axis
+    opposite: true # make it show on the right side
+    apex_config:
+      tickAmount: 4
+all_series_config:
+  stroke_width: 2
+series:
+  - entity: sensor.random0_100
+    yaxis_id: first # this serie will be associated to the 'id: first' axis.
+  - entity: sensor.random_0_1000
+    yaxis_id: second # this serie will be associated to the 'id: second' axis.
+  - entity: sensor.random0_100
+    yaxis_id: first # this serie will be associated to the 'id: first' axis.
+    transform: 'return Number(x) + 30;' # We make it go fom 30 to 130
+  - entity: sensor.random0_100
+    yaxis_id: first # this serie will be associated to the 'id: first' axis.
+    transform: 'return Number(x) - 30;' # We make it go from -30 to 70
+```
 
 ### Apex Charts Options Example
 
