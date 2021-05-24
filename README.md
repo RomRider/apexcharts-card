@@ -41,6 +41,8 @@ However, some things might be broken :grin:
   - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
   - [`yaxis` Options. Multi-Y axis](#yaxis-options-multi-y-axis)
+    - [Min/Max Format](#minmax-format)
+    - [Example](#example)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
   - [Configuration Templates](#configuration-templates)
@@ -434,9 +436,23 @@ You can have as many y-axis as there are series defined in your configuration or
 | :white_check_mark: `id` | string | | NEXT_VERSION | The identification name of the yaxis used to map it to a serie. Needs to be unique. |
 | `show` | boolean | `true` | NEXT_VERSION | Whether to show or not the axis on the chart |
 | `opposite` | boolean | `false` | NEXT_VERSION | If `true`, the axis will be shown on the right side of the chart |
-| `min` | `auto` or number | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. If a number is set, the min will be forced to this number |
-| `max` | `auto` or number | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. If a number is set, the max will be forced to this number |
+| `min` | `auto`, number or string | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
+| `max` | `auto`, number or string | `auto` | NEXT_VERSION | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
 | `apex_config` | object | | NEXT_VERSION | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
+
+#### Min/Max Format
+
+`min` and `max` support multiple types of format:
+* not set or `auto` (this is the default): if it is set to `auto`, the min or max will be automatically calculated
+* any number: if a number is set, the min or max will be fixed on the y-axis
+* `~90`: if the format is `~` followed by a number, the min or max will be defined as a soft bounds
+  * `min: ~90` and the min of the data in the series is `120`: the y-axis min value will be `90`
+  * `min: ~90` and the min of the data in the series is `60`: the y-axis min value will be `60`
+* `'|+20|'` or `'|-20|'`: This will add/remove the value between `| |` from the min/max
+  * `min: '|-20|'`: The min of the data in the series is `32`, the y-axis min will be `12` (= `32 - 20`)
+  * `max: '|+10|'`: The max of the data in the series is `32`, the y-axis max will be `42` (= `32 + 10`)
+
+#### Example
 
 In this example, we have 2 sensors:
 * `sensor.random0_100`: goes from `0` to `100`

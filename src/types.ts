@@ -68,4 +68,13 @@ export type HistoryBuckets = Array<HistoryBucket>;
 
 export interface ChartCardYAxis extends ChartCardYAxisExternal {
   series_id?: number[];
+  min_type?: minmax_type;
+  max_type?: minmax_type;
+}
+
+export enum minmax_type {
+  AUTO,
+  FIXED,
+  SOFT,
+  ABSOLUTE,
 }
