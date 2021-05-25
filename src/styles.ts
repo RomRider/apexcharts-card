@@ -1,6 +1,6 @@
-import { css, CSSResult } from 'lit-element';
+import { css, CSSResultGroup } from 'lit';
 
-export const styles: CSSResult = css`
+export const stylesApex: CSSResultGroup = css`
   :host {
     display: block;
   }

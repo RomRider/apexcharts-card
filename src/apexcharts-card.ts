@@ -1,7 +1,8 @@
 import 'array-flat-polyfill';
-import { LitElement, html, customElement, property, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
-import { ifDefined } from 'lit-html/directives/if-defined';
-import { ClassInfo, classMap } from 'lit-html/directives/class-map';
+import { LitElement, html, TemplateResult, PropertyValues, CSSResultGroup } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { ClassInfo, classMap } from 'lit/directives/class-map.js';
 import {
   ChartCardConfig,
   ChartCardSeriesConfig,
@@ -34,7 +35,7 @@ import {
   validateOffset,
 } from './utils';
 import ApexCharts from 'apexcharts';
-import { styles } from './styles';
+import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { getBrushLayoutConfig, getLayoutConfig } from './apex-layouts';
 import GraphEntry from './graphEntry';
@@ -508,8 +509,8 @@ class ChartsCard extends LitElement {
     return yaxisConfig;
   }
 
-  static get styles(): CSSResult {
-    return styles;
+  static get styles(): CSSResultGroup {
+    return stylesApex;
   }
 
   protected render(): TemplateResult {
