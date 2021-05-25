@@ -1,3 +1,10 @@
+## [1.10.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.9.1-dev.1...v1.10.0-dev.1) (2021-05-25)
+
+
+### Features
+
+* **yaxis:** `id` and `yaxis_id` no longer needed with only 1 yaxis defined ([e5e8904](https://github.com/RomRider/apexcharts-card/commit/e5e89040620ca9df43dd38d5e267ce2b70386bc2))
+
 ### [1.9.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.9.0...v1.9.1-dev.1) (2021-05-25)
 
 
