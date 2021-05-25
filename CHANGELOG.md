@@ -1,3 +1,10 @@
+### [1.9.1-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.9.0...v1.9.1-dev.1) (2021-05-25)
+
+
+### Bug Fixes
+
+* **yaxis:** Fixed + unfixed bounds on the same yaxis is now working ([f7e4668](https://github.com/RomRider/apexcharts-card/commit/f7e46688fc3b891981854d1632c513fa9dac4773))
+
 ## [1.9.0](https://github.com/RomRider/apexcharts-card/compare/v1.8.2...v1.9.0) (2021-05-24)
 
 
