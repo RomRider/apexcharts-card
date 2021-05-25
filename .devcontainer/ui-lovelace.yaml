@@ -1025,10 +1025,10 @@ views:
               stroke_width: 2
             series:
               - entity: sensor.random0_100
-                yaxis_id: first
+              - entity: sensor.random0_100
+                transform: 'return Number(x) + 1230;'
             yaxis:
-              - id: first
-                min: 0
-                max: ~80
+              - min: 0
+                max: ~1200
                 apex_config:
                   tickAmount: 4

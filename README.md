@@ -42,7 +42,7 @@ However, some things might be broken :grin:
   - [`data_generator` Option](#data_generator-option)
   - [`yaxis` Options. Multi-Y axis](#yaxis-options-multi-y-axis)
     - [Min/Max Format](#minmax-format)
-    - [Example](#example)
+    - [Examples](#examples)
   - [Apex Charts Options Example](#apex-charts-options-example)
   - [Layouts](#layouts)
   - [Configuration Templates](#configuration-templates)
@@ -55,7 +55,7 @@ However, some things might be broken :grin:
   - [`brush` experimental feature](#brush-experimental-feature)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
-- [Examples](#examples)
+- [Examples](#examples-1)
   - [Simple graph](#simple-graph)
   - [Multiple Types of Graphs](#multiple-types-of-graphs)
   - [Aggregating data](#aggregating-data)
@@ -433,7 +433,7 @@ You can have as many y-axis as there are series defined in your configuration or
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `id` | string | | v1.9.0 | The identification name of the yaxis used to map it to a serie. Needs to be unique. |
+|`id` | string | | v1.9.0 | **Required** if you define multiple yaxis. The identification name of the yaxis used to map it to a serie. Needs to be unique. |
 | `show` | boolean | `true` | v1.9.0 | Whether to show or not the axis on the chart |
 | `opposite` | boolean | `false` | v1.9.0 | If `true`, the axis will be shown on the right side of the chart |
 | `min` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
@@ -452,41 +452,60 @@ You can have as many y-axis as there are series defined in your configuration or
   * `min: '|-20|'`: The min of the data in the series is `32`, the y-axis min will be `12` (= `32 - 20`)
   * `max: '|+10|'`: The max of the data in the series is `32`, the y-axis max will be `42` (= `32 + 10`)
 
-#### Example
+#### Examples
 
-In this example, we have 2 sensors:
-* `sensor.random0_100`: goes from `0` to `100`
-* `sensor.random_0_1000`: goes from `0` to `1000`
+* Simple example with one y-axis:
 
-The `min` and `max` of both y-axis are auto calculated based on the spread of the data associated with each axis.
+  ```yaml
+  type: custom:apexcharts-card
+  header:
+    show: true
+    title: Max Soft Bounds + Min Fixed Bound
+  graph_span: 20min
+  series:
+    - entity: sensor.random0_100
+  yaxis: # only 1 yaxis, no need for id or yaxis_id
+    - min: 0
+      # if the sensor doesn't go above 50, the max of the axis will be 50
+      # else the max will be the maximum value of the sensor
+      max: ~50
+      apex_config:
+        tickAmount: 4
+  ```
 
-![multi_y_axis](docs/multi_y_axis.png)
+* In this example, we have 2 sensors:
+  * `sensor.random0_100`: goes from `0` to `100`
+  * `sensor.random_0_1000`: goes from `0` to `1000`
 
-```yaml
-type: custom:apexcharts-card
-graph_span: 20min
-yaxis:
-  - id: first # identification name of the first y-axis
-    apex_config:
-      tickAmount: 4
-  - id: second # identification name of the second y-axis
-    opposite: true # make it show on the right side
-    apex_config:
-      tickAmount: 4
-all_series_config:
-  stroke_width: 2
-series:
-  - entity: sensor.random0_100
-    yaxis_id: first # this serie will be associated to the 'id: first' axis.
-  - entity: sensor.random_0_1000
-    yaxis_id: second # this serie will be associated to the 'id: second' axis.
-  - entity: sensor.random0_100
-    yaxis_id: first # this serie will be associated to the 'id: first' axis.
-    transform: 'return Number(x) + 30;' # We make it go fom 30 to 130
-  - entity: sensor.random0_100
-    yaxis_id: first # this serie will be associated to the 'id: first' axis.
-    transform: 'return Number(x) - 30;' # We make it go from -30 to 70
-```
+  The `min` and `max` of both y-axis are auto calculated based on the spread of the data associated with each axis.
+
+  ![multi_y_axis](docs/multi_y_axis.png)
+
+  ```yaml
+  type: custom:apexcharts-card
+  graph_span: 20min
+  yaxis:
+    - id: first # identification name of the first y-axis
+      apex_config:
+        tickAmount: 4
+    - id: second # identification name of the second y-axis
+      opposite: true # make it show on the right side
+      apex_config:
+        tickAmount: 4
+  all_series_config:
+    stroke_width: 2
+  series:
+    - entity: sensor.random0_100
+      yaxis_id: first # this serie will be associated to the 'id: first' axis.
+    - entity: sensor.random_0_1000
+      yaxis_id: second # this serie will be associated to the 'id: second' axis.
+    - entity: sensor.random0_100
+      yaxis_id: first # this serie will be associated to the 'id: first' axis.
+      transform: 'return Number(x) + 30;' # We make it go fom 30 to 130
+    - entity: sensor.random0_100
+      yaxis_id: first # this serie will be associated to the 'id: first' axis.
+      transform: 'return Number(x) - 30;' # We make it go from -30 to 70
+  ```
 
 ### Apex Charts Options Example
 

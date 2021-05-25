@@ -349,6 +349,13 @@ class ChartsCard extends LitElement {
           ) {
             throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
           }
+          if (
+            this._config.yaxis.some((yaxis) => {
+              return !yaxis.id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some yaxis are missing an 'id'.`);
+          }
         }
         if (this._config.yaxis) {
           const yAxisConfig = this._generateYAxisConfig(this._config);
@@ -460,10 +467,15 @@ class ChartsCard extends LitElement {
     const burned: boolean[] = [];
     this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
     const yaxisConfig = config.series.map((serie, serieIndex) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const idx = config.yaxis!.findIndex((yaxis) => {
-        return yaxis.id === serie.yaxis_id;
-      });
+      let idx = -1;
+      if (config.yaxis?.length !== 1) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        idx = config.yaxis!.findIndex((yaxis) => {
+          return yaxis.id === serie.yaxis_id;
+        });
+      } else {
+        idx = 0;
+      }
       if (idx < 0) {
         throw new Error(`yaxis_id: ${serie.yaxis_id} doesn't exist.`);
       }

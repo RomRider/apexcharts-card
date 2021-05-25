@@ -131,7 +131,7 @@ export interface ChartCardColorThreshold {
 }
 
 export interface ChartCardYAxisExternal {
-  id: string;
+  id?: string;
   show?: boolean;
   opposite?: boolean;
   min?: 'auto' | number | string;

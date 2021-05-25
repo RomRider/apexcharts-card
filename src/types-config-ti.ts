@@ -131,7 +131,7 @@ export const ChartCardColorThreshold = t.iface([], {
 });
 
 export const ChartCardYAxisExternal = t.iface([], {
-  "id": "string",
+  "id": t.opt("string"),
   "show": t.opt("boolean"),
   "opposite": t.opt("boolean"),
   "min": t.opt(t.union(t.lit('auto'), "number", "string")),
