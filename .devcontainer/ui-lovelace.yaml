@@ -1016,3 +1016,19 @@ views:
                 show: true
                 apex_config:
                   tickAmount: 4
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: Soft Bounds + fixed bound
+            graph_span: 20min
+            all_series_config:
+              stroke_width: 2
+            series:
+              - entity: sensor.random0_100
+                yaxis_id: first
+            yaxis:
+              - id: first
+                min: 0
+                max: ~80
+                apex_config:
+                  tickAmount: 4

@@ -480,6 +480,7 @@ class ChartsCard extends LitElement {
       if (config.yaxis![idx].apex_config) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         yAxisDup = mergeDeep(JSON.parse(JSON.stringify(config.yaxis![idx])), config.yaxis![idx].apex_config);
+        delete yAxisDup.apex_config;
       }
       if (typeof yAxisDup.min !== 'number') delete yAxisDup.min;
       if (typeof yAxisDup.max !== 'number') delete yAxisDup.max;
@@ -991,7 +992,7 @@ class ChartsCard extends LitElement {
           }
         });
         yaxis.series_id?.forEach((id) => {
-          if (min !== null) {
+          if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._config!.apex_config!.yaxis![id].min = this._getMinMaxBasedOnType(
               true,
@@ -1001,7 +1002,7 @@ class ChartsCard extends LitElement {
               yaxis.min_type!,
             );
           }
-          if (max !== null) {
+          if (max !== null && yaxis.max_type !== minmax_type.FIXED) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this._config!.apex_config!.yaxis![id].max = this._getMinMaxBasedOnType(
               false,
