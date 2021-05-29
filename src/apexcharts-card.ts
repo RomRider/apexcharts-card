@@ -45,6 +45,7 @@ import exportedTypeSuite from './types-config-ti';
 import {
   DEFAULT_AREA_OPACITY,
   DEFAULT_FILL_RAW,
+  DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
   DEFAULT_SHOW_LEGEND_VALUE,
@@ -463,11 +464,11 @@ class ChartsCard extends LitElement {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _generateYAxisConfig(config: ChartCardConfig): any {
+  private _generateYAxisConfig(config: ChartCardConfig): ApexYAxis[] | undefined {
     if (!config.yaxis) return undefined;
     const burned: boolean[] = [];
     this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
-    const yaxisConfig = config.series.map((serie, serieIndex) => {
+    const yaxisConfig: ApexYAxis[] = config.series.map((serie, serieIndex) => {
       let idx = -1;
       if (config.yaxis?.length !== 1) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -480,9 +481,13 @@ class ChartsCard extends LitElement {
       if (idx < 0) {
         throw new Error(`yaxis_id: ${serie.yaxis_id} doesn't exist.`);
       }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      let yAxisDup: ChartCardYAxis = JSON.parse(JSON.stringify(config.yaxis![idx]));
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any
+      let yAxisDup: any = JSON.parse(JSON.stringify(config.yaxis![idx]));
       delete yAxisDup.apex_config;
+      delete yAxisDup.decimals;
+      yAxisDup.decimalsInFloat =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        config.yaxis![idx].decimals === undefined ? DEFAULT_FLOAT_PRECISION : config.yaxis![idx].decimals;
       if (this._yAxisConfig?.[idx].series_id) {
         this._yAxisConfig?.[idx].series_id?.push(serieIndex);
       } else {
@@ -492,7 +497,7 @@ class ChartsCard extends LitElement {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (config.yaxis![idx].apex_config) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        yAxisDup = mergeDeep(JSON.parse(JSON.stringify(config.yaxis![idx])), config.yaxis![idx].apex_config);
+        yAxisDup = mergeDeep(yAxisDup, config.yaxis![idx].apex_config);
         delete yAxisDup.apex_config;
       }
       if (typeof yAxisDup.min !== 'number') delete yAxisDup.min;

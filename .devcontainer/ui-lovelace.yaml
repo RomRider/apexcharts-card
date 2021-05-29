@@ -344,7 +344,7 @@ views:
             graph_span: 24h
             span:
               start: day
-            y_axis_precision: 5
+            # y_axis_precision: 5
             now:
               show: true
               color: '#ff0000'
@@ -352,6 +352,8 @@ views:
             header:
               show: true
               show_states: true
+            yaxis:
+              - decimals: 5
             series:
               - entity: sensor.pvpc
                 float_precision: 5
@@ -1001,21 +1003,22 @@ views:
                 yaxis_id: second
               - entity: sensor.random0_100
                 yaxis_id: first
-                transform: 'return Number(x) + 30;'
+                transform: 'return Number(x) + 30.12;'
               - entity: sensor.random0_100
                 yaxis_id: first
                 transform: 'return Number(x) + 60;'
             yaxis:
               - id: first
                 apex_config:
-                  tickAmount: 4
+                  tickAmount: 2
               - id: second
                 max: '|+100|'
                 min: ~100
                 opposite: true
+                decimals: 0
                 show: true
                 apex_config:
-                  tickAmount: 4
+                  tickAmount: 6
           - type: custom:apexcharts-card
             header:
               show: true

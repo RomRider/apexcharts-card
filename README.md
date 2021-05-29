@@ -142,7 +142,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
 | `now` | object | | v1.5.0 | See [now](#now-options) |
-| `y_axis_precision` | number | `1` | v1.2.0 | The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined. |
+| ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | ~~v1.2.0~~ | **DEPRECATED since NEXT_VERSION** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
 | `yaxis` | array | | v1.9.0 | See [yaxis](#yaxis-options-multi-y-axis) |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
@@ -438,6 +438,7 @@ You can have as many y-axis as there are series defined in your configuration or
 | `opposite` | boolean | `false` | v1.9.0 | If `true`, the axis will be shown on the right side of the chart |
 | `min` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
 | `max` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
+| `decimals` | number | `1` | NEXT_VERSION | Number of decimals to show on this y-axis |
 | `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
 
 #### Min/Max Format
@@ -469,6 +470,7 @@ You can have as many y-axis as there are series defined in your configuration or
       # if the sensor doesn't go above 50, the max of the axis will be 50
       # else the max will be the maximum value of the sensor
       max: ~50
+      decimals: 0
       apex_config:
         tickAmount: 4
   ```
@@ -486,10 +488,12 @@ You can have as many y-axis as there are series defined in your configuration or
   graph_span: 20min
   yaxis:
     - id: first # identification name of the first y-axis
+      decimals: 0
       apex_config:
         tickAmount: 4
     - id: second # identification name of the second y-axis
       opposite: true # make it show on the right side
+      decimals: 0
       apex_config:
         tickAmount: 4
   all_series_config:

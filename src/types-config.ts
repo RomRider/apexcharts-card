@@ -17,7 +17,6 @@ export interface ChartCardExternalConfig {
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
   span?: ChartCardSpanExtConfig;
-  y_axis_precision?: number;
   now?: {
     show?: boolean;
     color?: string;
@@ -136,6 +135,7 @@ export interface ChartCardYAxisExternal {
   opposite?: boolean;
   min?: 'auto' | number | string;
   max?: 'auto' | number | string;
+  decimals?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
 }

@@ -23,7 +23,6 @@ export const ChartCardExternalConfig = t.iface([], {
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
   "span": t.opt("ChartCardSpanExtConfig"),
-  "y_axis_precision": t.opt("number"),
   "now": t.opt(t.iface([], {
     "show": t.opt("boolean"),
     "color": t.opt("string"),
@@ -136,6 +135,7 @@ export const ChartCardYAxisExternal = t.iface([], {
   "opposite": t.opt("boolean"),
   "min": t.opt(t.union(t.lit('auto'), "number", "string")),
   "max": t.opt(t.union(t.lit('auto'), "number", "string")),
+  "decimals": t.opt("number"),
   "apex_config": t.opt("any"),
 });
 

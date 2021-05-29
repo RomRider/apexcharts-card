@@ -221,7 +221,7 @@ function getYAxis(config: ChartCardConfig) {
   return Array.isArray(config.apex_config?.yaxis) || config.yaxis
     ? undefined
     : {
-        decimalsInFloat: config.y_axis_precision === undefined ? DEFAULT_FLOAT_PRECISION : config.y_axis_precision,
+        decimalsInFloat: DEFAULT_FLOAT_PRECISION,
       };
 }
 
