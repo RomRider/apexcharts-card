@@ -24,6 +24,7 @@ export interface ChartCardExternalConfig {
   };
   show?: {
     loading?: boolean;
+    last_updated?: boolean;
   };
   cache?: boolean;
   stacked?: boolean;

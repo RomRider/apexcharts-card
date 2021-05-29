@@ -1,5 +1,5 @@
 import 'array-flat-polyfill';
-import { LitElement, html, TemplateResult, PropertyValues, CSSResultGroup } from 'lit';
+import { LitElement, html, TemplateResult, PropertyValues, CSSResultGroup, Template } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { ClassInfo, classMap } from 'lit/directives/class-map.js';
@@ -148,6 +148,8 @@ class ChartsCard extends LitElement {
   private _brushSelectionSpan = 0;
 
   private _yAxisConfig?: ChartCardYAxis[];
+
+  @property({ attribute: false }) _lastUpdated: Date = new Date();
 
   @property({ type: Boolean }) private _warning = false;
 
@@ -553,6 +555,7 @@ class ChartsCard extends LitElement {
             ${this._config.series_in_brush.length ? html`<div id="brush"></div>` : ``}
           </div>
         </div>
+        ${this._renderLastUpdated()}
       </ha-card>
     `;
   }
@@ -618,6 +621,28 @@ class ChartsCard extends LitElement {
     `;
   }
 
+  private _renderLastUpdated(): TemplateResult {
+    if (this._config?.show?.last_updated) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let hours12: any = undefined;
+      if (this._config.hours_12 !== undefined) {
+        hours12 = this._config.hours_12 ? { hour12: true } : { hourCycle: 'h23' };
+      }
+      const lastUpdated = new Intl.DateTimeFormat(this._config.locale || this._hass?.language || 'en', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        ...hours12,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any).format(this._lastUpdated);
+      return html` <div id="last_updated">${lastUpdated}</div> `;
+    }
+    return html``;
+  }
+
   private async _initialLoad() {
     await this.updateComplete;
 
@@ -649,6 +674,7 @@ class ChartsCard extends LitElement {
 
     const { start, end } = this._getSpanDates();
     const now = new Date();
+    this._lastUpdated = now;
     const editMode = getLovelace()?.editMode;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const caching = editMode === true ? false : this._config!.cache;
