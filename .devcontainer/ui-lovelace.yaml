@@ -1030,6 +1030,10 @@ views:
               stroke_width: 2
             series:
               - entity: sensor.random0_100
+                header_actions:
+                  hold_action:
+                    action: more-info
+                    entity: sensor.random_0_1000
               - entity: sensor.random0_100
                 transform: 'return Number(x) + 1230;'
             yaxis:
@@ -1037,3 +1041,7 @@ views:
                 max: ~1200
                 apex_config:
                   tickAmount: 4
+            header:
+              show: true
+              show_states: true
+              colorize_states: true

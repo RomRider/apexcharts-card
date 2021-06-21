@@ -30,6 +30,7 @@
   "homepage": "https://github.com/RomRider/apexcharts-card#readme",
   "dependencies": {
     "@ctrl/tinycolor": "^3.3.3",
+    "@material/mwc-ripple": "^0.21.0",
     "apexcharts": "3.23.1",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.6.6",

@@ -1,6 +1,6 @@
 import 'array-flat-polyfill';
-import { LitElement, html, TemplateResult, PropertyValues, CSSResultGroup, Template } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { LitElement, html, TemplateResult, PropertyValues, CSSResultGroup } from 'lit';
+import { property, customElement, eventOptions } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { ClassInfo, classMap } from 'lit/directives/class-map.js';
 import {
@@ -12,7 +12,7 @@ import {
   HistoryPoint,
   minmax_type,
 } from './types';
-import { getLovelace, HomeAssistant } from 'custom-card-helpers';
+import { getLovelace, handleAction, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
@@ -35,12 +35,18 @@ import {
   validateOffset,
 } from './utils';
 import ApexCharts from 'apexcharts';
+import { Ripple } from '@material/mwc-ripple';
 import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { getBrushLayoutConfig, getLayoutConfig } from './apex-layouts';
 import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
-import { ChartCardColorThreshold, ChartCardExternalConfig, ChartCardSeriesExternalConfig } from './types-config';
+import {
+  ActionsConfig,
+  ChartCardColorThreshold,
+  ChartCardExternalConfig,
+  ChartCardSeriesExternalConfig,
+} from './types-config';
 import exportedTypeSuite from './types-config-ti';
 import {
   DEFAULT_AREA_OPACITY,
@@ -68,6 +74,7 @@ import {
 } from './const';
 import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
+import { actionHandler } from './action-handler-directive';
 
 /* eslint no-console: 0 */
 console.info(
@@ -377,9 +384,10 @@ class ChartsCard extends LitElement {
         }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
-          if (!this._headerColors[index]) {
-            this._headerColors[index] = defColors[index % defColors.length];
-          }
+          if (!serie.header_actions?.tap_action)
+            if (!this._headerColors[index]) {
+              this._headerColors[index] = defColors[index % defColors.length];
+            }
           if (serie.color) {
             this._headerColors[index] = serie.color;
           }
@@ -595,7 +603,46 @@ class ChartsCard extends LitElement {
         ${this._config?.series.map((serie, index) => {
           if (serie.show.in_header) {
             return html`
-              <div id="states__state">
+              <div
+                id="states__state"
+                class="${serie.header_actions?.tap_action?.action === 'none' &&
+                (!serie.header_actions?.hold_action?.action || serie.header_actions?.hold_action?.action === 'none') &&
+                (!serie.header_actions?.double_tap_action?.action ||
+                  serie.header_actions?.double_tap_action?.action === 'none')
+                  ? ''
+                  : 'actions'}"
+                @action=${(ev) => {
+                  this._handleAction(ev, serie);
+                }}
+                .actionHandler=${actionHandler({
+                  hasDoubleClick:
+                    serie.header_actions?.double_tap_action?.action &&
+                    serie.header_actions.double_tap_action.action !== 'none',
+                  hasHold:
+                    serie.header_actions?.hold_action?.action && serie.header_actions?.hold_action.action !== 'none',
+                })}
+                @focus="${(ev) => {
+                  this.handleRippleFocus(ev, index);
+                }}"
+                @blur="${(ev) => {
+                  this.handleRippleBlur(ev, index);
+                }}"
+                @mousedown="${(ev) => {
+                  this.handleRippleActivate(ev, index);
+                }}"
+                @mouseup="${(ev) => {
+                  this.handleRippleDeactivate(ev, index);
+                }}"
+                @touchstart="${(ev) => {
+                  this.handleRippleActivate(ev, index);
+                }}"
+                @touchend="${(ev) => {
+                  this.handleRippleDeactivate(ev, index);
+                }}"
+                @touchcancel="${(ev) => {
+                  this.handleRippleDeactivate(ev, index);
+                }}"
+              >
                 <div id="state__value">
                   <span id="state" style="${this._computeHeaderStateColor(serie, this._headerState?.[index])}"
                     >${this._headerState?.[index] === 0
@@ -611,6 +658,7 @@ class ChartsCard extends LitElement {
                 ${serie.show.name_in_header
                   ? html`<div id="state__name">${computeName(index, this._config?.series, this._entities)}</div>`
                   : ''}
+                <mwc-ripple unbounded id="ripple-${index}"></mwc-ripple>
               </div>
             `;
           } else {
@@ -1290,6 +1338,50 @@ class ChartsCard extends LitElement {
       start.setTime(start.getTime() + this._offset);
     }
     return { start, end };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _handleAction(ev: any, serieConfig: ChartCardSeriesConfig) {
+    if (ev.detail?.action) {
+      const configDup: ActionsConfig = serieConfig.header_actions
+        ? JSON.parse(JSON.stringify(serieConfig.header_actions))
+        : {};
+
+      switch (ev.detail.action) {
+        case 'tap':
+        case 'hold':
+        case 'double_tap':
+          configDup.entity = configDup[`${ev.detail.action}_action`]?.entity || serieConfig.entity;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          handleAction(this, this._hass!, configDup, `${ev.detail.action}_action`);
+          break;
+        default:
+          break;
+      }
+    }
+    return;
+  }
+
+  // backward compatibility
+  @eventOptions({ passive: true })
+  private handleRippleActivate(evt: Event, index: number): void {
+    const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
+    r && r.startFocus && r.startPress(evt);
+  }
+
+  private handleRippleDeactivate(_, index: number): void {
+    const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
+    r && r.startFocus && r.endPress();
+  }
+
+  private handleRippleFocus(_, index: number): void {
+    const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
+    r && r.startFocus && r.startFocus();
+  }
+
+  private handleRippleBlur(_, index: number): void {
+    const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
+    r && r.startFocus && r.endFocus();
   }
 
   public getCardSize(): number {

@@ -65,6 +65,11 @@ export const stylesApex: CSSResultGroup = css`
 
   #states__state {
     flex: 0 0 10%;
+    position: relative;
+  }
+
+  #states__state.actions {
+    cursor: pointer;
   }
 
   #state__value {

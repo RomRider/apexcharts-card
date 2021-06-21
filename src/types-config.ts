@@ -89,6 +89,14 @@ export interface ChartCardAllSeriesExternalConfig {
   transform?: string;
   color_threshold?: ChartCardColorThreshold[];
   yaxis_id?: string;
+  header_actions?: ActionsConfig;
+}
+
+export interface ActionsConfig {
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
+  entity?: string;
 }
 
 export interface ChartCardSeriesShowConfigExt {
@@ -140,3 +148,65 @@ export interface ChartCardYAxisExternal {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
 }
+
+export interface ToggleMenuActionConfig extends BaseActionConfig {
+  action: 'toggle-menu';
+  haptic?: HapticType;
+}
+export interface ToggleActionConfig extends BaseActionConfig {
+  action: 'toggle';
+  haptic?: HapticType;
+}
+export interface CallServiceActionConfig extends BaseActionConfig {
+  action: 'call-service';
+  service: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  service_data?: any;
+  haptic?: HapticType;
+}
+export interface NavigateActionConfig extends BaseActionConfig {
+  action: 'navigate';
+  navigation_path: string;
+  haptic?: HapticType;
+}
+export interface UrlActionConfig extends BaseActionConfig {
+  action: 'url';
+  url_path: string;
+  haptic?: HapticType;
+}
+export interface MoreInfoActionConfig extends BaseActionConfig {
+  action: 'more-info';
+  entity?: string;
+  haptic?: HapticType;
+}
+export interface NoActionConfig extends BaseActionConfig {
+  action: 'none';
+  haptic?: HapticType;
+}
+export interface CustomActionConfig extends BaseActionConfig {
+  action: 'fire-dom-event';
+  haptic?: HapticType;
+}
+export interface BaseActionConfig {
+  confirmation?: ConfirmationRestrictionConfig;
+}
+
+export interface ConfirmationRestrictionConfig {
+  text?: string;
+  exemptions?: RestrictionConfig[];
+}
+
+export interface RestrictionConfig {
+  user: string;
+}
+
+export declare type HapticType = 'success' | 'warning' | 'failure' | 'light' | 'medium' | 'heavy' | 'selection';
+export declare type ActionConfig =
+  | ToggleActionConfig
+  | CallServiceActionConfig
+  | NavigateActionConfig
+  | UrlActionConfig
+  | MoreInfoActionConfig
+  | NoActionConfig
+  | CustomActionConfig
+  | ToggleMenuActionConfig;
