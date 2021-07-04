@@ -78,3 +78,13 @@ export enum minmax_type {
   SOFT,
   ABSOLUTE,
 }
+
+export interface ActionHandlerOptions {
+  hasHold?: boolean;
+  hasDoubleClick?: boolean;
+  disabled?: boolean;
+}
+
+export interface ActionHandlerDetail {
+  action: 'hold' | 'tap' | 'double_tap';
+}

@@ -31,6 +31,9 @@ However, some things might be broken :grin:
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
   - [series' `show` Options](#series-show-options)
+  - [`header_actions` options](#header_actions-options)
+  - [`*_action` options](#_action-options)
+  - [`confirmation` options](#confirmation-options)
   - [Main `show` Options](#main-show-options)
   - [`header` Options](#header-options)
   - [`now` Options](#now-options)
@@ -177,6 +180,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
+| `header_actions` | object | | NEXT_VERSION | See [header_actions](#header_actions-options) |
 
 ### series' `show` Options
 
@@ -194,6 +198,67 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
 | `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
+### `header_actions` options
+
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `tap_action` | object | | NEXT_VERSION | Action to perform on tap. See [action options](#_action-options) |
+| `hold_action` | object | | NEXT_VERSION | Action to perform on hold. See [action options](#_action-options) |
+| `double_tap_action` | object | | NEXT_VERSION | Action to perform on double tap. See [action options](#_action-options) |
+
+### `*_action` options
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `action` | string | `more-info` | NEXT_VERSION | Action to perform. Valid values are: `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` |
+| `entity` | string | | NEXT_VERSION | Only valid for `more-info`. Overrides the `more-info` target entity. Default is to use the serie's entity |
+| `navigation_path` | string | | NEXT_VERSION | Path to navigate to (e.g. `/lovelace/0/`) when action is `navigate` |
+| `url_path` | string | | NEXT_VERSION | URL to open on click when action is `url`. The URL will open in a new tab |
+| `service` | string | | NEXT_VERSION | Any valid Home-Assistant service |
+| `service_data` | object | | NEXT_VERSION | Service data to include (e.g. `entity_id: media_player.bedroom`) when `action` defined as `call-service` |
+| `confirmation` | object | | NEXT_VERSION |Display a confirmation popup. See [confirmation](#confirmation-options) |
+
+Example:
+```yaml
+type: custom:apexcharts-card
+series:
+  - entity: sensor.indoor_temperature
+    header_actions:
+      tap_action:
+        action: call-service
+        service: climate.turn_on
+        service_data:
+          entity_id: climate.heater
+```
+
+### `confirmation` options
+
+This will popup a dialog box before running the action.
+
+| Name | Type | Default | Since | Description |
+| ---- | :--: | :-----: | :---: | ----------- |
+| `text` | string | | NEXT_VERSION | This text will be displayed in the popup |
+| `exemptions` | array | | NEXT_VERSION | Any user declared in this list will not see the confirmation dialog. Format `user: USER_ID` |
+
+Example:
+
+```yaml
+type: custom:apexcharts-card
+series:
+  - entity: sensor.indoor_temperature
+    header_actions:
+      tap_action:
+        action: call-service
+        service: script.toggle_climate
+        service_data:
+          entity: climate.heater
+        confirmation:
+          text: Are you sure?
+          exemptions:
+            - user: befc8496799848bda1824f2a8111e30a
+```
+
 ### Main `show` Options
 
 | Name | Type | Default | Since | Description |
@@ -210,6 +275,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
 | `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |
+| `disable_actions` | boolean | `false` | NEXT_VERSION | If `true`, disable all header actions |
 
 ### `now` Options
 
