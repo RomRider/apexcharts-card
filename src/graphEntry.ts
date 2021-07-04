@@ -189,11 +189,18 @@ export default class GraphEntry {
     this._updating = true;
 
     if (this._config.ignore_history) {
-      let currentState: null | number | string = this._entityState.state;
+      let currentState: null | number | string = null;
+      if (this._config.attribute) {
+        currentState = this._entityState.attributes?.[this._config.attribute];
+      } else {
+        currentState = this._entityState.state;
+      }
       if (this._config.transform) {
         currentState = this._applyTransform(currentState, this._entityState);
       }
-      this._computedHistory = [[new Date(this._entityState.last_updated).getTime(), Number(currentState)]];
+      let stateParsed: number | null = parseFloat(currentState as string);
+      stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
+      this._computedHistory = [[new Date(this._entityState.last_updated).getTime(), stateParsed]];
       this._updating = false;
       return true;
     }
