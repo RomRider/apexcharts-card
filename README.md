@@ -507,7 +507,7 @@ You can have as many y-axis as there are series defined in your configuration or
 | `max` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
 | `decimals` | number | `1` | NEXT_VERSION | Number of decimals to show on this y-axis |
 | `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
-| `align_to` | number | | NEXT_VERSION | Aligns the yaxis extremas to the closest `align_to` value. Only valid if `min` or `max` are not fixed values. |
+| `align_to` | number | | NEXT_VERSION | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
 
 #### Min/Max Format
 
