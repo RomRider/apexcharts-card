@@ -1,3 +1,10 @@
+## [1.10.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.3...v1.10.0-dev.4) (2021-07-04)
+
+
+### Features
+
+* **yaxis:** Align the extremas to the closest `align_to`  value. ([a46c812](https://github.com/RomRider/apexcharts-card/commit/a46c8127d8252fcadcb212ee7d2ee28d36c8d03a)), closes [#170](https://github.com/RomRider/apexcharts-card/issues/170)
+
 ## [1.10.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.2...v1.10.0-dev.3) (2021-07-04)
 
 
