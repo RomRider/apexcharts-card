@@ -605,11 +605,13 @@ class ChartsCard extends LitElement {
             return html`
               <div
                 id="states__state"
-                class="${serie.header_actions?.tap_action?.action === 'none' &&
-                (!serie.header_actions?.hold_action?.action || serie.header_actions?.hold_action?.action === 'none') &&
-                (!serie.header_actions?.double_tap_action?.action ||
-                  serie.header_actions?.double_tap_action?.action === 'none')
-                  ? ''
+                class="${this._config?.header?.disable_actions ||
+                (serie.header_actions?.tap_action?.action === 'none' &&
+                  (!serie.header_actions?.hold_action?.action ||
+                    serie.header_actions?.hold_action?.action === 'none') &&
+                  (!serie.header_actions?.double_tap_action?.action ||
+                    serie.header_actions?.double_tap_action?.action === 'none'))
+                  ? 'disabled'
                   : 'actions'}"
                 @action=${(ev) => {
                   this._handleAction(ev, serie);

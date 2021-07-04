@@ -1020,9 +1020,6 @@ views:
                 apex_config:
                   tickAmount: 6
           - type: custom:apexcharts-card
-            header:
-              show: true
-              title: Soft Bounds + fixed bound
             show:
               last_updated: true
             graph_span: 20min
@@ -1042,6 +1039,32 @@ views:
                 apex_config:
                   tickAmount: 4
             header:
+              title: Test Actions
               show: true
               show_states: true
               colorize_states: true
+          - type: custom:apexcharts-card
+            show:
+              last_updated: true
+            graph_span: 20min
+            all_series_config:
+              stroke_width: 2
+            series:
+              - entity: sensor.random0_100
+                header_actions:
+                  hold_action:
+                    action: more-info
+                    entity: sensor.random_0_1000
+              - entity: sensor.random0_100
+                transform: 'return Number(x) + 1230;'
+            yaxis:
+              - min: 0
+                max: ~1200
+                apex_config:
+                  tickAmount: 4
+            header:
+              title: Actions Disabled
+              show: true
+              show_states: true
+              colorize_states: true
+              disable_actions: true

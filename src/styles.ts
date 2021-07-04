@@ -72,6 +72,10 @@ export const stylesApex: CSSResultGroup = css`
     cursor: pointer;
   }
 
+  #states__state.disabled {
+    pointer-events: none;
+  }
+
   #state__value {
     display: table;
     white-space: nowrap;

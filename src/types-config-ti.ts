@@ -130,6 +130,7 @@ export const ChartCardHeaderExternalConfig = t.iface([], {
   "show_states": t.opt("boolean"),
   "colorize_states": t.opt("boolean"),
   "standard_format": t.opt("boolean"),
+  "disable_actions": t.opt("boolean"),
 });
 
 export const ChartCardColorThreshold = t.iface([], {
