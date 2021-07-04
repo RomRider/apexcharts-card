@@ -13,8 +13,13 @@ import { ChartCardConfig } from './types';
 import { computeName, computeUom, is12Hour, mergeDeep, prettyPrintTime, truncateFloat } from './utils';
 import { layoutMinimal } from './layouts/minimal';
 import { getLocales, getDefaultLocale } from './locales';
+import GraphEntry from './graphEntry';
 
-export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | undefined = undefined): unknown {
+export function getLayoutConfig(
+  config: ChartCardConfig,
+  hass: HomeAssistant | undefined = undefined,
+  graphs: (GraphEntry | undefined)[] | undefined,
+): unknown {
   const locales = getLocales();
   const def = {
     chart: {
@@ -58,7 +63,7 @@ export function getLayoutConfig(config: ChartCardConfig, hass: HomeAssistant | u
     dataLabels: {
       enabled: getDataLabelsEnabled(config),
       enabledOnSeries: getDataLabels_enabledOnSeries(config),
-      formatter: getDataLabelsFormatter(config),
+      formatter: getDataLabelsFormatter(config, graphs),
     },
     plotOptions: {
       radialBar: getPlotOptions_radialBar(config),
@@ -313,7 +318,21 @@ function getDataLabelsEnabled(config: ChartCardConfig): boolean {
   );
 }
 
-function getDataLabelsFormatter(config: ChartCardConfig) {
+function getDataLabelsFormatter(config: ChartCardConfig, graphs: (GraphEntry | undefined)[] | undefined) {
+  if (config.chart_type === 'pie' || config.chart_type === 'donut') {
+    return function (value, opts, lgraphs = graphs, conf = config) {
+      if (conf.series_in_graph[opts.seriesIndex].show.datalabels !== false) {
+        if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'percent') {
+          return truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
+        }
+        return truncateFloat(
+          lgraphs?.[conf.series_in_graph[opts.seriesIndex].index]?.lastState,
+          conf.series_in_graph[opts.seriesIndex].float_precision,
+        );
+      }
+      return '';
+    };
+  }
   return function (value, opts, conf = config) {
     if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'total') {
       return truncateFloat(

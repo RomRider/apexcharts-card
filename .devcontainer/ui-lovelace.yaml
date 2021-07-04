@@ -450,6 +450,10 @@ views:
               title: pie
             series:
               - entity: sensor.random0_100
+                unit: kWh
+                show:
+                  datalabels: percent
+
               - entity: sensor.random_0_1000
           - type: custom:apexcharts-card
             chart_type: donut

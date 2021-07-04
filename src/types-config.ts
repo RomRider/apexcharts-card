@@ -106,7 +106,7 @@ export interface ChartCardSeriesShowConfigExt {
   name_in_header?: boolean;
   header_color_threshold?: boolean;
   in_chart?: boolean;
-  datalabels?: boolean | 'total';
+  datalabels?: boolean | 'total' | 'percent';
   hidden_by_default?: boolean;
   extremas?: boolean | 'time';
   in_brush?: boolean;

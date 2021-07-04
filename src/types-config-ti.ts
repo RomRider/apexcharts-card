@@ -106,7 +106,7 @@ export const ChartCardSeriesShowConfigExt = t.iface([], {
   "name_in_header": t.opt("boolean"),
   "header_color_threshold": t.opt("boolean"),
   "in_chart": t.opt("boolean"),
-  "datalabels": t.opt(t.union("boolean", t.lit('total'))),
+  "datalabels": t.opt(t.union("boolean", t.lit('total'), t.lit('percent'))),
   "hidden_by_default": t.opt("boolean"),
   "extremas": t.opt(t.union("boolean", t.lit('time'))),
   "in_brush": t.opt("boolean"),

@@ -108,6 +108,10 @@ export default class GraphEntry {
     this._cache = cache;
   }
 
+  get lastState(): number | null {
+    return this.history.length > 0 ? this.history[this.history.length - 1][1] : null;
+  }
+
   public nowValue(now: number, before: boolean): number | null {
     if (this.history.length === 0) return null;
     const index = this.history.findIndex((point, index, arr) => {
