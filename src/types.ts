@@ -28,6 +28,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
     start_with_last?: boolean;
   };
   show: ChartCardSeriesShowConfig;
+  ignore_history: boolean;
 }
 
 export interface ChartCardSeriesShowConfig extends ChartCardSeriesShowConfigExt {

@@ -183,6 +183,17 @@ export default class GraphEntry {
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
+
+    if (this._config.ignore_history) {
+      let currentState: null | number | string = this._entityState.state;
+      if (this._config.transform) {
+        currentState = this._applyTransform(currentState, this._entityState);
+      }
+      this._computedHistory = [[new Date(this._entityState.last_updated).getTime(), Number(currentState)]];
+      this._updating = false;
+      return true;
+    }
+
     let history: EntityEntryCache | undefined = undefined;
 
     if (this._config.data_generator) {

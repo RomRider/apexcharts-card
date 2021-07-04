@@ -440,6 +440,9 @@ views:
                 unit: Mbits/s
                 min: 0
                 max: 1000
+                group_by:
+                  func: max
+                  duration: 30min
           - type: custom:apexcharts-card
             chart_type: pie
             header:

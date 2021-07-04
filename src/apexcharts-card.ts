@@ -384,6 +384,13 @@ class ChartsCard extends LitElement {
         }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
+          serie.ignore_history = !!(
+            this._config?.chart_type &&
+            ['donut', 'pie', 'radialBar'].includes(this._config?.chart_type) &&
+            (!serie.group_by || serie.group_by?.func === 'raw') &&
+            !serie.data_generator &&
+            !serie.offset
+          );
           if (!this._headerColors[index]) {
             this._headerColors[index] = defColors[index % defColors.length];
           }
