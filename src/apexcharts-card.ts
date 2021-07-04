@@ -1076,11 +1076,15 @@ class ChartsCard extends LitElement {
             this._seriesOffset[id] ? new Date(end.getTime() + this._seriesOffset[id]).getTime() : end.getTime(),
           );
           if (!lMinMax) return undefined;
-          if (this._config?.series[id].invert && lMinMax.min[1] !== null) {
-            lMinMax.min[1] = -lMinMax.min[1];
-          }
-          if (this._config?.series[id].invert && lMinMax.max[1] !== null) {
-            lMinMax.min[1] = -lMinMax.max[1];
+          if (this._config?.series[id].invert) {
+            const cmin = lMinMax.min[1];
+            const cmax = lMinMax.max[1];
+            if (cmin !== null) {
+              lMinMax.max[1] = -cmin;
+            }
+            if (cmax !== null) {
+              lMinMax.min[1] = -cmax;
+            }
           }
           return lMinMax;
         });
@@ -1099,6 +1103,18 @@ class ChartsCard extends LitElement {
             max = elt.max[1];
           }
         });
+        if (yaxis.align_to !== undefined) {
+          if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
+            if (min % yaxis.align_to !== 0) {
+              min = min >= 0 ? min - (min % yaxis.align_to) : -(yaxis.align_to + (min % yaxis.align_to) - min);
+            }
+          }
+          if (max !== null && yaxis.max_type !== minmax_type.FIXED) {
+            if (max % yaxis.align_to !== 0) {
+              max = max >= 0 ? yaxis.align_to - (max % yaxis.align_to) + max : (max % yaxis.align_to) - max;
+            }
+          }
+        }
         yaxis.series_id?.forEach((id) => {
           if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

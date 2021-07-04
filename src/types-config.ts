@@ -145,6 +145,7 @@ export interface ChartCardYAxisExternal {
   opposite?: boolean;
   min?: 'auto' | number | string;
   max?: 'auto' | number | string;
+  align_to?: number;
   decimals?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;

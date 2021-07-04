@@ -309,7 +309,7 @@ export default class GraphEntry {
         }
 
         if (this._cache) {
-          this._setCache(this._entityID, history, this._useCompress).catch((err) => {
+          await this._setCache(this._entityID, history, this._useCompress).catch((err) => {
             log(err);
             localForage.clear();
           });

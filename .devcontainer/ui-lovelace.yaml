@@ -1006,8 +1006,9 @@ views:
             all_series_config:
               stroke_width: 2
             series:
-              - entity: sensor.random_0_1000
+              - entity: sensor.random0_100
                 yaxis_id: second
+                invert: true
               - entity: sensor.random0_100
                 yaxis_id: first
                 transform: 'return Number(x) + 30.12;'
@@ -1016,11 +1017,13 @@ views:
                 transform: 'return Number(x) + 60;'
             yaxis:
               - id: first
+                align_to: 10
                 apex_config:
                   tickAmount: 2
               - id: second
                 max: '|+100|'
                 min: ~100
+                align_to: 200
                 opposite: true
                 decimals: 0
                 show: true
