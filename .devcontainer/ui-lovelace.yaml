@@ -1028,6 +1028,10 @@ views:
             series:
               - entity: sensor.random0_100
                 header_actions:
+                  tap_action:
+                    action: more-info
+                    confirmation:
+                      text: test
                   hold_action:
                     action: more-info
                     entity: sensor.random_0_1000
