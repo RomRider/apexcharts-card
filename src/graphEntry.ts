@@ -145,6 +145,18 @@ export default class GraphEntry {
     );
   }
 
+  public minMaxWithTimestampForYAxis(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
+    if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
+    let lastTimestampBeforeStart = start;
+    const lastHistoryIndexBeforeStart =
+      this._computedHistory.findIndex((hist) => {
+        return hist[0] >= start;
+      }) - 1;
+    if (lastHistoryIndexBeforeStart >= 0)
+      lastTimestampBeforeStart = this._computedHistory[lastHistoryIndexBeforeStart][0];
+    return this.minMaxWithTimestamp(lastTimestampBeforeStart, end);
+  }
+
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
     const data: EntityEntryCache | undefined | null = await localForage.getItem(
       `${key}_${this._md5Config}${compressed ? '' : '-raw'}`,

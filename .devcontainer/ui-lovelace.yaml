@@ -1072,3 +1072,25 @@ views:
               show_states: true
               colorize_states: true
               disable_actions: true
+          - type: 'custom:apexcharts-card'
+            header:
+              show: true
+              title: ApexCharts-Card
+              show_states: true
+            series:
+              - entity: sensor.random0_100
+                name: Temperature
+                data_generator: |
+                  const now = new Date();
+                  const data = [];
+                  data.push([now.getTime() - 25 * 1000 * 60 * 60, 50])
+                  data.push([now.getTime() - 10 * 1000 * 60 * 60, 21.2])
+                  data.push([now.getTime() -  4 * 1000 * 60 * 60, 20.4])
+                  data.push([now.getTime() -  3 * 1000 * 60 * 60, 19.7])
+                  data.push([now.getTime() -  0 * 1000 * 60 * 60, 19.7])
+                  return data;
+                yaxis_id: temp
+                show:
+                  extremas: true
+            yaxis:
+              - id: temp

@@ -939,7 +939,12 @@ class ChartsCard extends LitElement {
     return {
       points: this._config?.series_in_graph.flatMap((serie, index) => {
         if (serie.show.extremas) {
-          const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(start.getTime(), end.getTime()) || {
+          const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(
+            this._seriesOffset[index]
+              ? new Date(start.getTime() + this._seriesOffset[index]).getTime()
+              : start.getTime(),
+            this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]).getTime() : end.getTime(),
+          ) || {
             min: [0, null],
             max: [0, null],
           };
@@ -1059,7 +1064,10 @@ class ChartsCard extends LitElement {
       if (yaxis.min_type !== minmax_type.FIXED || yaxis.max_type !== minmax_type.FIXED) {
         const minMax = yaxis.series_id?.map((id) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const lMinMax = this._graphs![id]?.minMaxWithTimestamp(start.getTime(), end.getTime());
+          const lMinMax = this._graphs![id]?.minMaxWithTimestampForYAxis(
+            this._seriesOffset[id] ? new Date(start.getTime() + this._seriesOffset[id]).getTime() : start.getTime(),
+            this._seriesOffset[id] ? new Date(end.getTime() + this._seriesOffset[id]).getTime() : end.getTime(),
+          );
           if (!lMinMax) return undefined;
           if (this._config?.series[id].invert && lMinMax.min[1] !== null) {
             lMinMax.min[1] = -lMinMax.min[1];
