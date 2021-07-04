@@ -384,10 +384,9 @@ class ChartsCard extends LitElement {
         }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
-          if (!serie.header_actions?.tap_action)
-            if (!this._headerColors[index]) {
-              this._headerColors[index] = defColors[index % defColors.length];
-            }
+          if (!this._headerColors[index]) {
+            this._headerColors[index] = defColors[index % defColors.length];
+          }
           if (serie.color) {
             this._headerColors[index] = serie.color;
           }
@@ -1355,7 +1354,7 @@ class ChartsCard extends LitElement {
         case 'double_tap':
           configDup.entity = configDup[`${ev.detail.action}_action`]?.entity || serieConfig.entity;
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          handleAction(this, this._hass!, configDup, `${ev.detail.action}_action`);
+          handleAction(this, this._hass!, configDup, ev.detail.action);
           break;
         default:
           break;
