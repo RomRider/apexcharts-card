@@ -1,3 +1,24 @@
+## [1.10.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.1...v1.10.0-dev.2) (2021-07-04)
+
+
+### Features
+
+* **actions:** `header_actions` support for actions in header ([#171](https://github.com/RomRider/apexcharts-card/issues/171)) ([bd6a497](https://github.com/RomRider/apexcharts-card/commit/bd6a49791ec583b894f72ce42ec33b223d63e38e)), closes [#61](https://github.com/RomRider/apexcharts-card/issues/61)
+* display the chart's last update time using `last_updated` ([2dd84ff](https://github.com/RomRider/apexcharts-card/commit/2dd84ffdac637c753ae96f30029190cc99747b8d))
+* **yaxis:** Set the number of decimals shown on the yaxis. Deprecate `y_axis_precision`. ([33fc474](https://github.com/RomRider/apexcharts-card/commit/33fc4746c185112d3838759ca19d1c274f4fa34a)), closes [#164](https://github.com/RomRider/apexcharts-card/issues/164)
+* update from lit-html/lit-element to lit ([5a7d944](https://github.com/RomRider/apexcharts-card/commit/5a7d944b6fccc76f046fe940e21af4bdec09d28b))
+
+
+### Bug Fixes
+
+* Ignore recorder when not required ([c28a7a6](https://github.com/RomRider/apexcharts-card/commit/c28a7a682b9bb0943fd82a24f525c87801fbe4f5)), closes [#169](https://github.com/RomRider/apexcharts-card/issues/169)
+* **yaxis:** auto scale was not taking the serie's offset into account ([f82f7e0](https://github.com/RomRider/apexcharts-card/commit/f82f7e0c1c74311fa3cc1b9d333d7a050b0304ec)), closes [#172](https://github.com/RomRider/apexcharts-card/issues/172)
+
+
+### Documentation
+
+* Missing doc for `last_updated` ([93ae54a](https://github.com/RomRider/apexcharts-card/commit/93ae54abb60cc8c0e9e1011f97d8978de7f0b7bd))
+
 ## [1.10.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.9.1-dev.1...v1.10.0-dev.1) (2021-05-25)
 
 
