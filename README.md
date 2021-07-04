@@ -264,6 +264,7 @@ series:
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
+| `last_updated` | boolean | `false` | NEXT_VERSION | Show the last time the chart was updated on the bottom right |
 
 ### `header` Options
 
