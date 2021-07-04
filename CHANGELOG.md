@@ -1,3 +1,15 @@
+## [1.10.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.2...v1.10.0-dev.3) (2021-07-04)
+
+
+### Features
+
+* pie/donut now shows the value of the serie instead of the percentage. Old behavior with `datalabels: percent` ([7591aba](https://github.com/RomRider/apexcharts-card/commit/7591aba03e0c8d001b4883456b21fc948ea5cfe4))
+
+
+### Bug Fixes
+
+* When recorder was skipped, attributes were ignored ([15e5372](https://github.com/RomRider/apexcharts-card/commit/15e537213c9ab9b16ed9d0e3734d80def769fbde))
+
 ## [1.10.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.1...v1.10.0-dev.2) (2021-07-04)
 
 
