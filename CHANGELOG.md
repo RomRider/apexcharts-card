@@ -1,3 +1,10 @@
+## [1.10.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.5...v1.10.0-dev.6) (2021-07-12)
+
+
+### Bug Fixes
+
+* extremas would not display with offset applied on series ([4d7d77a](https://github.com/RomRider/apexcharts-card/commit/4d7d77a92919234b81e8d830e3f9e3d7dcaf7caa)), closes [#177](https://github.com/RomRider/apexcharts-card/issues/177)
+
 ## [1.10.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.4...v1.10.0-dev.5) (2021-07-12)
 
 
