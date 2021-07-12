@@ -1,3 +1,16 @@
+## [1.10.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.4...v1.10.0-dev.5) (2021-07-12)
+
+
+### Bug Fixes
+
+* color_threshold would sometimes render weirdly ([d7063a5](https://github.com/RomRider/apexcharts-card/commit/d7063a5462bc6e949c477a423b0a57c80dd172ac)), closes [#177](https://github.com/RomRider/apexcharts-card/issues/177)
+* Floats were not truncated properly for radialBar ([0c789ff](https://github.com/RomRider/apexcharts-card/commit/0c789ffc27be47b459bf22875e5a0b5243249197)), closes [#174](https://github.com/RomRider/apexcharts-card/issues/174)
+
+
+### Documentation
+
+* `align_to` description update ([4471469](https://github.com/RomRider/apexcharts-card/commit/447146951dd7e1a758ca4a0f7b5d85c13970d4c0))
+
 ## [1.10.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.3...v1.10.0-dev.4) (2021-07-04)
 
 
