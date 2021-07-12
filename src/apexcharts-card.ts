@@ -239,7 +239,10 @@ class ChartsCard extends LitElement {
           this._graphs[index]!.hass = this._hass!;
         }
         if (serie.show.in_header === 'raw') {
-          this._headerState[index] = serie.attribute ? entityState.attributes[serie.attribute] : entityState.state;
+          this._headerState[index] = truncateFloat(
+            serie.attribute ? entityState.attributes[serie.attribute] : entityState.state,
+            serie.float_precision,
+          ) as number;
           rawHeaderStatesUpdated = true;
         }
       }
@@ -959,8 +962,26 @@ class ChartsCard extends LitElement {
           const txtColor = computeTextColor(bgColor);
           if (!min[0] || !max[0]) return [];
           return [
-            ...this._getPointAnnotationStyle(min, bgColor, txtColor, serie, index, serie.invert, sameDay),
-            ...this._getPointAnnotationStyle(max, bgColor, txtColor, serie, index, serie.invert, sameDay),
+            ...this._getPointAnnotationStyle(
+              min,
+              this._seriesOffset[index],
+              bgColor,
+              txtColor,
+              serie,
+              index,
+              serie.invert,
+              sameDay,
+            ),
+            ...this._getPointAnnotationStyle(
+              max,
+              this._seriesOffset[index],
+              bgColor,
+              txtColor,
+              serie,
+              index,
+              serie.invert,
+              sameDay,
+            ),
           ];
         } else {
           return [];
@@ -971,6 +992,7 @@ class ChartsCard extends LitElement {
 
   private _getPointAnnotationStyle(
     value: HistoryPoint,
+    offset: number,
     bgColor: string,
     txtColor: string,
     serie: ChartCardSeriesConfig,
@@ -985,7 +1007,7 @@ class ChartsCard extends LitElement {
       Array.isArray(this._config.apex_config.yaxis) &&
       this._config.apex_config.yaxis.length > 1;
     points.push({
-      x: value[0],
+      x: offset ? value[0] - offset : value[0],
       y: invert && value[1] ? -value[1] : value[1],
       seriesIndex: index,
       yAxisIndex: multiYAxis ? index : 0,
@@ -1014,7 +1036,7 @@ class ChartsCard extends LitElement {
         options.dateStyle = 'medium';
       }
       points.push({
-        x: value[0],
+        x: offset ? value[0] - offset : value[0],
         y: invert && value[1] ? -value[1] : value[1],
         seriesIndex: index,
         yAxisIndex: multiYAxis ? index : 0,

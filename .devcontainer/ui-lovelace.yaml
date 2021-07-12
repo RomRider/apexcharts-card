@@ -1108,8 +1108,8 @@ views:
           - type: custom:apexcharts-card
             experimental:
               color_threshold: true
-            graph_span: 4h
-            update_interval: 1h
+            graph_span: 12min
+            # update_interval: 1h
             yaxis:
               - id: one
                 decimals: 0
@@ -1120,6 +1120,8 @@ views:
                 opposite: true
                 min: ~20
                 max: ~65
+            all_series_config:
+              offset: -5h
             series:
               - entity: sensor.random0_100
                 transform: return x % 4;
@@ -1134,6 +1136,8 @@ views:
                     color: red
                   - value: 9
                     color: purple
+                show:
+                  extremas: time
                 group_by:
                   func: avg
                   duration: 3min
