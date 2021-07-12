@@ -1104,3 +1104,44 @@ views:
                   extremas: true
             yaxis:
               - id: temp
+          - type: custom:apexcharts-card
+            experimental:
+              color_threshold: true
+            graph_span: 4h
+            update_interval: 1h
+            yaxis:
+              - id: one
+                decimals: 0
+                min: -1
+                max: 10
+              - id: two
+                decimals: 0
+                opposite: true
+                min: ~20
+                max: ~65
+            series:
+              - entity: sensor.random0_100
+                transform: return x % 4;
+                yaxis_id: one
+                fill_raw: last
+                color_threshold:
+                  - value: -1
+                    color: yellow
+                  - value: 2
+                    color: green
+                  - value: 5
+                    color: red
+                  - value: 9
+                    color: purple
+                group_by:
+                  func: avg
+                  duration: 3min
+                  fill: last
+              - entity: sensor.random0_100
+                transform: return x % 45 + 20;
+                yaxis_id: two
+                type: area
+                opacity: 0.2
+                group_by:
+                  func: avg
+                  duration: 3min

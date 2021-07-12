@@ -323,9 +323,13 @@ export default class GraphEntry {
       return false;
     }
     if (this._config.group_by.func !== 'raw') {
-      this._computedHistory = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
+      const res: EntityCachePoints = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
+      if ([undefined, 'line', 'area'].includes(this._config.type)) {
+        while (res.length > 0 && res[0][1] === null) res.shift();
+      }
+      this._computedHistory = res;
     } else {
       this._computedHistory = history.data;
     }
