@@ -355,6 +355,19 @@ function getPlotOptions_radialBar(config: ChartCardConfig) {
       track: {
         background: 'rgba(128, 128, 128, 0.2)',
       },
+      dataLabels: {
+        value: {
+          formatter: function (value, opts, conf = config) {
+            const index = opts?.config?.series?.findIndex((x) => {
+              return parseFloat(value) === x;
+            });
+            if (index != -1) {
+              return truncateFloat(value, conf.series_in_graph[index].float_precision) + '%';
+            }
+            return value;
+          },
+        },
+      },
     };
   } else {
     return {};

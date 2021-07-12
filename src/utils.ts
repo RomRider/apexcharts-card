@@ -234,10 +234,19 @@ export function is12Hour(locale: string): boolean {
   return !(new Date(2021, 1, 1, 15, 0, 0, 0).toLocaleTimeString(locale).indexOf('15') > -1);
 }
 
-export function truncateFloat(value: number | null | undefined, precision: number | undefined): string | number | null {
+export function truncateFloat(
+  value: string | number | null | undefined,
+  precision: number | undefined,
+): string | number | null {
   let lValue: string | number | null | undefined = value;
   if (lValue === undefined) return null;
-  if (value !== null && typeof value === 'number' && !Number.isInteger(value)) {
+  if (typeof lValue === 'string') {
+    lValue = parseFloat(lValue);
+    if (Number.isNaN(lValue)) {
+      return lValue;
+    }
+  }
+  if (lValue !== null && typeof lValue === 'number' && !Number.isInteger(lValue)) {
     lValue = (lValue as number).toFixed(precision === undefined ? DEFAULT_FLOAT_PRECISION : precision);
   }
   return lValue;

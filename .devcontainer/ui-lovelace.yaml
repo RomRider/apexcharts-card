@@ -438,10 +438,11 @@ views:
               - entity: sensor.random0_100
               - entity: sensor.random_0_1000
                 unit: Mbits/s
+                float_precision: 4
                 min: 0
                 max: 1000
                 group_by:
-                  func: max
+                  func: avg
                   duration: 30min
           - type: custom:apexcharts-card
             chart_type: pie
