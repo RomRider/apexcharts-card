@@ -6,7 +6,6 @@ export const styles: CSSResult = css`
   }
 
   ha-card {
-    overflow: hidden;
     position: relative;
   }
 
