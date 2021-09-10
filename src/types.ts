@@ -50,6 +50,22 @@ export type EntityCachePoints = Array<HistoryPoint>;
 
 export type HistoryPoint = [number, number | null];
 
+export interface Statistics {
+  [statisticId: string]: StatisticValue[];
+}
+
+export interface StatisticValue {
+  statistic_id: string;
+  start: string;
+  end: string;
+  last_reset: string | null;
+  max: number | null;
+  mean: number | null;
+  min: number | null;
+  sum: number | null;
+  state: number | null;
+}
+
 export type HassHistory = Array<[HassHistoryEntry] | undefined>;
 
 export interface HassHistoryEntry {

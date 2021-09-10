@@ -74,6 +74,7 @@ export interface ChartCardAllSeriesExternalConfig {
   unit?: string;
   invert?: boolean;
   data_generator?: string;
+  use_statistics?: string;
   float_precision?: number;
   min?: number;
   max?: number;

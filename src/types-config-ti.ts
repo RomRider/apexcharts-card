@@ -74,6 +74,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
+  "use_statistics": t.opt("string"),
   "float_precision": t.opt("number"),
   "min": t.opt("number"),
   "max": t.opt("number"),
