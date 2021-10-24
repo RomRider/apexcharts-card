@@ -1150,3 +1150,25 @@ views:
                 group_by:
                   func: avg
                   duration: 3min
+
+  - title: Main2
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 1h
+        header:
+          show: true
+          show_states: true
+        series:
+          - entity: sensor.random_0_1000
+            float_precision: 0
+            show:
+              in_header: true
+            group_by:
+              duration: 15min
+              func: avg
+            header_actions:
+              tap_action:
+                action: fire-dom-event
+                browser_mod:
+                  command: toast
+                  message: Hello, world!

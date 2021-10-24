@@ -188,6 +188,8 @@ export interface NoActionConfig extends BaseActionConfig {
 export interface CustomActionConfig extends BaseActionConfig {
   action: 'fire-dom-event';
   haptic?: HapticType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  browser_mod?: any;
 }
 export interface BaseActionConfig {
   confirmation?: ConfirmationRestrictionConfig;

@@ -193,6 +193,7 @@ export const NoActionConfig = t.iface(["BaseActionConfig"], {
 export const CustomActionConfig = t.iface(["BaseActionConfig"], {
   "action": t.lit('fire-dom-event'),
   "haptic": t.opt("HapticType"),
+  "browser_mod": t.opt("any"),
 });
 
 export const BaseActionConfig = t.iface([], {
