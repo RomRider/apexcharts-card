@@ -475,7 +475,8 @@ class ChartsCard extends LitElement {
         });
         this._headerColors = this._headerColors.slice(0, this._config?.series.length);
       }
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
     // Full reset only happens in editor mode
@@ -1420,22 +1421,22 @@ class ChartsCard extends LitElement {
   @eventOptions({ passive: true })
   private handleRippleActivate(evt: Event, index: number): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
-    r && r.startFocus && r.startPress(evt);
+    r && typeof r.startFocus === 'function' && r.startPress(evt);
   }
 
   private handleRippleDeactivate(_, index: number): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
-    r && r.startFocus && r.endPress();
+    r && typeof r.startFocus === 'function' && r.endPress();
   }
 
   private handleRippleFocus(_, index: number): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
-    r && r.startFocus && r.startFocus();
+    r && typeof r.startFocus === 'function' && r.startFocus();
   }
 
   private handleRippleBlur(_, index: number): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
-    r && r.startFocus && r.endFocus();
+    r && typeof r.startFocus === 'function' && r.endFocus();
   }
 
   public getCardSize(): number {

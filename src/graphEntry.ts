@@ -374,7 +374,8 @@ export default class GraphEntry {
         `'use strict'; ${this._config.data_generator}`,
       );
       data = await datafn(this._entityState, start, end, this._hass, moment);
-    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       const funcTrimmed =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._config.data_generator!.length <= 100

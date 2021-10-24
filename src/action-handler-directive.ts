@@ -7,7 +7,8 @@ import { fireEvent } from './fire-event';
 import { deepEqual } from './deep-equal';
 import { ActionHandlerOptions } from './types';
 
-const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0;
 
 interface ActionHandler extends HTMLElement {
   holdTime: number;
