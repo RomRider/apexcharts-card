@@ -1,3 +1,36 @@
+## [1.10.0](https://github.com/RomRider/apexcharts-card/compare/v1.9.0...v1.10.0) (2021-10-24)
+
+
+### Features
+
+* uses the time format defined in Home Assistant user profile ([78df800](https://github.com/RomRider/apexcharts-card/commit/78df800f32004c180fb3bebfb4d35ac82858f3c2)), closes [#213](https://github.com/RomRider/apexcharts-card/issues/213)
+* **yaxis:** Align the extremas to the closest `align_to`  value. ([a46c812](https://github.com/RomRider/apexcharts-card/commit/a46c8127d8252fcadcb212ee7d2ee28d36c8d03a)), closes [#170](https://github.com/RomRider/apexcharts-card/issues/170)
+* pie/donut now shows the value of the serie instead of the percentage. Old behavior with `datalabels: percent` ([7591aba](https://github.com/RomRider/apexcharts-card/commit/7591aba03e0c8d001b4883456b21fc948ea5cfe4))
+* **actions:** `header_actions` support for actions in header ([#171](https://github.com/RomRider/apexcharts-card/issues/171)) ([bd6a497](https://github.com/RomRider/apexcharts-card/commit/bd6a49791ec583b894f72ce42ec33b223d63e38e)), closes [#61](https://github.com/RomRider/apexcharts-card/issues/61)
+* display the chart's last update time using `last_updated` ([2dd84ff](https://github.com/RomRider/apexcharts-card/commit/2dd84ffdac637c753ae96f30029190cc99747b8d))
+* **yaxis:** Set the number of decimals shown on the yaxis. Deprecate `y_axis_precision`. ([33fc474](https://github.com/RomRider/apexcharts-card/commit/33fc4746c185112d3838759ca19d1c274f4fa34a)), closes [#164](https://github.com/RomRider/apexcharts-card/issues/164)
+* update from lit-html/lit-element to lit ([5a7d944](https://github.com/RomRider/apexcharts-card/commit/5a7d944b6fccc76f046fe940e21af4bdec09d28b))
+* **yaxis:** `id` and `yaxis_id` no longer needed with only 1 yaxis defined ([e5e8904](https://github.com/RomRider/apexcharts-card/commit/e5e89040620ca9df43dd38d5e267ce2b70386bc2))
+
+
+### Bug Fixes
+
+* color_threshold would sometimes render weirdly ([d7063a5](https://github.com/RomRider/apexcharts-card/commit/d7063a5462bc6e949c477a423b0a57c80dd172ac)), closes [#177](https://github.com/RomRider/apexcharts-card/issues/177)
+* extremas would not display with offset applied on series ([4d7d77a](https://github.com/RomRider/apexcharts-card/commit/4d7d77a92919234b81e8d830e3f9e3d7dcaf7caa)), closes [#177](https://github.com/RomRider/apexcharts-card/issues/177)
+* Floats were not truncated properly for radialBar ([0c789ff](https://github.com/RomRider/apexcharts-card/commit/0c789ffc27be47b459bf22875e5a0b5243249197)), closes [#174](https://github.com/RomRider/apexcharts-card/issues/174)
+* history data could be modified in some rare cases ([d38fd6e](https://github.com/RomRider/apexcharts-card/commit/d38fd6e0c3531dcd225e856ca90c57026c9049ab))
+* Ignore recorder when not required ([c28a7a6](https://github.com/RomRider/apexcharts-card/commit/c28a7a682b9bb0943fd82a24f525c87801fbe4f5)), closes [#169](https://github.com/RomRider/apexcharts-card/issues/169)
+* the hass object could sometimes be null ([ff27baf](https://github.com/RomRider/apexcharts-card/commit/ff27baff63845dbdaa0cbd90bd71252fa5cb27e1)), closes [#191](https://github.com/RomRider/apexcharts-card/issues/191)
+* When recorder was skipped, attributes were ignored ([15e5372](https://github.com/RomRider/apexcharts-card/commit/15e537213c9ab9b16ed9d0e3734d80def769fbde))
+* **yaxis:** auto scale was not taking the serie's offset into account ([f82f7e0](https://github.com/RomRider/apexcharts-card/commit/f82f7e0c1c74311fa3cc1b9d333d7a050b0304ec)), closes [#172](https://github.com/RomRider/apexcharts-card/issues/172)
+* **yaxis:** Fixed + unfixed bounds on the same yaxis is now working ([f7e4668](https://github.com/RomRider/apexcharts-card/commit/f7e46688fc3b891981854d1632c513fa9dac4773))
+
+
+### Documentation
+
+* `align_to` description update ([4471469](https://github.com/RomRider/apexcharts-card/commit/447146951dd7e1a758ca4a0f7b5d85c13970d4c0))
+* Missing doc for `last_updated` ([93ae54a](https://github.com/RomRider/apexcharts-card/commit/93ae54abb60cc8c0e9e1011f97d8978de7f0b7bd))
+
 ## [1.10.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.6...v1.10.0-dev.7) (2021-10-24)
 
 

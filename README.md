@@ -87,7 +87,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.9.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.10.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -98,7 +98,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.9.0
+  - url: /local/apexcharts-card.js?v=1.10.0
     type: module
 ```
 
@@ -145,7 +145,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
 | `now` | object | | v1.5.0 | See [now](#now-options) |
-| ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | ~~v1.2.0~~ | **DEPRECATED since NEXT_VERSION** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
+| ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | ~~v1.2.0~~ | **DEPRECATED since v1.10.0** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
 | `yaxis` | array | | v1.9.0 | See [yaxis](#yaxis-options-multi-y-axis) |
 | `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You call see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
@@ -180,7 +180,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
-| `header_actions` | object | | NEXT_VERSION | See [header_actions](#header_actions-options) |
+| `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-options) |
 
 ### series' `show` Options
 
@@ -203,21 +203,21 @@ The card stricly validates all the options available (but not for the `apex_conf
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `tap_action` | object | | NEXT_VERSION | Action to perform on tap. See [action options](#_action-options) |
-| `hold_action` | object | | NEXT_VERSION | Action to perform on hold. See [action options](#_action-options) |
-| `double_tap_action` | object | | NEXT_VERSION | Action to perform on double tap. See [action options](#_action-options) |
+| `tap_action` | object | | v1.10.0 | Action to perform on tap. See [action options](#_action-options) |
+| `hold_action` | object | | v1.10.0 | Action to perform on hold. See [action options](#_action-options) |
+| `double_tap_action` | object | | v1.10.0 | Action to perform on double tap. See [action options](#_action-options) |
 
 ### `*_action` options
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `action` | string | `more-info` | NEXT_VERSION | Action to perform. Valid values are: `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` |
-| `entity` | string | | NEXT_VERSION | Only valid for `more-info`. Overrides the `more-info` target entity. Default is to use the serie's entity |
-| `navigation_path` | string | | NEXT_VERSION | Path to navigate to (e.g. `/lovelace/0/`) when action is `navigate` |
-| `url_path` | string | | NEXT_VERSION | URL to open on click when action is `url`. The URL will open in a new tab |
-| `service` | string | | NEXT_VERSION | Any valid Home-Assistant service |
-| `service_data` | object | | NEXT_VERSION | Service data to include (e.g. `entity_id: media_player.bedroom`) when `action` defined as `call-service` |
-| `confirmation` | object | | NEXT_VERSION |Display a confirmation popup. See [confirmation](#confirmation-options) |
+| `action` | string | `more-info` | v1.10.0 | Action to perform. Valid values are: `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` |
+| `entity` | string | | v1.10.0 | Only valid for `more-info`. Overrides the `more-info` target entity. Default is to use the serie's entity |
+| `navigation_path` | string | | v1.10.0 | Path to navigate to (e.g. `/lovelace/0/`) when action is `navigate` |
+| `url_path` | string | | v1.10.0 | URL to open on click when action is `url`. The URL will open in a new tab |
+| `service` | string | | v1.10.0 | Any valid Home-Assistant service |
+| `service_data` | object | | v1.10.0 | Service data to include (e.g. `entity_id: media_player.bedroom`) when `action` defined as `call-service` |
+| `confirmation` | object | | v1.10.0 |Display a confirmation popup. See [confirmation](#confirmation-options) |
 
 Example:
 ```yaml
@@ -238,8 +238,8 @@ This will popup a dialog box before running the action.
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `text` | string | | NEXT_VERSION | This text will be displayed in the popup |
-| `exemptions` | array | | NEXT_VERSION | Any user declared in this list will not see the confirmation dialog. Format `user: USER_ID` |
+| `text` | string | | v1.10.0 | This text will be displayed in the popup |
+| `exemptions` | array | | v1.10.0 | Any user declared in this list will not see the confirmation dialog. Format `user: USER_ID` |
 
 Example:
 
@@ -264,7 +264,7 @@ series:
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
 | `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
-| `last_updated` | boolean | `false` | NEXT_VERSION | Show the last time the chart was updated on the bottom right |
+| `last_updated` | boolean | `false` | v1.10.0 | Show the last time the chart was updated on the bottom right |
 
 ### `header` Options
 
@@ -276,7 +276,7 @@ series:
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |
 | `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |
-| `disable_actions` | boolean | `false` | NEXT_VERSION | If `true`, disable all header actions |
+| `disable_actions` | boolean | `false` | v1.10.0 | If `true`, disable all header actions |
 
 ### `now` Options
 
@@ -505,9 +505,9 @@ You can have as many y-axis as there are series defined in your configuration or
 | `opposite` | boolean | `false` | v1.9.0 | If `true`, the axis will be shown on the right side of the chart |
 | `min` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the min value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
 | `max` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the yaxis will be automatically calculated based on the max value of all the series associated to this axis. See [below](#minmax-format) for other formats. |
-| `decimals` | number | `1` | NEXT_VERSION | Number of decimals to show on this y-axis |
+| `decimals` | number | `1` | v1.10.0 | Number of decimals to show on this y-axis |
 | `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
-| `align_to` | number | | NEXT_VERSION | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
+| `align_to` | number | | v1.10.0 | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
 
 #### Min/Max Format
 
