@@ -141,8 +141,8 @@ export default class GraphEntry {
       (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
         if (point[1] === null) return acc;
         if (point[0] > end || point[0] < start) return acc;
-        if (acc.max[1] === null || acc.max[1] < point[1]) acc.max = point;
-        if (acc.min[1] === null || (point[1] !== null && acc.min[1] > point[1])) acc.min = point;
+        if (acc.max[1] === null || acc.max[1] < point[1]) acc.max = [...point];
+        if (acc.min[1] === null || (point[1] !== null && acc.min[1] > point[1])) acc.min = [...point];
         return acc;
       },
       { min: [0, null], max: [0, null] },
