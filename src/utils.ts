@@ -1,11 +1,11 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { EntityCachePoints } from './types';
+import { ChartCardConfig, EntityCachePoints } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
-import { LovelaceConfig } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceConfig } from 'custom-card-helpers';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -230,8 +230,29 @@ export function mergeDeepConfig(target: any, source: any): any {
   return target;
 }
 
-export function is12Hour(locale: string): boolean {
+export function is12HourFromLocale(locale: string): boolean {
   return !(new Date(2021, 1, 1, 15, 0, 0, 0).toLocaleTimeString(locale).indexOf('15') > -1);
+}
+
+export function is12Hour(config: ChartCardConfig, hass: HomeAssistant | undefined): boolean {
+  if (config.hours_12 !== undefined) {
+    return config.hours_12;
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const hassLocale = (hass as any)?.locale;
+    if (hassLocale?.time_format) {
+      if (hassLocale.time_format === 'language') {
+        return is12HourFromLocale(hassLocale.language);
+      } else if (hassLocale.time_format === 'system') {
+        return is12HourFromLocale(navigator.language);
+      } else {
+        return hassLocale.time_format === '12';
+      }
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return is12HourFromLocale(config.locale || hass?.language || 'en');
+    }
+  }
 }
 
 export function truncateFloat(
