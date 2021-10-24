@@ -1,3 +1,16 @@
+## [1.10.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.6...v1.10.0-dev.7) (2021-10-24)
+
+
+### Features
+
+* uses the time format defined in Home Assistant user profile ([78df800](https://github.com/RomRider/apexcharts-card/commit/78df800f32004c180fb3bebfb4d35ac82858f3c2)), closes [#213](https://github.com/RomRider/apexcharts-card/issues/213)
+
+
+### Bug Fixes
+
+* history data could be modified in some rare cases ([d38fd6e](https://github.com/RomRider/apexcharts-card/commit/d38fd6e0c3531dcd225e856ca90c57026c9049ab))
+* the hass object could sometimes be null ([ff27baf](https://github.com/RomRider/apexcharts-card/commit/ff27baff63845dbdaa0cbd90bd71252fa5cb27e1)), closes [#191](https://github.com/RomRider/apexcharts-card/issues/191)
+
 ## [1.10.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v1.10.0-dev.5...v1.10.0-dev.6) (2021-07-12)
 
 
