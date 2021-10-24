@@ -188,7 +188,7 @@ class ChartsCard extends LitElement {
   }
 
   private _updateOnInterval(): void {
-    if (!this._updating) {
+    if (!this._updating && this.hass) {
       this._updating = true;
       this._updateData();
     }
@@ -219,7 +219,7 @@ class ChartsCard extends LitElement {
 
   public set hass(hass: HomeAssistant) {
     this._hass = hass;
-    if (!this._config || !this._graphs) return;
+    if (!this._config || !this._graphs || !hass) return;
 
     this._graphs.map((graph) => {
       if (graph) graph.hass = hass;
