@@ -188,7 +188,7 @@ class ChartsCard extends LitElement {
   }
 
   private _updateOnInterval(): void {
-    if (!this._updating && this.hass) {
+    if (!this._updating && this._hass) {
       this._updating = true;
       this._updateData();
     }
