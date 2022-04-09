@@ -28,6 +28,7 @@ import {
   mergeConfigTemplates,
   mergeDeep,
   mergeDeepConfig,
+  myFormatNumber,
   offsetData,
   prettyPrintTime,
   truncateFloat,
@@ -1030,7 +1031,7 @@ class ChartsCard extends LitElement {
         fillColor: 'var(--card-background-color)',
       },
       label: {
-        text: truncateFloat(value[1], serie.float_precision)?.toString(),
+        text: myFormatNumber(value[1], this._hass?.locale, serie.float_precision),
         borderColor: 'var(--card-background-color)',
         borderWidth: 2,
         style: {
@@ -1353,7 +1354,8 @@ class ChartsCard extends LitElement {
   }
 
   private _computeLastState(value: number | null, index: number): string | number | null {
-    return truncateFloat(value, this._config?.series[index].float_precision);
+    if (value === null) return value;
+    return myFormatNumber(value, this._hass?.locale, this._config?.series[index].float_precision);
   }
 
   /*

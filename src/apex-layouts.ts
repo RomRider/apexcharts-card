@@ -10,7 +10,7 @@ import {
   TIMESERIES_TYPES,
 } from './const';
 import { ChartCardConfig } from './types';
-import { computeName, computeUom, is12Hour, mergeDeep, prettyPrintTime, truncateFloat } from './utils';
+import { computeName, computeUom, is12Hour, mergeDeep, myFormatNumber, prettyPrintTime } from './utils';
 import { layoutMinimal } from './layouts/minimal';
 import { getLocales, getDefaultLocale } from './locales';
 import GraphEntry from './graphEntry';
@@ -63,10 +63,10 @@ export function getLayoutConfig(
     dataLabels: {
       enabled: getDataLabelsEnabled(config),
       enabledOnSeries: getDataLabels_enabledOnSeries(config),
-      formatter: getDataLabelsFormatter(config, graphs),
+      formatter: getDataLabelsFormatter(config, graphs, hass),
     },
     plotOptions: {
-      radialBar: getPlotOptions_radialBar(config),
+      radialBar: getPlotOptions_radialBar(config, hass),
     },
     legend: {
       position: 'bottom',
@@ -293,7 +293,7 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
       lValue = -lValue;
     }
     if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
-      lValue = truncateFloat(lValue, conf.series_in_graph[opts.seriesIndex].float_precision);
+      lValue = myFormatNumber(lValue, hass?.locale, conf.series_in_graph[opts.seriesIndex].float_precision);
     }
     const uom = computeUom(
       opts.seriesIndex,
@@ -317,25 +317,31 @@ function getDataLabelsEnabled(config: ChartCardConfig): boolean {
   );
 }
 
-function getDataLabelsFormatter(config: ChartCardConfig, graphs: (GraphEntry | undefined)[] | undefined) {
+function getDataLabelsFormatter(
+  config: ChartCardConfig,
+  graphs: (GraphEntry | undefined)[] | undefined,
+  hass: HomeAssistant | undefined,
+) {
   if (config.chart_type === 'pie' || config.chart_type === 'donut') {
-    return function (value, opts, lgraphs = graphs, conf = config) {
+    return function (value, opts, lgraphs = graphs, conf = config, lHass = hass) {
       if (conf.series_in_graph[opts.seriesIndex].show.datalabels !== false) {
         if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'percent') {
-          return truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
+          return myFormatNumber(value, lHass?.locale, conf.series_in_graph[opts.seriesIndex].float_precision);
         }
-        return truncateFloat(
+        return myFormatNumber(
           lgraphs?.[conf.series_in_graph[opts.seriesIndex].index]?.lastState,
+          lHass?.locale,
           conf.series_in_graph[opts.seriesIndex].float_precision,
         );
       }
       return '';
     };
   }
-  return function (value, opts, conf = config) {
+  return function (value, opts, conf = config, lHass = hass) {
     if (conf.series_in_graph[opts.seriesIndex].show.datalabels === 'total') {
-      return truncateFloat(
+      return myFormatNumber(
         opts.w.globals.stackedSeriesTotals[opts.dataPointIndex],
+        lHass?.locale,
         conf.series_in_graph[opts.seriesIndex].float_precision,
       );
     }
@@ -344,11 +350,11 @@ function getDataLabelsFormatter(config: ChartCardConfig, graphs: (GraphEntry | u
     if (conf.series_in_graph[opts.seriesIndex]?.invert && lValue) {
       lValue = -lValue;
     }
-    return truncateFloat(lValue, conf.series_in_graph[opts.seriesIndex].float_precision);
+    return myFormatNumber(lValue, lHass?.locale, conf.series_in_graph[opts.seriesIndex].float_precision);
   };
 }
 
-function getPlotOptions_radialBar(config: ChartCardConfig) {
+function getPlotOptions_radialBar(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   if (config.chart_type === 'radialBar') {
     return {
       track: {
@@ -356,12 +362,12 @@ function getPlotOptions_radialBar(config: ChartCardConfig) {
       },
       dataLabels: {
         value: {
-          formatter: function (value, opts, conf = config) {
+          formatter: function (value, opts, conf = config, lHass = hass) {
             const index = opts?.config?.series?.findIndex((x) => {
               return parseFloat(value) === x;
             });
             if (index != -1) {
-              return truncateFloat(value, conf.series_in_graph[index].float_precision) + '%';
+              return myFormatNumber(value, lHass?.locale, conf.series_in_graph[index].float_precision) + '%';
             }
             return value;
           },
@@ -391,7 +397,7 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
         value = -value;
       }
       if (!conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
-        value = truncateFloat(value, conf.series_in_graph[opts.seriesIndex].float_precision);
+        value = myFormatNumber(value, hass2?.locale, conf.series_in_graph[opts.seriesIndex].float_precision);
       }
       const uom =
         config.chart_type === 'radialBar'

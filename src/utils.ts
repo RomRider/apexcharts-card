@@ -5,7 +5,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
-import { HomeAssistant, LovelaceConfig } from 'custom-card-helpers';
+import { formatNumber, FrontendLocaleData, HomeAssistant, LovelaceConfig } from 'custom-card-helpers';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -271,4 +271,22 @@ export function truncateFloat(
     lValue = (lValue as number).toFixed(precision === undefined ? DEFAULT_FLOAT_PRECISION : precision);
   }
   return lValue;
+}
+
+export function myFormatNumber(
+  num: string | number | null | undefined,
+  localeOptions?: FrontendLocaleData,
+  precision?: number | undefined,
+): string | null {
+  let lValue: string | number | null | undefined = num;
+  if (lValue === undefined || lValue === null) return null;
+  if (typeof lValue === 'string') {
+    lValue = parseFloat(lValue);
+    if (Number.isNaN(lValue)) {
+      return num as string;
+    }
+  }
+  return formatNumber(lValue, localeOptions, {
+    maximumFractionDigits: precision === undefined ? DEFAULT_FLOAT_PRECISION : precision,
+  });
 }
