@@ -1,3 +1,17 @@
+## [1.11.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.10.1-dev.2...v1.11.0-dev.1) (2022-04-09)
+
+
+### Features
+
+* display only the min or max extrema ([3db982b](https://github.com/RomRider/apexcharts-card/commit/3db982b88ea7d3568f253e63fb7626cc3153c7ad)), closes [#319](https://github.com/RomRider/apexcharts-card/issues/319)
+* follow Home Assistant number format ([9204de2](https://github.com/RomRider/apexcharts-card/commit/9204de2578b9310d1ea2276d2b4118292404b2dd)), closes [#307](https://github.com/RomRider/apexcharts-card/issues/307)
+
+
+### Bug Fixes
+
+* median function fails if it receives an empty table ([#316](https://github.com/RomRider/apexcharts-card/issues/316)) ([12f8d2e](https://github.com/RomRider/apexcharts-card/commit/12f8d2edb9cd8cb7ba56c30af65b3372aa242624))
+* Update apexcharts.js to the the latest version ([dd0bf6f](https://github.com/RomRider/apexcharts-card/commit/dd0bf6f03405e41be3dc9efdebb95d265f27ea63))
+
 ### [1.10.1-dev.2](https://github.com/RomRider/apexcharts-card/compare/v1.10.1-dev.1...v1.10.1-dev.2) (2021-11-04)
 
 
