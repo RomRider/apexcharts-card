@@ -1155,23 +1155,78 @@ views:
                   duration: 3min
 
   - title: Main2
+    panel: true
     cards:
-      - type: custom:apexcharts-card
-        graph_span: 1h
-        header:
-          show: true
-          show_states: true
-        series:
-          - entity: sensor.random_0_1000
-            float_precision: 0
-            show:
-              in_header: true
-            group_by:
-              duration: 15min
-              func: avg
-            header_actions:
-              tap_action:
-                action: fire-dom-event
-                browser_mod:
-                  command: toast
-                  message: Hello, world!
+      - type: grid
+        columns: 3
+        cards:
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            header:
+              show: true
+              show_states: true
+            series:
+              - entity: sensor.random_0_1000
+                float_precision: 0
+                show:
+                  in_header: true
+                group_by:
+                  duration: 15min
+                  func: avg
+                header_actions:
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      command: toast
+                      message: Hello, world!
+
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            header:
+              show: true
+              title: Test Extremas
+            series:
+              - entity: sensor.random_0_1000
+                name: Min
+                float_precision: 0
+                show:
+                  extremas: min
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
+                name: Max
+                float_precision: 0
+                transform: return Number(x) + 200;
+                show:
+                  extremas: max
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
+                name: Min+Time
+                float_precision: 0
+                transform: return Number(x) + 400;
+                show:
+                  extremas: min+time
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
+                name: Max+Time
+                float_precision: 0
+                transform: return Number(x) + 600;
+                show:
+                  extremas: max+time
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
+                name: All
+                float_precision: 0
+                transform: return Number(x) + 800;
+                show:
+                  extremas: true
+                group_by:
+                  duration: 2min
+                  func: avg

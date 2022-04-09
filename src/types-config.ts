@@ -108,7 +108,7 @@ export interface ChartCardSeriesShowConfigExt {
   in_chart?: boolean;
   datalabels?: boolean | 'total' | 'percent';
   hidden_by_default?: boolean;
-  extremas?: boolean | 'time';
+  extremas?: boolean | 'time' | 'min' | 'max' | 'min+time' | 'max+time';
   in_brush?: boolean;
   offset_in_name?: boolean;
 }

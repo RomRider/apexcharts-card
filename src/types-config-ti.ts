@@ -108,7 +108,7 @@ export const ChartCardSeriesShowConfigExt = t.iface([], {
   "in_chart": t.opt("boolean"),
   "datalabels": t.opt(t.union("boolean", t.lit('total'), t.lit('percent'))),
   "hidden_by_default": t.opt("boolean"),
-  "extremas": t.opt(t.union("boolean", t.lit('time'))),
+  "extremas": t.opt(t.union("boolean", t.lit('time'), t.lit('min'), t.lit('max'), t.lit('min+time'), t.lit('max+time'))),
   "in_brush": t.opt("boolean"),
   "offset_in_name": t.opt("boolean"),
 });

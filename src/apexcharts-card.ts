@@ -961,29 +961,41 @@ class ChartsCard extends LitElement {
           };
           const bgColor = computeColor(this._colors[index]);
           const txtColor = computeTextColor(bgColor);
-          if (!min[0] || !max[0]) return [];
-          return [
-            ...this._getPointAnnotationStyle(
-              min,
-              this._seriesOffset[index],
-              bgColor,
-              txtColor,
-              serie,
-              index,
-              serie.invert,
-              sameDay,
-            ),
-            ...this._getPointAnnotationStyle(
-              max,
-              this._seriesOffset[index],
-              bgColor,
-              txtColor,
-              serie,
-              index,
-              serie.invert,
-              sameDay,
-            ),
-          ];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const extremas: any = [];
+          if (min[0] && ['min', 'min+time', true, 'time'].includes(serie.show.extremas)) {
+            const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'min+time';
+            extremas.push(
+              ...this._getPointAnnotationStyle(
+                min,
+                this._seriesOffset[index],
+                bgColor,
+                txtColor,
+                serie,
+                index,
+                serie.invert,
+                sameDay,
+                withTime,
+              ),
+            );
+          }
+          if (max[0] && ['max', 'max+time', true, 'time'].includes(serie.show.extremas)) {
+            const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'max+time';
+            extremas.push(
+              ...this._getPointAnnotationStyle(
+                max,
+                this._seriesOffset[index],
+                bgColor,
+                txtColor,
+                serie,
+                index,
+                serie.invert,
+                sameDay,
+                withTime,
+              ),
+            );
+          }
+          return extremas;
         } else {
           return [];
         }
@@ -1000,6 +1012,7 @@ class ChartsCard extends LitElement {
     index: number,
     invert = false,
     sameDay: boolean,
+    withTime: boolean,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const points: any = [];
@@ -1026,7 +1039,7 @@ class ChartsCard extends LitElement {
         },
       },
     });
-    if (serie.show.extremas === 'time') {
+    if (withTime) {
       let bgColorTime = tinycolor(computeColor('var(--card-background-color)'));
       bgColorTime =
         bgColorTime.isValid && bgColorTime.getLuminance() > 0.5 ? bgColorTime.darken(20) : bgColorTime.lighten(20);

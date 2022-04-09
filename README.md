@@ -194,7 +194,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`). If you set it to `percent`, it will display the percentage of the serie instead of the value in the case of a `pie` or `donut` chart. |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
-| `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart. If the value is `time`, it will display also the time of the min/max value on top of the value. This feature doesn't work with `stacked: true`. |
+| `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From NEXT_VERSION, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
 | `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
 | `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
