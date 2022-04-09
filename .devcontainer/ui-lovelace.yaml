@@ -73,8 +73,8 @@ views:
 
           - type: custom:apexcharts-card
             stacked: true
-            span:
-              offset: -1d
+            # span:
+            #   offset: -1d
             series:
               - entity: sensor.random_0_1000
                 name: RAM Usage
@@ -137,7 +137,8 @@ views:
           - type: custom:apexcharts-card
             graph_span: 200h
             series:
-              - entity: sensor.humidity
+              - entity: sensor.random_0_1000
+                transform: return x / 10;
                 curve: straight
                 show:
                   extremas: true
@@ -229,7 +230,8 @@ views:
             header:
               title: Test
             series:
-              - entity: sensor.humidity
+              - entity: sensor.random_0_1000
+                transform: return x / 10;
                 type: area
                 name: Outside Humidity
                 opacity: 0.3
@@ -246,7 +248,7 @@ views:
                 show:
                   datalabels: true
           - type: sensor
-            entity: sensor.humidity
+            entity: sensor.random_0_1000
             graph: line
 
           - type: custom:apexcharts-card
@@ -254,7 +256,8 @@ views:
             header:
               show: false
             series:
-              - entity: sensor.humidity
+              - entity: sensor.random_0_1000
+                transform: return x / 10;
                 type: line
                 name: Outside Humidity
                 fill_raw: last
