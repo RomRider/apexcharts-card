@@ -1,6 +1,6 @@
 {
   "name": "ApexCharts-card Development",
-  "image": "ghcr.io/ludeeus/devcontainer/generic:latest",
+  "image": "ghcr.io/ludeeus/devcontainer/generic:stable",
   "context": "..",
   "remoteUser": "vscode",
   "appPort": ["8123:8123", "5000:5000"],
