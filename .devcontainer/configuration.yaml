@@ -74,3 +74,5 @@ automation:
         target:
           entity_id:
             - sensor.counter_no_significant_update
+
+browser_mod:
