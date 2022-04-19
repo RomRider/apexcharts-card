@@ -234,8 +234,8 @@ export function is12HourFromLocale(locale: string): boolean {
   return !(new Date(2021, 1, 1, 15, 0, 0, 0).toLocaleTimeString(locale).indexOf('15') > -1);
 }
 
-export function is12Hour(config: ChartCardConfig, hass: HomeAssistant | undefined): boolean {
-  if (config.hours_12 !== undefined) {
+export function is12Hour(config: ChartCardConfig | undefined, hass: HomeAssistant | undefined): boolean {
+  if (config?.hours_12 !== undefined) {
     return config.hours_12;
   } else {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -250,9 +250,44 @@ export function is12Hour(config: ChartCardConfig, hass: HomeAssistant | undefine
       }
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return is12HourFromLocale(config.locale || hass?.language || 'en');
+      return is12HourFromLocale(getLang(config, hass));
     }
   }
+}
+
+export function formatApexDate(
+  config: ChartCardConfig,
+  hass: HomeAssistant | undefined,
+  value: Date,
+  withDate = true,
+): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const hours12 = is12Hour(config, hass) ? { hour12: true } : { hourCycle: 'h23' };
+  const lang = getLang(config, hass);
+  if (withDate) {
+    return new Intl.DateTimeFormat(lang, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      ...hours12,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any).format(value);
+  } else {
+    return new Intl.DateTimeFormat(lang, {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      ...hours12,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any).format(value);
+  }
+}
+
+export function getLang(config: ChartCardConfig | undefined, hass: HomeAssistant | undefined): string {
+  return config?.locale || hass?.language || 'en';
 }
 
 export function truncateFloat(

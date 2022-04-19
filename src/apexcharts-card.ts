@@ -22,6 +22,8 @@ import {
   computeTextColor,
   computeUom,
   decompress,
+  formatApexDate,
+  getLang,
   getPercentFromValue,
   interpolateColor,
   is12Hour,
@@ -685,20 +687,7 @@ class ChartsCard extends LitElement {
 
   private _renderLastUpdated(): TemplateResult {
     if (this._config?.show?.last_updated) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let hours12: any = undefined;
-      hours12 = is12Hour(this._config, this._hass) ? { hour12: true } : { hourCycle: 'h23' };
-      const lastUpdated = new Intl.DateTimeFormat(this._config.locale || this._hass?.language || 'en', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        ...hours12,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any).format(this._lastUpdated);
-      return html` <div id="last_updated">${lastUpdated}</div> `;
+      return html` <div id="last_updated">${formatApexDate(this._config, this._hass, this._lastUpdated, true)}</div> `;
     }
     return html``;
   }
@@ -1045,10 +1034,12 @@ class ChartsCard extends LitElement {
         bgColorTime.isValid && bgColorTime.getLuminance() > 0.5 ? bgColorTime.darken(20) : bgColorTime.lighten(20);
       const txtColorTime = computeTextColor(bgColorTime.toHexString());
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const options: any = { timeStyle: 'medium' };
+      let options: any = { timeStyle: 'medium' };
       if (!sameDay) {
         options.dateStyle = 'medium';
       }
+      options = { ...options, ...(is12Hour(this._config, this._hass) ? { hour12: true } : { hourCycle: 'h23' }) };
+      const lang = getLang(this._config, this._hass);
       points.push({
         x: offset ? value[0] - offset : value[0],
         y: invert && value[1] ? -value[1] : value[1],
@@ -1058,9 +1049,7 @@ class ChartsCard extends LitElement {
           size: 0,
         },
         label: {
-          text: `${Intl.DateTimeFormat(this._config?.locale || this._hass?.language || 'en', options).format(
-            value[0],
-          )}`,
+          text: `${Intl.DateTimeFormat(lang, options).format(value[0])}`,
           borderColor: 'var(--card-background-color)',
           offsetY: -22,
           borderWidth: 0,
