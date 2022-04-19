@@ -24,6 +24,7 @@ import {
   decompress,
   getPercentFromValue,
   interpolateColor,
+  is12Hour,
   log,
   mergeConfigTemplates,
   mergeDeep,
@@ -686,9 +687,7 @@ class ChartsCard extends LitElement {
     if (this._config?.show?.last_updated) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let hours12: any = undefined;
-      if (this._config.hours_12 !== undefined) {
-        hours12 = this._config.hours_12 ? { hour12: true } : { hourCycle: 'h23' };
-      }
+      hours12 = is12Hour(this._config, this._hass) ? { hour12: true } : { hourCycle: 'h23' };
       const lastUpdated = new Intl.DateTimeFormat(this._config.locale || this._hass?.language || 'en', {
         year: 'numeric',
         month: 'short',

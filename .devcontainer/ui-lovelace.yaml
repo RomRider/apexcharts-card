@@ -92,6 +92,8 @@ views:
               floating: true
 
           - type: custom:apexcharts-card
+            show:
+              last_updated: true
             update_interval: 2s
             stacked: true
             experimental:
