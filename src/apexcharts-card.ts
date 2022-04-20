@@ -405,7 +405,7 @@ class ChartsCard extends LitElement {
             this._headerColors[index] = serie.color;
           }
           serie.fill_raw = serie.fill_raw || DEFAULT_FILL_RAW;
-          serie.extend_to_end = serie.extend_to_end !== undefined ? serie.extend_to_end : true;
+          serie.extend_to = serie.extend_to !== undefined ? serie.extend_to : 'end';
           serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
           if (!serie.group_by) {
             serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
@@ -769,9 +769,14 @@ class ChartsCard extends LitElement {
             return;
           }
           let data: EntityCachePoints = [];
-          if (this._config?.series[index].extend_to_end && this._config?.series[index].type !== 'column') {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+          if (this._config?.series[index].type !== 'column' && this._config?.series[index].extend_to) {
+            if (this._config?.series[index].extend_to === 'end') {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+            } else if (this._config?.series[index].extend_to === 'now') {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data = [...graph.history, ...([[now.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
+            }
           } else {
             data = graph.history;
           }

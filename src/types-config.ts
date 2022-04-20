@@ -70,7 +70,7 @@ export interface ChartCardAllSeriesExternalConfig {
   opacity?: number;
   curve?: 'smooth' | 'straight' | 'stepline';
   stroke_width?: number;
-  extend_to_end?: boolean;
+  extend_to?: false | 'end' | 'now';
   unit?: string;
   invert?: boolean;
   data_generator?: string;

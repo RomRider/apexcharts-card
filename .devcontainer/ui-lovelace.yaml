@@ -289,7 +289,7 @@ views:
               start: day
             series:
               - entity: sensor.random0_100
-                extend_to_end: false
+                extend_to: false
                 type: column
                 show:
                   datalabels: true
@@ -318,7 +318,7 @@ views:
                   decimalsInFloat: 1
             series:
               - entity: sensor.random0_100
-                extend_to_end: false
+                extend_to: false
                 type: column
                 invert: true
                 float_precision: 3
@@ -329,7 +329,7 @@ views:
                   legend_value: true
                   datalabels: true
               - entity: sensor.random0_100
-                extend_to_end: false
+                extend_to: false
                 type: column
                 group_by:
                   func: avg
@@ -337,7 +337,7 @@ views:
                 show:
                   datalabels: true
               - entity: sensor.random0_100
-                extend_to_end: false
+                extend_to: false
                 type: column
                 group_by:
                   func: avg
@@ -394,13 +394,13 @@ views:
                 unit: °C
                 attribute: temperature
                 fill_raw: last
-                extend_to_end: false
+                extend_to: false
                 group_by:
                   func: avg
                   duration: 1h
               - entity: weather.openweathermap
                 type: line
-                extend_to_end: false
+                extend_to: false
                 unit: °C
                 show:
                   in_header: after_now
@@ -544,7 +544,7 @@ views:
                   duration: 1h
                   func: last
               - entity: sensor.random0_100
-                extend_to_end: false
+                extend_to: false
                 group_by:
                   duration: 1h
                   func: last
@@ -558,7 +558,7 @@ views:
             series:
               - entity: sensor.outside_temperature
                 curve: stepline
-                extend_to_end: true
+                extend_to: end
 
           - type: custom:apexcharts-card
             update_delay: 3s
@@ -797,7 +797,7 @@ views:
               - entity: weather.home
                 type: area
                 fill_raw: last
-                extend_to_end: false
+                extend_to: false
                 color: var(--yellowish)
                 name: Max
                 stroke_width: 2
@@ -808,7 +808,7 @@ views:
               - entity: weather.home
                 type: area
                 fill_raw: last
-                extend_to_end: false
+                extend_to: false
                 color: var(--cyanish)
                 name: Min
                 stroke_width: 2
@@ -819,7 +819,7 @@ views:
               - entity: weather.home
                 type: column
                 fill_raw: last
-                extend_to_end: false
+                extend_to: false
                 color: 'rgba(255, 255, 255, 1)'
                 name: Snow
                 stroke_width: 0
@@ -830,7 +830,7 @@ views:
               - entity: weather.home
                 type: column
                 fill_raw: last
-                extend_to_end: false
+                extend_to: false
                 color: var(--cyanish)
                 name: Rain
                 stroke_width: 0
@@ -909,7 +909,7 @@ views:
               end: week
             all_series_config:
               type: column
-              extend_to_end: false
+              extend_to: false
               group_by:
                 fill: 'null'
             series:
@@ -1254,3 +1254,35 @@ views:
                 group_by:
                   duration: 2min
                   func: avg
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            span:
+              start: hour
+            series:
+              - entity: sensor.random0_100
+                name: no extend
+                extend_to: false
+                data_generator: |
+                  const now_minus10 = new Date(start.getTime() + 10 * 1000 * 60);
+                  return [
+                    [start.getTime(), 10],
+                    [now_minus10.getTime(), 10]
+                  ];
+              - entity: sensor.random0_100
+                name: extend to now
+                extend_to: now
+                data_generator: |
+                  const now_minus10 = new Date(start.getTime() + 10 * 1000 * 60);
+                  return [
+                    [start.getTime(), 20],
+                    [now_minus10.getTime(), 20]
+                  ];
+              - entity: sensor.random0_100
+                name: extend to end
+                extend_to: end
+                data_generator: |
+                  const now_minus10 = new Date(start.getTime() + 10 * 1000 * 60);
+                  return [
+                    [start.getTime(), 30],
+                    [now_minus10.getTime(), 30]
+                  ];
