@@ -70,8 +70,8 @@ export function computeName(
   if (entity) {
     name = series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
   } else if (entities) {
-    name =
-      series[index].name || entities[index]?.attributes?.friendly_name || entities[entities[index]]?.entity_id || '';
+    const serieEntity = series[index].entity;
+    name = series[index].name || entities[serieEntity]?.attributes?.friendly_name || serieEntity || '';
   }
   return name + (series[index].show?.offset_in_name && series[index].offset ? ` (${series[index].offset})` : '');
 }
