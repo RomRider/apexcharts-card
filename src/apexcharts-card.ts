@@ -152,6 +152,8 @@ class ChartsCard extends LitElement {
 
   private _seriesOffset: number[] = [];
 
+  private _seriesTimeDelta: number[] = [];
+
   private _updateDelay: number = DEFAULT_UPDATE_DELAY;
 
   private _brushInit = false;
@@ -341,6 +343,9 @@ class ChartsCard extends LitElement {
       configDup.series.forEach((serie, index) => {
         if (serie.offset) {
           this._seriesOffset[index] = validateOffset(serie.offset, `series[${index}].offset`);
+        }
+        if (serie.time_delta) {
+          this._seriesTimeDelta[index] = validateOffset(serie.time_delta, `series[${index}].time_delta`);
         }
       });
       if (configDup.update_delay) {
@@ -769,18 +774,23 @@ class ChartsCard extends LitElement {
             return;
           }
           let data: EntityCachePoints = [];
-          if (this._config?.series[index].type !== 'column' && this._config?.series[index].extend_to) {
-            if (this._config?.series[index].extend_to === 'end') {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data = [...graph.history, ...([[end.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
-            } else if (this._config?.series[index].extend_to === 'now') {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data = [...graph.history, ...([[now.getTime(), graph.history.slice(-1)[0]![1]]] as EntityCachePoints)];
-            }
+          const offset = (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
+          if (offset) {
+            data = offsetData(graph.history, offset);
           } else {
-            data = graph.history;
+            data = [...graph.history];
           }
-          data = offsetData(data, this._seriesOffset[index]);
+          if (this._config?.series[index].type !== 'column' && this._config?.series[index].extend_to) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const lastPoint = data.slice(-1)[0]!;
+            if (this._config?.series[index].extend_to === 'end' && lastPoint[0] < end.getTime()) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data.push([end.getTime(), lastPoint[1]]);
+            } else if (this._config?.series[index].extend_to === 'now' && lastPoint[0] < now.getTime()) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              data.push([now.getTime(), lastPoint[1]]);
+            }
+          }
           const result = this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
           if (this._config?.series[index].show.in_chart) graphData.series.push(result);
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);

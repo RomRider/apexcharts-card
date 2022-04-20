@@ -1286,3 +1286,15 @@ views:
                     [start.getTime(), 30],
                     [now_minus10.getTime(), 30]
                   ];
+          - type: custom:apexcharts-card
+            graph_span: 2h
+            header:
+              show: true
+              title: second serie should cover first hour
+            all_series_config:
+              stroke_width: 1
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random0_100
+                time_delta: -1h
+                offset: -1h

@@ -78,6 +78,7 @@ export interface ChartCardAllSeriesExternalConfig {
   min?: number;
   max?: number;
   offset?: string;
+  time_delta?: string;
   fill_raw?: GroupByFill;
   show?: ChartCardSeriesShowConfigExt;
   group_by?: {

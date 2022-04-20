@@ -78,6 +78,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "min": t.opt("number"),
   "max": t.opt("number"),
   "offset": t.opt("string"),
+  "time_delta": t.opt("string"),
   "fill_raw": t.opt("GroupByFill"),
   "show": t.opt("ChartCardSeriesShowConfigExt"),
   "group_by": t.opt(t.iface([], {

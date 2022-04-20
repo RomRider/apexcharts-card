@@ -176,6 +176,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `transform` | string | | v1.5.0 | Transform your raw data in any way you like. See [transform](#transform-option) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
+| `time_delta` | string | | NEXT_VERSION | This applies a time delta to all the datapoints of your chart **after** fetching them. You can cumulate it with `offset`. Valid values are any time strings starting with `+` or `-`, eg: `-30min`, `+2h`, `-2d`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
