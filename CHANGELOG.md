@@ -1,3 +1,21 @@
+## [2.0.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.11.0-dev.1...v2.0.0-dev.1) (2022-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* `extend_to_end` has been removed and replaced by `extend_to` with support for `now` and `end`.
+
+### Features
+
+* `extend_to` replaces `extend_to_end` with new options ([4bb1dd2](https://github.com/RomRider/apexcharts-card/commit/4bb1dd2464927c1dea66d422474cacaef7c89a16)), closes [#318](https://github.com/RomRider/apexcharts-card/issues/318)
+
+
+### Bug Fixes
+
+* `last_updated` date format was not following the configuration ([3dd4904](https://github.com/RomRider/apexcharts-card/commit/3dd4904a72b55cba94a3951a83dc2bd0d7caee09))
+* annotations with time were not following the time format configuration ([5d08853](https://github.com/RomRider/apexcharts-card/commit/5d088532f933991ccdf3c8b876ba8c921fe5f233))
+* hidden by default would not work without a name ([9c75ce8](https://github.com/RomRider/apexcharts-card/commit/9c75ce89dfdf59ed72c3235d8be6d7c501b50ff5)), closes [#280](https://github.com/RomRider/apexcharts-card/issues/280)
+
 ## [1.11.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.10.1-dev.2...v1.11.0-dev.1) (2022-04-09)
 
 
