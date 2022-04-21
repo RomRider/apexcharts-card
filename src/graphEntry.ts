@@ -190,153 +190,156 @@ export default class GraphEntry {
     if (!this._entityState || this._updating) return false;
     this._updating = true;
 
-    this._realStart = new Date(start);
-    this._realEnd = new Date(end);
-
-    let skipInitialState = false;
-
-    let history: EntityEntryCache | undefined = this._cache
-      ? await this._getCache(this._entityID, this._useCompress)
-      : undefined;
-
-    if (history && history.span === this._graphSpan) {
-      const currDataIndex = history.data.findIndex(
-        (item) => item && new Date(item[0]).getTime() > startHistory.getTime(),
-      );
-      if (currDataIndex !== -1) {
-        // skip initial state when fetching recent/not-cached data
-        skipInitialState = true;
+    if (this._config.ignore_history) {
+      let currentState: null | number | string = null;
+      if (this._config.attribute) {
+        currentState = this._entityState.attributes?.[this._config.attribute];
+      } else {
+        currentState = this._entityState.state;
       }
-      if (currDataIndex > 4) {
-        // >4 so that the graph has some more history
-        history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
-      } else if (currDataIndex === -1) {
-        // there was no state which could be used in current graph so clearing
-        history.data = [];
+      if (this._config.transform) {
+        currentState = this._applyTransform(currentState, this._entityState);
       }
-    } else {
-      history = undefined;
+      let stateParsed: number | null = parseFloat(currentState as string);
+      stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
+      this._computedHistory = [[new Date(this._entityState.last_updated).getTime(), stateParsed]];
+      this._updating = false;
+      return true;
     }
-    const usableCache = !!(
-      history &&
-      history.data &&
-      history.data.length !== 0 &&
-      history.data[history.data.length - 1]
-    );
 
-    // if data in cache, get data from last data's time + 1ms
-    const fetchStart = usableCache
-      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        new Date(history!.data[history!.data.length - 1][0] + 1)
-      : new Date(startHistory.getTime() + (this._config.group_by.func !== 'raw' ? 0 : -1));
-    const fetchEnd = end;
+    let history: EntityEntryCache | undefined = undefined;
 
-    let newStateHistory: EntityCachePoints = [];
     if (this._config.data_generator) {
-      newStateHistory = await this._generateData(fetchStart, fetchEnd);
-    } else if (this._config.use_statistics) {
-      const statistics = await this._fetchStatistics(fetchStart, fetchEnd);
-      if (statistics && this._entityID in statistics) {
-        const newHistory = statistics[this._entityID];
-        if (newHistory && newHistory.length > 0) {
+      history = await this._generateData(start, end);
+    } else {
+      this._realStart = new Date(start);
+      this._realEnd = new Date(end);
+
+      let skipInitialState = false;
+
+      history = this._cache ? await this._getCache(this._entityID, this._useCompress) : undefined;
+
+      if (history && history.span === this._graphSpan) {
+        const currDataIndex = history.data.findIndex(
+          (item) => item && new Date(item[0]).getTime() > startHistory.getTime(),
+        );
+        if (currDataIndex !== -1) {
+          // skip initial state when fetching recent/not-cached data
+          skipInitialState = true;
+        }
+        if (currDataIndex > 4) {
+          // >4 so that the graph has some more history
+          history.data = history.data.slice(currDataIndex === 0 ? 0 : currDataIndex - 4);
+        } else if (currDataIndex === -1) {
+          // there was no state which could be used in current graph so clearing
+          history.data = [];
+        }
+      } else {
+        history = undefined;
+      }
+      const usableCache = !!(
+        history &&
+        history.data &&
+        history.data.length !== 0 &&
+        history.data[history.data.length - 1]
+      );
+
+      // if data in cache, get data from last data's time + 1ms
+      const fetchStart = usableCache
+        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          new Date(history!.data[history!.data.length - 1][0] + 1)
+        : new Date(startHistory.getTime() + (this._config.group_by.func !== 'raw' ? 0 : -1));
+      const fetchEnd = end;
+
+      let newStateHistory: EntityCachePoints = [];
+      let updateCache = false;
+
+      if (this._config.use_statistics) {
+        const statistics = await this._fetchStatistics(fetchStart, fetchEnd);
+        if (statistics && this._entityID in statistics) {
+          const newHistory = statistics[this._entityID];
+          if (newHistory && newHistory.length > 0) {
+            updateCache = true;
+            let lastNonNull: number | null = null;
+            if (history && history.data && history.data.length > 0) {
+              lastNonNull = history.data[history.data.length - 1][1];
+            }
+            newStateHistory = newHistory.map((item) => {
+              let stateParsed: number | null = null;
+              [lastNonNull, stateParsed] = this._transformAndFill(
+                this._config.use_statistics === 'sum' ? item.sum : item.mean,
+                item,
+                lastNonNull,
+              );
+
+              return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            });
+          }
+        }
+      } else {
+        const newHistory = await this._fetchRecent(
+          fetchStart,
+          fetchEnd,
+          this._config.attribute || this._config.transform ? false : skipInitialState,
+        );
+        if (newHistory && newHistory[0] && newHistory[0].length > 0) {
+          updateCache = true;
+          /*
+          hack because HA doesn't return anything if skipInitialState is false
+          when retrieving for attributes so we retrieve it and we remove it.
+          */
+          if ((this._config.attribute || this._config.transform) && skipInitialState) {
+            newHistory[0].shift();
+          }
           let lastNonNull: number | null = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
-          newStateHistory = newHistory.map((item) => {
+          newStateHistory = newHistory[0].map((item) => {
             let currentState: unknown = null;
-            currentState = this._config.use_statistics == 'sum' ? item.sum : item.mean;
-            if (this._config.transform) {
-              currentState = this._applyTransform(currentState, item);
-            }
-            let stateParsed: number | null = parseFloat(currentState as string);
-            stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
-            if (stateParsed === null) {
-              if (this._config.fill_raw === 'zero') {
-                stateParsed = 0;
-              } else if (this._config.fill_raw === 'last') {
-                stateParsed = lastNonNull;
+            if (this._config.attribute) {
+              if (item.attributes && item.attributes[this._config.attribute] !== undefined) {
+                currentState = item.attributes[this._config.attribute];
               }
             } else {
-              lastNonNull = stateParsed;
+              currentState = item.state;
             }
+            let stateParsed: number | null = null;
+            [lastNonNull, stateParsed] = this._transformAndFill(currentState, item, lastNonNull);
 
-            return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            if (this._config.attribute) {
+              return [new Date(item.last_updated).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            } else {
+              return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            }
           });
         }
       }
-    } else {
-      const newHistory = await this._fetchRecent(
-        fetchStart,
-        fetchEnd,
-        this._config.attribute || this._config.transform ? false : skipInitialState,
-      );
-      if (newHistory && newHistory[0] && newHistory[0].length > 0) {
-        /*
-        hack because HA doesn't return anything if skipInitialState is false
-        when retrieving for attributes so we retrieve it and we remove it.
-        */
-        if ((this._config.attribute || this._config.transform) && skipInitialState) {
-          newHistory[0].shift();
+
+      if (updateCache) {
+        if (history?.data.length) {
+          history.span = this._graphSpan;
+          history.last_fetched = new Date();
+          history.card_version = pjson.version;
+          if (history.data.length !== 0) {
+            history.data.push(...newStateHistory);
+          }
+        } else {
+          history = {
+            span: this._graphSpan,
+            card_version: pjson.version,
+            last_fetched: new Date(),
+            data: newStateHistory,
+          };
         }
-        let lastNonNull: number | null = null;
-        if (history && history.data && history.data.length > 0) {
-          lastNonNull = history.data[history.data.length - 1][1];
+
+        if (this._cache) {
+          this._setCache(this._entityID, history, this._useCompress).catch((err) => {
+            log(err);
+            localForage.clear();
+          });
         }
-        newStateHistory = newHistory[0].map((item) => {
-          let currentState: unknown = null;
-          if (this._config.attribute) {
-            if (item.attributes && item.attributes[this._config.attribute] !== undefined) {
-              currentState = item.attributes[this._config.attribute];
-            }
-          } else {
-            currentState = item.state;
-          }
-          if (this._config.transform) {
-            currentState = this._applyTransform(currentState, item);
-          }
-          let stateParsed: number | null = parseFloat(currentState as string);
-          stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
-          if (stateParsed === null) {
-            if (this._config.fill_raw === 'zero') {
-              stateParsed = 0;
-            } else if (this._config.fill_raw === 'last') {
-              stateParsed = lastNonNull;
-            }
-          } else {
-            lastNonNull = stateParsed;
-          }
-
-          if (this._config.attribute) {
-            return [new Date(item.last_updated).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
-          } else {
-            return [new Date(item.last_changed).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
-          }
-        });
       }
-    }
-
-    if (history?.data.length) {
-      history.span = this._graphSpan;
-      history.last_fetched = new Date();
-      history.card_version = pjson.version;
-      if (history.data.length !== 0) {
-        history.data.push(...newStateHistory);
-      }
-    } else {
-      history = {
-        span: this._graphSpan,
-        card_version: pjson.version,
-        last_fetched: new Date(),
-        data: newStateHistory,
-      };
-    }
-
-    if (this._cache) {
-      this._setCache(this._entityID, history, this._useCompress).catch((err) => {
-        log(err);
-        localForage.clear();
-      });
     }
 
     if (!history || history.data.length === 0) {
@@ -357,6 +360,28 @@ export default class GraphEntry {
     }
     this._updating = false;
     return true;
+  }
+
+  private _transformAndFill(
+    currentState: unknown,
+    item: HassHistoryEntry | StatisticValue,
+    lastNonNull: number | null,
+  ): [number | null, number | null] {
+    if (this._config.transform) {
+      currentState = this._applyTransform(currentState, item);
+    }
+    let stateParsed: number | null = parseFloat(currentState as string);
+    stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
+    if (stateParsed === null) {
+      if (this._config.fill_raw === 'zero') {
+        stateParsed = 0;
+      } else if (this._config.fill_raw === 'last') {
+        stateParsed = lastNonNull;
+      }
+    } else {
+      lastNonNull = stateParsed;
+    }
+    return [lastNonNull, stateParsed];
   }
 
   private _applyTransform(value: unknown, historyItem: HassHistoryEntry | StatisticValue): number | null {
@@ -382,7 +407,7 @@ export default class GraphEntry {
     return this._hass?.callApi('GET', url);
   }
 
-  private async _generateData(start: Date, end: Date): Promise<EntityCachePoints> {
+  private async _generateData(start: Date, end: Date): Promise<EntityEntryCache> {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
     let data;
@@ -409,7 +434,12 @@ export default class GraphEntry {
       e.name = 'Error';
       throw e;
     }
-    return data;
+    return {
+      span: 0,
+      card_version: pjson.version,
+      last_fetched: new Date(),
+      data,
+    };
   }
 
   private async _fetchStatistics(
@@ -417,14 +447,11 @@ export default class GraphEntry {
     end: Date | undefined,
     period: 'hour' | '5minute' = 'hour',
   ): Promise<Statistics | undefined> {
-    const statistic_ids: string[] = [this._entityID];
-    console.info('apex start: ' + start?.toISOString());
-    console.info('apex end: ' + end?.toISOString());
     return this._hass?.callWS<Statistics>({
       type: 'history/statistics_during_period',
       start_time: start?.toISOString(),
       end_time: end?.toISOString(),
-      statistic_ids,
+      statistic_ids: [this._entityID],
       period,
     });
   }
