@@ -1298,3 +1298,22 @@ views:
               - entity: sensor.random0_100
                 time_delta: -1h
                 offset: -1h
+          - type: custom:apexcharts-card
+            graph_span: 2d
+            span:
+              start: day
+            header:
+              show: true
+              title: Line should not get back in time
+            all_series_config:
+              stroke_width: 1
+              extend_to: now
+            series:
+              - entity: sensor.random0_100
+                data_generator: |
+                  const tomorrow = new Date(start.getTime() + 25 * 1000 * 60 * 60);
+                  const tomorrow2 = new Date(start.getTime() + 28 * 1000 * 60 * 60);
+                  return [
+                    [tomorrow.getTime(), 30],
+                    [tomorrow2.getTime(), 20]
+                  ];
