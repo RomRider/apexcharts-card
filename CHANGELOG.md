@@ -1,3 +1,10 @@
+## [2.0.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.1...v2.0.0-dev.2) (2022-04-21)
+
+
+### Features
+
+* Apply a `time_delta` to all the datapoints of your serie ([435e381](https://github.com/RomRider/apexcharts-card/commit/435e381ceeb467261501bf471010ac3c029064c5)), closes [#277](https://github.com/RomRider/apexcharts-card/issues/277)
+
 ## [2.0.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v1.11.0-dev.1...v2.0.0-dev.1) (2022-04-20)
 
 
