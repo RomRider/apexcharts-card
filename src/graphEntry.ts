@@ -252,29 +252,26 @@ export default class GraphEntry {
       const fetchEnd = end;
 
       let newStateHistory: EntityCachePoints = [];
-      let updateCache = false;
+      let updateGraphHistory = false;
 
       if (this._config.use_statistics) {
-        const statistics = await this._fetchStatistics(fetchStart, fetchEnd);
-        if (statistics && this._entityID in statistics) {
-          const newHistory = statistics[this._entityID];
-          if (newHistory && newHistory.length > 0) {
-            updateCache = true;
-            let lastNonNull: number | null = null;
-            if (history && history.data && history.data.length > 0) {
-              lastNonNull = history.data[history.data.length - 1][1];
-            }
-            newStateHistory = newHistory.map((item) => {
-              let stateParsed: number | null = null;
-              [lastNonNull, stateParsed] = this._transformAndFill(
-                this._config.use_statistics === 'sum' ? item.sum : item.mean,
-                item,
-                lastNonNull,
-              );
-
-              return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
-            });
+        const newHistory = await this._fetchStatistics(fetchStart, fetchEnd);
+        if (newHistory && newHistory.length > 0) {
+          updateGraphHistory = true;
+          let lastNonNull: number | null = null;
+          if (history && history.data && history.data.length > 0) {
+            lastNonNull = history.data[history.data.length - 1][1];
           }
+          newStateHistory = newHistory.map((item) => {
+            let stateParsed: number | null = null;
+            [lastNonNull, stateParsed] = this._transformAndFill(
+              this._config.use_statistics === 'sum' ? item.sum : item.mean,
+              item,
+              lastNonNull,
+            );
+
+            return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+          });
         }
       } else {
         const newHistory = await this._fetchRecent(
@@ -283,7 +280,7 @@ export default class GraphEntry {
           this._config.attribute || this._config.transform ? false : skipInitialState,
         );
         if (newHistory && newHistory[0] && newHistory[0].length > 0) {
-          updateCache = true;
+          updateGraphHistory = true;
           /*
           hack because HA doesn't return anything if skipInitialState is false
           when retrieving for attributes so we retrieve it and we remove it.
@@ -316,7 +313,7 @@ export default class GraphEntry {
         }
       }
 
-      if (updateCache) {
+      if (updateGraphHistory) {
         if (history?.data.length) {
           history.span = this._graphSpan;
           history.last_fetched = new Date();
@@ -446,14 +443,18 @@ export default class GraphEntry {
     start: Date | undefined,
     end: Date | undefined,
     period: 'hour' | '5minute' = 'hour',
-  ): Promise<Statistics | undefined> {
-    return this._hass?.callWS<Statistics>({
+  ): Promise<StatisticValue[] | undefined> {
+    const statistics = await this._hass?.callWS<Statistics>({
       type: 'history/statistics_during_period',
       start_time: start?.toISOString(),
       end_time: end?.toISOString(),
       statistic_ids: [this._entityID],
       period,
     });
+    if (statistics && this._entityID in statistics) {
+      return statistics[this._entityID];
+    }
+    return undefined;
   }
 
   private _dataBucketer(history: EntityEntryCache, timeRange: DateRange): HistoryBuckets {
