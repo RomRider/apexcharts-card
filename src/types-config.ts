@@ -74,7 +74,7 @@ export interface ChartCardAllSeriesExternalConfig {
   unit?: string;
   invert?: boolean;
   data_generator?: string;
-  use_statistics?: string;
+  use_statistics?: 'mean' | 'sum';
   float_precision?: number;
   min?: number;
   max?: number;
