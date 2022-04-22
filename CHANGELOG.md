@@ -1,3 +1,10 @@
+## [2.0.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.5...v2.0.0-dev.6) (2022-04-22)
+
+
+### Bug Fixes
+
+* last caching issue with statistics ([2e528f7](https://github.com/RomRider/apexcharts-card/commit/2e528f77f974a2b5b68ef89725311d70fbf35a0e))
+
 ## [2.0.0-dev.5](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.4...v2.0.0-dev.5) (2022-04-22)
 
 
