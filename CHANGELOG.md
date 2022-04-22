@@ -1,3 +1,10 @@
+## [2.0.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.6...v2.0.0-dev.7) (2022-04-22)
+
+
+### Features
+
+* add state type to long term statistics ([#329](https://github.com/RomRider/apexcharts-card/issues/329)) ([3fad4f0](https://github.com/RomRider/apexcharts-card/commit/3fad4f05cb8bcd95f33ba8426ccb21e61c6e42fe))
+
 ## [2.0.0-dev.6](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.5...v2.0.0-dev.6) (2022-04-22)
 
 
