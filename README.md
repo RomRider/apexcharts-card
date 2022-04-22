@@ -267,7 +267,7 @@ series:
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `type` | string | `mean` | NEXT_VERSION | Type of long term statistic to pull. Can be one of `min`, `max`, `mean` or `sum` |
+| `type` | string | `mean` | NEXT_VERSION | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` or `state` |
 | `period` | string | `hour` | NEXT_VERSION | Period of statistics to pull. Can be one of `5minute`, `hour`, `day` or `month` |
 | `align` | string | `middle` | NEXT_VERSION | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 

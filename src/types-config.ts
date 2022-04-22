@@ -77,7 +77,7 @@ export interface ChartCardAllSeriesExternalConfig {
   invert?: boolean;
   data_generator?: string;
   statistics?: {
-    type?: 'mean' | 'max' | 'min' | 'sum';
+    type?: 'mean' | 'max' | 'min' | 'sum' | 'state';
     period?: StatisticsPeriod;
     align?: 'start' | 'end' | 'middle';
   };
