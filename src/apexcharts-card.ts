@@ -751,19 +751,15 @@ class ChartsCard extends LitElement {
           if (!graph) return [];
           const inHeader = this._config?.series[index].show.in_header;
           if (inHeader && inHeader !== 'raw') {
-            // not raw
-            if (graph.history.length === 0) {
-              this._headerState[index] = null;
-            } else if (inHeader === true) {
-              // last
-              const lastState = graph.history[graph.history.length - 1][1];
-              this._headerState[index] = lastState;
-            } else {
+            if (inHeader === 'after_now' || inHeader === 'before_now') {
               // before_now / after_now
               this._headerState[index] = graph.nowValue(
                 now.getTime() + (this._seriesOffset[index] ? this._seriesOffset[index] : 0),
                 inHeader === 'before_now',
               );
+            } else {
+              // not raw
+              this._headerState[index] = graph.lastState;
             }
           }
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
@@ -819,8 +815,8 @@ class ChartsCard extends LitElement {
               }
               data = 0;
             } else {
-              const lastState = graph.history[graph.history.length - 1][1];
-              data = lastState === null ? 0 : lastState;
+              const lastState = graph.lastState;
+              data = lastState || 0;
               if (this._config?.series[index].show.in_header !== 'raw') {
                 this._headerState[index] = lastState;
               }
