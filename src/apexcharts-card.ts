@@ -401,6 +401,7 @@ class ChartsCard extends LitElement {
             ['donut', 'pie', 'radialBar'].includes(this._config?.chart_type) &&
             (!serie.group_by || serie.group_by?.func === 'raw') &&
             !serie.data_generator &&
+            !serie.statistics &&
             !serie.offset
           );
           if (!this._headerColors[index]) {
@@ -451,9 +452,9 @@ class ChartsCard extends LitElement {
 
           if (serie.entity) {
             const editMode = getLovelace()?.editMode;
-            // disable caching for editor
+            // disable caching for editor or statistics data
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const caching = editMode === true ? false : this._config!.cache;
+            const caching = editMode === true || serie.statistics ? false : this._config!.cache;
             const graphEntry = new GraphEntry(
               index,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

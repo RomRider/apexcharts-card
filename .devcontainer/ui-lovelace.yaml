@@ -1317,3 +1317,20 @@ views:
                     [tomorrow.getTime(), 30],
                     [tomorrow2.getTime(), 20]
                   ];
+  - title: Long Term Stats
+    panel: true
+    cards:
+      - type: custom:apexcharts-card
+        cache: false
+        graph_span: 1d
+        header:
+          show: true
+          title: Test Stats
+        all_series_config:
+          stroke_width: 1
+        series:
+          - entity: sensor.today_energy
+            type: column
+            statistics:
+              type: mean
+              period: 5minute

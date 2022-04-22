@@ -61,6 +61,8 @@ export const ChartCardSpanExtConfig = t.iface([], {
 
 export const ChartCardStartEnd = t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'), t.lit('isoWeek'));
 
+export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('month'));
+
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
   "attribute": t.opt("string"),
@@ -74,6 +76,11 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
+  "statistics": t.opt(t.iface([], {
+    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'))),
+    "period": t.opt("StatisticsPeriod"),
+    "align": t.opt(t.union(t.lit('start'), t.lit('end'), t.lit('middle'))),
+  })),
   "float_precision": t.opt("number"),
   "min": t.opt("number"),
   "max": t.opt("number"),
@@ -220,6 +227,7 @@ const exportedTypeSuite: t.ITypeSuite = {
   ChartCardBrushExtConfig,
   ChartCardSpanExtConfig,
   ChartCardStartEnd,
+  StatisticsPeriod,
   ChartCardAllSeriesExternalConfig,
   ActionsConfig,
   ChartCardSeriesShowConfigExt,
