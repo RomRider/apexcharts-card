@@ -72,7 +72,7 @@ export default class GraphEntry {
       diff: this._diff,
     };
     this._index = index;
-    this._cache = cache;
+    this._cache = config.statistics ? false : cache;
     this._entityID = config.entity;
     this._graphSpan = graphSpan;
     this._config = config;
