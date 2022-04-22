@@ -270,10 +270,25 @@ export default class GraphEntry {
               lastNonNull,
             );
 
-            return [
-              new Date(this._config.type === 'column' ? item.start : item.end).getTime(),
-              !Number.isNaN(stateParsed) ? stateParsed : null,
-            ];
+            let displayDate: Date | null = null;
+            const startDate = new Date(item.start);
+            if (!this._config.statistics?.align || this._config.statistics?.align === 'middle') {
+              if (this._config.statistics?.period === '5minute') {
+                displayDate = new Date(startDate.getTime() + 150000); // 2min30s
+              } else if (!this._config.statistics?.period || this._config.statistics.period === 'hour') {
+                displayDate = new Date(startDate.getTime() + 1800000); // 30min
+              } else if (this._config.statistics.period === 'day') {
+                displayDate = new Date(startDate.getTime() + 43200000); // 12h
+              } else {
+                displayDate = new Date(startDate.getTime() + 1296000000); // 15d
+              }
+            } else if (this._config.statistics.align === 'start') {
+              displayDate = new Date(item.start);
+            } else {
+              displayDate = new Date(item.end);
+            }
+
+            return [displayDate.getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
           });
         }
       } else {

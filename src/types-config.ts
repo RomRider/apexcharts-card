@@ -79,6 +79,7 @@ export interface ChartCardAllSeriesExternalConfig {
   statistics?: {
     type?: 'mean' | 'max' | 'min' | 'sum';
     period?: StatisticsPeriod;
+    align?: 'start' | 'end' | 'middle';
   };
   float_precision?: number;
   min?: number;

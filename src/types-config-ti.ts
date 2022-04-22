@@ -79,6 +79,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "statistics": t.opt(t.iface([], {
     "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'))),
     "period": t.opt("StatisticsPeriod"),
+    "align": t.opt(t.union(t.lit('start'), t.lit('end'), t.lit('middle'))),
   })),
   "float_precision": t.opt("number"),
   "min": t.opt("number"),
