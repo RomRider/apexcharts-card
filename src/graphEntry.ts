@@ -270,7 +270,7 @@ export default class GraphEntry {
               lastNonNull,
             );
 
-            return [new Date(item.start).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
           });
         }
       } else {
