@@ -107,7 +107,7 @@ export default class GraphEntry {
   }
 
   set cache(cache: boolean) {
-    this._cache = cache;
+    this._cache = this._config.statistics ? false : cache;
   }
 
   get lastState(): number | null {
