@@ -31,7 +31,7 @@ export default class GraphEntry {
 
   private _updating = false;
 
-  private _cache = true;
+  private _cache: boolean;
 
   // private _hoursToShow: number;
 
