@@ -1,3 +1,10 @@
+## [2.0.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.2...v2.0.0-dev.3) (2022-04-22)
+
+
+### Features
+
+* Support for HA long-term statistics ([#208](https://github.com/RomRider/apexcharts-card/issues/208)) ([29aaa7c](https://github.com/RomRider/apexcharts-card/commit/29aaa7c1763f5f50196ae3ad4ab04666a7d60e98)), closes [#308](https://github.com/RomRider/apexcharts-card/issues/308)
+
 ## [2.0.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.1...v2.0.0-dev.2) (2022-04-21)
 
 
