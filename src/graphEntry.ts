@@ -14,10 +14,10 @@ import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
-import { moment } from './const';
+import { DEFAULT_STATISTICS_PERIOD, DEFAULT_STATISTICS_TYPE, moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
-import { ChartCardSpanExtConfig } from './types-config';
+import { ChartCardSpanExtConfig, StatisticsPeriod } from './types-config';
 import * as pjson from '../package.json';
 
 export default class GraphEntry {
@@ -254,8 +254,8 @@ export default class GraphEntry {
       let newStateHistory: EntityCachePoints = [];
       let updateGraphHistory = false;
 
-      if (this._config.use_statistics) {
-        const newHistory = await this._fetchStatistics(fetchStart, fetchEnd);
+      if (this._config.statistics) {
+        const newHistory = await this._fetchStatistics(fetchStart, fetchEnd, this._config.statistics.period);
         if (newHistory && newHistory.length > 0) {
           updateGraphHistory = true;
           let lastNonNull: number | null = null;
@@ -265,12 +265,15 @@ export default class GraphEntry {
           newStateHistory = newHistory.map((item) => {
             let stateParsed: number | null = null;
             [lastNonNull, stateParsed] = this._transformAndFill(
-              this._config.use_statistics === 'sum' ? item.sum : item.mean,
+              item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
               item,
               lastNonNull,
             );
 
-            return [new Date(item.end).getTime(), !Number.isNaN(stateParsed) ? stateParsed : null];
+            return [
+              new Date(this._config.type === 'column' ? item.start : item.end).getTime(),
+              !Number.isNaN(stateParsed) ? stateParsed : null,
+            ];
           });
         }
       } else {
@@ -442,7 +445,7 @@ export default class GraphEntry {
   private async _fetchStatistics(
     start: Date | undefined,
     end: Date | undefined,
-    period: 'hour' | '5minute' = 'hour',
+    period: StatisticsPeriod = DEFAULT_STATISTICS_PERIOD,
   ): Promise<StatisticValue[] | undefined> {
     const statistics = await this._hass?.callWS<Statistics>({
       type: 'history/statistics_during_period',

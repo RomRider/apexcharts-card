@@ -61,6 +61,8 @@ export interface ChartCardSpanExtConfig {
 
 export type ChartCardStartEnd = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year' | 'isoWeek';
 
+export type StatisticsPeriod = '5minute' | 'hour' | 'day' | 'month';
+
 export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
   attribute?: string;
@@ -74,7 +76,10 @@ export interface ChartCardAllSeriesExternalConfig {
   unit?: string;
   invert?: boolean;
   data_generator?: string;
-  use_statistics?: 'mean' | 'sum';
+  statistics?: {
+    type?: 'mean' | 'max' | 'min' | 'sum';
+    period?: StatisticsPeriod;
+  };
   float_precision?: number;
   min?: number;
   max?: number;
