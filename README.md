@@ -88,7 +88,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v1.10.0/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.0.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as decribed below.
@@ -99,7 +99,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=1.10.0
+  - url: /local/apexcharts-card.js?v=2.0.0
     type: module
 ```
 
@@ -167,8 +167,8 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
-| ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since NEXT_VERSION** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
-| `extend_to` | boolean or string | `end` | NEXT_VERSION | If value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (usefull for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
+| ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
+| `extend_to` | boolean or string | `end` | v2.0.0 | If value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (usefull for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
 | `float_precision` | number | `1` | v1.2.0 | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph |
 | `fill_raw` | string | `'null'` | v1.5.0 | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
@@ -176,9 +176,9 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Usefull to display opposites values like network in (standard)/out (inverted) |
 | `transform` | string | | v1.5.0 | Transform your raw data in any way you like. See [transform](#transform-option) |
 | `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
-| `statistics` | object | | NEXT_VERSION | Use HA statistical data (long-term). See [statistics](#statistics-options) |
+| `statistics` | object | | v2.0.0 | Use HA statistical data (long-term). See [statistics](#statistics-options) |
 | `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only usefull if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
-| `time_delta` | string | | NEXT_VERSION | This applies a time delta to all the datapoints of your chart **after** fetching them. You can cumulate it with `offset`. Valid values are any time strings starting with `+` or `-`, eg: `-30min`, `+2h`, `-2d`, ... |
+| `time_delta` | string | | v2.0.0 | This applies a time delta to all the datapoints of your chart **after** fetching them. You can cumulate it with `offset`. Valid values are any time strings starting with `+` or `-`, eg: `-30min`, `+2h`, `-2d`, ... |
 | `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
 | `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
@@ -198,7 +198,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the serie from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this serie directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`). If you set it to `percent`, it will display the percentage of the serie instead of the value in the case of a `pie` or `donut` chart. |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
-| `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From NEXT_VERSION, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
+| `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the serie in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From v2.0.0, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
 | `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
 | `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
@@ -267,9 +267,9 @@ series:
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `type` | string | `mean` | NEXT_VERSION | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` or `state` |
-| `period` | string | `hour` | NEXT_VERSION | Period of statistics to pull. Can be one of `5minute`, `hour`, `day` or `month` |
-| `align` | string | `middle` | NEXT_VERSION | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
+| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` or `state` |
+| `period` | string | `hour` | v2.0.0 | Period of statistics to pull. Can be one of `5minute`, `hour`, `day` or `month` |
+| `align` | string | `middle` | v2.0.0 | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 
 ### Main `show` Options
 
@@ -284,7 +284,7 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `title` | string | | v1.1.0 | The title of the chart you want to display |
-| `title_actions` | object | NEXT_VERSION | Actions to perform while taping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
+| `title_actions` | object | v2.0.0 | Actions to perform while taping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |

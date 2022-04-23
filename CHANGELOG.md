@@ -1,3 +1,34 @@
+## [2.0.0](https://github.com/RomRider/apexcharts-card/compare/v1.10.0...v2.0.0) (2022-04-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* `extend_to_end` has been removed and replaced by `extend_to` with support for `now` and `end`.
+
+### Features
+
+* `extend_to` replaces `extend_to_end` with new options ([4bb1dd2](https://github.com/RomRider/apexcharts-card/commit/4bb1dd2464927c1dea66d422474cacaef7c89a16)), closes [#318](https://github.com/RomRider/apexcharts-card/issues/318)
+* add state type to long term statistics ([#329](https://github.com/RomRider/apexcharts-card/issues/329)) ([3fad4f0](https://github.com/RomRider/apexcharts-card/commit/3fad4f05cb8bcd95f33ba8426ccb21e61c6e42fe))
+* Apply a `time_delta` to all the datapoints of your serie ([435e381](https://github.com/RomRider/apexcharts-card/commit/435e381ceeb467261501bf471010ac3c029064c5)), closes [#277](https://github.com/RomRider/apexcharts-card/issues/277)
+* display only the min or max extrema ([3db982b](https://github.com/RomRider/apexcharts-card/commit/3db982b88ea7d3568f253e63fb7626cc3153c7ad)), closes [#319](https://github.com/RomRider/apexcharts-card/issues/319)
+* follow Home Assistant number format ([9204de2](https://github.com/RomRider/apexcharts-card/commit/9204de2578b9310d1ea2276d2b4118292404b2dd)), closes [#307](https://github.com/RomRider/apexcharts-card/issues/307)
+* support actions on the title with `title_actions` ([a9f406e](https://github.com/RomRider/apexcharts-card/commit/a9f406ed8fd4b873825def74774df6dc672f8639)), closes [#323](https://github.com/RomRider/apexcharts-card/issues/323)
+* Support for HA long-term statistics ([#208](https://github.com/RomRider/apexcharts-card/issues/208)) ([29aaa7c](https://github.com/RomRider/apexcharts-card/commit/29aaa7c1763f5f50196ae3ad4ab04666a7d60e98)), closes [#308](https://github.com/RomRider/apexcharts-card/issues/308)
+
+
+### Bug Fixes
+
+* `last_updated` date format was not following the configuration ([3dd4904](https://github.com/RomRider/apexcharts-card/commit/3dd4904a72b55cba94a3951a83dc2bd0d7caee09))
+* `update_interval` was broken ([31d2fb7](https://github.com/RomRider/apexcharts-card/commit/31d2fb770555d0ec58d03de89bc0b4512ed03f68))
+* annotations with time were not following the time format configuration ([5d08853](https://github.com/RomRider/apexcharts-card/commit/5d088532f933991ccdf3c8b876ba8c921fe5f233))
+* another caching issue with statistics ([b93ee75](https://github.com/RomRider/apexcharts-card/commit/b93ee75148e55dfa591d1987c5eee44b3f4314b6))
+* caching issue for statistics ([8daff2f](https://github.com/RomRider/apexcharts-card/commit/8daff2ff7b70a1973ff7fb154f56ea7492c7b922))
+* hidden by default would not work without a name ([9c75ce8](https://github.com/RomRider/apexcharts-card/commit/9c75ce89dfdf59ed72c3235d8be6d7c501b50ff5)), closes [#280](https://github.com/RomRider/apexcharts-card/issues/280)
+* last caching issue with statistics ([2e528f7](https://github.com/RomRider/apexcharts-card/commit/2e528f77f974a2b5b68ef89725311d70fbf35a0e))
+* median function fails if it receives an empty table ([#316](https://github.com/RomRider/apexcharts-card/issues/316)) ([12f8d2e](https://github.com/RomRider/apexcharts-card/commit/12f8d2edb9cd8cb7ba56c30af65b3372aa242624))
+* Support for fire-dom-event with browser-mod ([3dc9625](https://github.com/RomRider/apexcharts-card/commit/3dc962522d1e776202acea8be7e2b2dafe1fdd23)), closes [#196](https://github.com/RomRider/apexcharts-card/issues/196)
+* Update apexcharts.js to the the latest version ([dd0bf6f](https://github.com/RomRider/apexcharts-card/commit/dd0bf6f03405e41be3dc9efdebb95d265f27ea63))
+
 ## [2.0.0-dev.8](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.7...v2.0.0-dev.8) (2022-04-23)
 
 
