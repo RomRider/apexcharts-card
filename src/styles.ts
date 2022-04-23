@@ -68,10 +68,16 @@ export const stylesApex: CSSResultGroup = css`
     position: relative;
   }
 
+  #header__title {
+    position: relative;
+  }
+
+  #header__title.actions,
   #states__state.actions {
     cursor: pointer;
   }
 
+  #header__title.disabled,
   #states__state.disabled {
     pointer-events: none;
   }

@@ -31,7 +31,7 @@ However, some things might be broken :grin:
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
   - [series' `show` Options](#series-show-options)
-  - [`header_actions` options](#header_actions-options)
+  - [`header_actions` or `title_actions` options](#header_actions-or-title_actions-options)
   - [`*_action` options](#_action-options)
   - [`confirmation` options](#confirmation-options)
   - [`statistics` options](#statistics-options)
@@ -184,7 +184,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis which this serie should be associated to. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
-| `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-options) |
+| `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-or-title_actions-options) |
 
 ### series' `show` Options
 
@@ -202,7 +202,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
 | `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, appends the offset information to the name of the serie. If `false`, it doesn't |
 
-### `header_actions` options
+### `header_actions` or `title_actions` options
 
 
 | Name | Type | Default | Since | Description |
@@ -284,6 +284,7 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `title` | string | | v1.1.0 | The title of the chart you want to display |
+| `title_actions` | object | NEXT_VERSION | Actions to perform while taping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
 | `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the serie |

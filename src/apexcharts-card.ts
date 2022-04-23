@@ -609,12 +609,63 @@ class ChartsCard extends LitElement {
     };
     return html`
       <div id="header" class=${classMap(classes)}>
-        ${!this._config?.header?.standard_format && this._config?.header?.title
-          ? html`<div id="header__title">${this._config.header.title}</div>`
-          : html``}
+        ${!this._config?.header?.standard_format && this._config?.header?.title ? this._renderTitle() : html``}
         ${this._config?.header?.show_states ? this._renderStates() : html``}
       </div>
     `;
+  }
+
+  private _renderTitle(): TemplateResult {
+    const classes =
+      this._config?.header?.disable_actions ||
+      !this._config?.header?.title_actions ||
+      (this._config?.header?.title_actions?.tap_action?.action === 'none' &&
+        (!this._config?.header?.title_actions?.hold_action?.action ||
+          this._config?.header?.title_actions?.hold_action?.action === 'none') &&
+        (!this._config?.header?.title_actions?.double_tap_action?.action ||
+          this._config?.header?.title_actions?.double_tap_action?.action === 'none'))
+        ? 'disabled'
+        : 'actions';
+
+    return html`<div
+      id="header__title"
+      class="${classes}"
+      @action=${(ev) => {
+        this._handleTitleAction(ev);
+      }}
+      .actionHandler=${actionHandler({
+        hasDoubleClick:
+          this._config?.header?.title_actions?.double_tap_action?.action &&
+          this._config?.header?.title_actions.double_tap_action.action !== 'none',
+        hasHold:
+          this._config?.header?.title_actions?.hold_action?.action &&
+          this._config?.header?.title_actions?.hold_action.action !== 'none',
+      })}
+      @focus="${(ev) => {
+        this.handleRippleFocus(ev, 'title');
+      }}"
+      @blur="${(ev) => {
+        this.handleRippleBlur(ev, 'title');
+      }}"
+      @mousedown="${(ev) => {
+        this.handleRippleActivate(ev, 'title');
+      }}"
+      @mouseup="${(ev) => {
+        this.handleRippleDeactivate(ev, 'title');
+      }}"
+      @touchstart="${(ev) => {
+        this.handleRippleActivate(ev, 'title');
+      }}"
+      @touchend="${(ev) => {
+        this.handleRippleDeactivate(ev, 'title');
+      }}"
+      @touchcancel="${(ev) => {
+        this.handleRippleDeactivate(ev, 'title');
+      }}"
+    >
+      <span>${this._config?.header?.title}</span>
+      <mwc-ripple unbounded id="ripple-title"></mwc-ripple>
+    </div>`;
   }
 
   private _renderStates(): TemplateResult {
@@ -1432,24 +1483,46 @@ class ChartsCard extends LitElement {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _handleTitleAction(ev: any) {
+    if (ev.detail?.action) {
+      const configDup: ActionsConfig = this._config?.header?.title_actions
+        ? JSON.parse(JSON.stringify(this._config?.header?.title_actions))
+        : {};
+
+      switch (ev.detail.action) {
+        case 'tap':
+        case 'hold':
+        case 'double_tap':
+          configDup.entity = configDup[`${ev.detail.action}_action`]?.entity;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          handleAction(this, this._hass!, configDup, ev.detail.action);
+          break;
+        default:
+          break;
+      }
+    }
+    return;
+  }
+
   // backward compatibility
   @eventOptions({ passive: true })
-  private handleRippleActivate(evt: Event, index: number): void {
+  private handleRippleActivate(evt: Event, index: number | string): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
     r && typeof r.startFocus === 'function' && r.startPress(evt);
   }
 
-  private handleRippleDeactivate(_, index: number): void {
+  private handleRippleDeactivate(_, index: number | string): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
     r && typeof r.startFocus === 'function' && r.endPress();
   }
 
-  private handleRippleFocus(_, index: number): void {
+  private handleRippleFocus(_, index: number | string): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
     r && typeof r.startFocus === 'function' && r.startFocus();
   }
 
-  private handleRippleBlur(_, index: number): void {
+  private handleRippleBlur(_, index: number | string): void {
     const r = this.shadowRoot?.getElementById(`ripple-${index}`) as Ripple;
     r && typeof r.startFocus === 'function' && r.endFocus();
   }

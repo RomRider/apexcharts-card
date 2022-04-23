@@ -1326,6 +1326,15 @@ views:
         header:
           show: true
           title: Test Stats
+          title_actions:
+            tap_action:
+              action: more-info
+              entity: sensor.random_0_1000
+              confirmation:
+                text: test
+            hold_action:
+              action: more-info
+              entity: sensor.random_0_1000
         all_series_config:
           stroke_width: 1
         series:
