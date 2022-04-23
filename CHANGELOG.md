@@ -1,3 +1,10 @@
+## [2.0.0-dev.8](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.7...v2.0.0-dev.8) (2022-04-23)
+
+
+### Features
+
+* support actions on the title with `title_actions` ([a9f406e](https://github.com/RomRider/apexcharts-card/commit/a9f406ed8fd4b873825def74774df6dc672f8639)), closes [#323](https://github.com/RomRider/apexcharts-card/issues/323)
+
 ## [2.0.0-dev.7](https://github.com/RomRider/apexcharts-card/compare/v2.0.0-dev.6...v2.0.0-dev.7) (2022-04-22)
 
 
