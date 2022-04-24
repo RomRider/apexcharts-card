@@ -1,3 +1,10 @@
+### [2.0.1](https://github.com/RomRider/apexcharts-card/compare/v2.0.0...v2.0.1) (2022-04-24)
+
+
+### Bug Fixes
+
+* Friendly name wouldn't display anymore ([ef38724](https://github.com/RomRider/apexcharts-card/commit/ef38724124011b8d2110cb3eb7f7963ea753e2c3))
+
 ## [2.0.0](https://github.com/RomRider/apexcharts-card/compare/v1.10.0...v2.0.0) (2022-04-23)
 
 
