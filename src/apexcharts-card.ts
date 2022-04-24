@@ -215,7 +215,7 @@ class ChartsCard extends LitElement {
       if (this._config?.experimental?.hidden_by_default) {
         this._config.series_in_graph.forEach((serie, index) => {
           if (serie.show.hidden_by_default) {
-            const name = computeName(index, this._config?.series_in_graph, this._hass?.states);
+            const name = computeName(index, this._config?.series_in_graph, this._entities);
             this._apexChart?.hideSeries(name);
           }
         });

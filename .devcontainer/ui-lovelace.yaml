@@ -1326,6 +1326,7 @@ views:
         header:
           show: true
           title: Test Stats
+          show_states: true
           title_actions:
             tap_action:
               action: more-info
@@ -1343,3 +1344,4 @@ views:
             statistics:
               type: mean
               period: 5minute
+          - entity: sensor.temperature
