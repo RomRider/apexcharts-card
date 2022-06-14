@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/github/license/RomRider/apexcharts-card.svg)](LICENSE)
-[![HACS Supported](https://img.shields.io/badge/HACS-Supported-green.svg)](https://github.com/custom-components/hacs)
+[![HACS Supported](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 ![Downloads](https://img.shields.io/github/downloads/RomRider/apexcharts-card/total)
 ![GitHub Activity](https://img.shields.io/github/commit-activity/y/RomRider/apexcharts-card.svg?label=commits)
 [![Stable](https://img.shields.io/github/release/RomRider/apexcharts-card.svg)](https://github.com/RomRider/apexcharts-card/releases/latest)
