@@ -165,6 +165,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
+| `stroke_dashing` | number | `0` | NEXT_VERSION | Make the line dashed. Higher number creates more space between dashes. Only works for `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
 | ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
