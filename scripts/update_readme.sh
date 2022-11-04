@@ -10,7 +10,7 @@ if [ -z "${VERSION}" ]; then
   exit 1;
 fi
 if [ -z "${BRANCH}" ]; then
-  echo "Version not specified; Exiting."
+  echo "Branch not specified; Exiting."
   exit 1;
 fi
 
