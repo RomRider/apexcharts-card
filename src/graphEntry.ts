@@ -463,7 +463,7 @@ export default class GraphEntry {
     period: StatisticsPeriod = DEFAULT_STATISTICS_PERIOD,
   ): Promise<StatisticValue[] | undefined> {
     const statistics = await this._hass?.callWS<Statistics>({
-      type: 'history/statistics_during_period',
+      type: 'recorder/statistics_during_period',
       start_time: start?.toISOString(),
       end_time: end?.toISOString(),
       statistic_ids: [this._entityID],
