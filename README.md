@@ -428,7 +428,7 @@ Some examples:
   update_interval: 1min
   series:
     - entity: sensor.bandwidth
-      transform: "return x / 1024;"
+      transform: "return Number(x) / 1024;"
   ```
 
 ### `data_generator` Option
@@ -738,7 +738,7 @@ Eg:
   all_series_config:
     stroke_width: 2
     type: area
-    transform: return x / 1024;
+    transform: return Number(x) / 1024;
     unit: Mb/s
   series:
     - entity: sensor.wan_download
@@ -754,13 +754,13 @@ Generates the same result as repeating the configuration in each series:
     - entity: sensor.wan_download
       stroke_width: 2
       type: area
-      transform: return x / 1024;
+      transform: return Number(x) / 1024;
       unit: Mb/s
     - entity: sensor.wan_upload
       invert: true
       stroke_width: 2
       type: area
-      transform: return x / 1024;
+      transform: return Number(x) / 1024;
       unit: Mb/s
 ```
 
