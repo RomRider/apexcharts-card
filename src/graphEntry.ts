@@ -111,7 +111,7 @@ export default class GraphEntry {
   }
 
   get lastState(): number | null {
-    return this._entityState.state;
+    return Number(this._entityState.state);
   }
 
   public nowValue(now: number, before: boolean): number | null {
