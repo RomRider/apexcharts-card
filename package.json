@@ -13,7 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RomRider/apexcharts-card.git"
+    "url": "git+https://github.com/TheBrain8791/apexcharts-card.git"
+                
   },
   "keywords": [
     "lovelace",
@@ -25,9 +26,9 @@
   "author": "Jérôme Wiedemann",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RomRider/apexcharts-card/issues"
+    "url": "https://github.com/TheBrain8791/apexcharts-card.git/issues"
   },
-  "homepage": "https://github.com/RomRider/apexcharts-card#readme",
+  "homepage": "https://github.com/TheBrain8791/apexcharts-card.git#readme",
   "dependencies": {
     "@ctrl/tinycolor": "^3.4.0",
     "@material/mwc-ripple": "^0.25.3",
