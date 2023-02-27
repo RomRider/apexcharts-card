@@ -72,6 +72,7 @@ export function getLayoutConfig(
       position: 'bottom',
       show: true,
       formatter: getLegendFormatter(config, hass),
+      markers: getLegendMarkers(config)
     },
     stroke: {
       curve: getStrokeCurve(config, false),
@@ -87,6 +88,9 @@ export function getLayoutConfig(
       text: 'Loading...',
     },
   };
+
+  if (def.chart.type==='line' && def.series.some(s=>s.type==='rangeArea'))
+    def.chart.type='rangeArea';
 
   let conf = {};
   switch (config.layout) {
@@ -171,13 +175,17 @@ export function getBrushLayoutConfig(
       text: 'Loading...',
     },
   };
+
+  if (def.chart.type==='line' && def.series.some(s=>s.type==='rangeArea'))
+    def.chart.type='rangeArea';
+
   return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config)) : def;
 }
 
 function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
-    return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
+    return serie.opacity !== undefined ? serie.opacity : (serie.type === 'area'|| serie.type==='rangeArea') ? DEFAULT_AREA_OPACITY : 1;
   });
 }
 
@@ -188,7 +196,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, bru
       return {
         name: computeName(index, series, undefined, hass?.states[serie.entity]),
         type: serie.type,
-        data: [],
+        data: (serie.type??config.chart_type)==='rangeArea'?[[0,[0,0]]]:[],
       };
     });
   } else {
@@ -272,6 +280,9 @@ function getXTooltipFormatter(
         } as any).format(val);
       }
     : function (val, _a, _b, hours_12 = hours12) {
+        // eslint-disable-next-line prefer-rest-params
+        console.log(arguments);
+        if (!val) return "";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Intl.DateTimeFormat(lang, {
           year: 'numeric',
@@ -387,7 +398,10 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       undefined,
       hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
     );
-    if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
+    if (!conf.series_in_graph[opts.seriesIndex].show.legend) {
+      return '';
+    }
+    else if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
       return [name];
     } else {
       let value = TIMESERIES_TYPES.includes(config.chart_type)
@@ -427,6 +441,10 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
   };
 }
 
+function getLegendMarkers(config: ChartCardConfig) {
+  return {width: config.series_in_graph.map(serie => serie.show.legend?12:0)};
+}
+
 function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
@@ -441,14 +459,14 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
 }
 
 function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
-  if (config.chart_type !== undefined && config.chart_type !== 'line')
+  if (config.chart_type !== undefined && config.chart_type !== 'line' && config.chart_type !== 'rangeArea')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
     if (serie.stroke_width !== undefined) {
       return serie.stroke_width;
     }
-    return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
+    return [undefined, 'line', 'area', 'rangeArea'].includes(serie.type) ? 5 : 0;
   });
 }
 

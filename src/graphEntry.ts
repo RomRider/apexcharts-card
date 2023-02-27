@@ -7,6 +7,8 @@ import {
   HassHistoryEntry,
   HistoryBuckets,
   HistoryPoint,
+  RangeValue,
+  StateValue,
   Statistics,
   StatisticValue,
 } from './types';
@@ -110,11 +112,11 @@ export default class GraphEntry {
     this._cache = this._config.statistics ? false : cache;
   }
 
-  get lastState(): number | null {
+  get lastState(): StateValue {
     return this.history.length > 0 ? this.history[this.history.length - 1][1] : null;
   }
 
-  public nowValue(now: number, before: boolean): number | null {
+  public nowValue(now: number, before: boolean): number |null {
     if (this.history.length === 0) return null;
     const index = this.history.findIndex((point, index, arr) => {
       if (!before && point[0] > now) return true;
@@ -122,17 +124,28 @@ export default class GraphEntry {
       return false;
     });
     if (index === -1) return null;
-    return this.history[index][1];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return Array.isArray(this.history[index][1])?this.history[index][1]![0]:this.history[index][1];
+  }
+
+  private flatMapper(item:HistoryPoint) {
+    if (Array.isArray(item[1])) {
+      return item[1][0] === null ? [] : [item[1][0]]
+    }
+    else
+    {
+      return item[1] === null ? [] : [item[1]]
+    }
   }
 
   get min(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
-    return Math.min(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+    return Math.min(...this._computedHistory.flatMap(this.flatMapper));
   }
 
   get max(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
-    return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+    return Math.max(...this._computedHistory.flatMap(this.flatMapper));
   }
 
   public minMaxWithTimestamp(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
@@ -191,7 +204,7 @@ export default class GraphEntry {
     this._updating = true;
 
     if (this._config.ignore_history) {
-      let currentState: null | number | string = null;
+      let currentState: StateValue | string = null;
       if (this._config.attribute) {
         currentState = this._entityState.attributes?.[this._config.attribute];
       } else {
@@ -258,17 +271,24 @@ export default class GraphEntry {
         const newHistory = await this._fetchStatistics(fetchStart, fetchEnd, this._config.statistics.period);
         if (newHistory && newHistory.length > 0) {
           updateGraphHistory = true;
-          let lastNonNull: number | null = null;
+          let lastNonNull: StateValue = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
           newStateHistory = newHistory.map((item) => {
-            let stateParsed: number | null = null;
-            [lastNonNull, stateParsed] = this._transformAndFill(
-              item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
-              item,
-              lastNonNull,
-            );
+            let stateParsed: StateValue = null;
+            if (this._config.statistics?.type === 'range')
+              [lastNonNull, stateParsed] = this._transformAndFill(
+                [item.min,item.max],
+                item,
+                lastNonNull,
+              );
+            else
+              [lastNonNull, stateParsed] = this._transformAndFill(
+                item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
+                item,
+                lastNonNull,
+              );
 
             let displayDate: Date | null = null;
             const startDate = new Date(item.start);
@@ -306,12 +326,13 @@ export default class GraphEntry {
           if ((this._config.attribute || this._config.transform) && skipInitialState) {
             newHistory[0].shift();
           }
-          let lastNonNull: number | null = null;
+          let lastNonNull: StateValue = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
           newStateHistory = newHistory[0].map((item) => {
-            let currentState: unknown = null;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let currentState: any = null;
             if (this._config.attribute) {
               if (item.attributes && item.attributes[this._config.attribute] !== undefined) {
                 currentState = item.attributes[this._config.attribute];
@@ -319,7 +340,7 @@ export default class GraphEntry {
             } else {
               currentState = item.state;
             }
-            let stateParsed: number | null = null;
+            let stateParsed: StateValue = null;
             [lastNonNull, stateParsed] = this._transformAndFill(currentState, item, lastNonNull);
 
             if (this._config.attribute) {
@@ -366,8 +387,8 @@ export default class GraphEntry {
       const res: EntityCachePoints = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
-      if ([undefined, 'line', 'area'].includes(this._config.type)) {
-        while (res.length > 0 && res[0][1] === null) res.shift();
+      if ([undefined, 'line', 'area', 'rangeArea'].includes(this._config.type)) {
+        while (res.length > 0 && (res[0][1] === null || Array.isArray(res[0][1]) && res[0][1][0] === null )) res.shift();
       }
       this._computedHistory = res;
     } else {
@@ -377,14 +398,11 @@ export default class GraphEntry {
     return true;
   }
 
-  private _transformAndFill(
+  private _lastNonNull(
     currentState: unknown,
-    item: HassHistoryEntry | StatisticValue,
-    lastNonNull: number | null,
-  ): [number | null, number | null] {
-    if (this._config.transform) {
-      currentState = this._applyTransform(currentState, item);
-    }
+    lastNonNull: number|null
+  ):[number|null,number|null]
+  {
     let stateParsed: number | null = parseFloat(currentState as string);
     stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
     if (stateParsed === null) {
@@ -399,7 +417,30 @@ export default class GraphEntry {
     return [lastNonNull, stateParsed];
   }
 
-  private _applyTransform(value: unknown, historyItem: HassHistoryEntry | StatisticValue): number | null {
+
+  private _transformAndFill(
+    currentState: string|boolean|number|null|[unknown,unknown],
+    item: HassHistoryEntry | StatisticValue,
+    lastNonNull: StateValue,
+  ): [StateValue, StateValue] {
+    if (this._config.transform) {
+      currentState = this._applyTransform(currentState, item);
+    }
+    if (Array.isArray(currentState))
+    {
+      const stateParsed: RangeValue = [null, null];
+      if (lastNonNull === null) lastNonNull = [null, null];
+      for (let i = 0; i < 3; ++i)
+      {
+        [lastNonNull[i],stateParsed[i]] = this._lastNonNull(currentState[i],lastNonNull[i])
+      }
+      return [lastNonNull,stateParsed]
+    }
+    else
+      return this._lastNonNull(currentState,<number|null>lastNonNull);
+  }
+
+  private _applyTransform(value: unknown, historyItem: HassHistoryEntry | StatisticValue): StateValue {
     return new Function('x', 'hass', 'entity', `'use strict'; ${this._config.transform}`).call(
       this,
       value,
@@ -493,7 +534,7 @@ export default class GraphEntry {
         return false;
       });
     });
-    let lastNonNullBucketValue: number | null = null;
+    let lastNonNullBucketValue: StateValue = null;
     const now = new Date().getTime();
     buckets.forEach((bucket, index) => {
       if (bucket.data.length === 0) {
@@ -544,10 +585,10 @@ export default class GraphEntry {
       let val = 0;
       if (entry && entry[1] === null) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        val = items[lastIndex][1]!;
+        val = (Array.isArray(items[lastIndex][1])?items[lastIndex][1]![0]:items[lastIndex][1])!;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        val = entry[1]!;
+        val = (Array.isArray(entry[1])?entry[1][0]:entry[1])!;
         lastIndex = index;
       }
       return sum + val;
@@ -563,9 +604,10 @@ export default class GraphEntry {
   private _minimum(items: EntityCachePoints): number | null {
     let min: number | null = null;
     items.forEach((item) => {
-      if (item[1] !== null)
-        if (min === null) min = item[1];
-        else min = Math.min(item[1], min);
+      const val = Array.isArray(item[1])?item[1][0]:item[1];
+      if (val !== null)
+        if (min === null) min = val;
+        else min = Math.min(val, min);
     });
     return min;
   }
@@ -573,32 +615,39 @@ export default class GraphEntry {
   private _maximum(items: EntityCachePoints): number | null {
     let max: number | null = null;
     items.forEach((item) => {
-      if (item[1] !== null)
-        if (max === null) max = item[1];
-        else max = Math.max(item[1], max);
+      const val = Array.isArray(item[1])?item[1][0]:item[1];
+      if (val !== null)
+        if (max === null) max = val;
+        else max = Math.max(val, max);
     });
     return max;
   }
 
   private _last(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
-    return items.slice(-1)[0][1];
+    const lastSlice = items.slice(-1)[0][1];
+    return Array.isArray(lastSlice)?lastSlice[0]:lastSlice;
   }
 
   private _first(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
-    return items[0][1];
+    const firstSlice = items[0][1];
+    return Array.isArray(firstSlice)?firstSlice[0]:firstSlice;
   }
 
   private _median(items: EntityCachePoints) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const itemsDup = this._filterNulls([...items]).sort((a, b) => a[1]! - b[1]!);
+    const itemsDup = this._filterNulls([...items]).sort((a, b) => (Array.isArray(a[1])?a[1][0]:a[1])! - (Array.isArray(b[1])?b[1][0]:b[1])!);
     if (itemsDup.length === 0) return null;
     if (itemsDup.length === 1) return itemsDup[0][1];
     const mid = Math.floor((itemsDup.length - 1) / 2);
     if (itemsDup.length % 2 === 1) return itemsDup[mid][1];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return (itemsDup[mid][1]! + itemsDup[mid + 1][1]!) / 2;
+
+    if (Array.isArray(itemsDup[mid][1]))
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return itemsDup[mid][1]![0]! + itemsDup[mid + 1][1]![0]! / 2;
+    else 
+      return (<number>(itemsDup[mid][1]) + <number>(itemsDup[mid + 1][1])) / 2;
   }
 
   private _delta(items: EntityCachePoints): number | null {

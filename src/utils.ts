@@ -1,6 +1,6 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { ChartCardConfig, EntityCachePoints } from './types';
+import { ChartCardConfig, EntityCachePoints, RangeValue } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
@@ -308,18 +308,19 @@ export function truncateFloat(
 }
 
 export function myFormatNumber(
-  num: string | number | null | undefined,
+  num: string | number | null | undefined | RangeValue,
   localeOptions?: FrontendLocaleData,
   precision?: number | undefined,
 ): string | null {
-  let lValue: string | number | null | undefined = num;
-  if (lValue === undefined || lValue === null) return null;
+  let lValue: string | number | null | undefined | RangeValue = num;
   if (typeof lValue === 'string') {
     lValue = parseFloat(lValue);
     if (Number.isNaN(lValue)) {
       return num as string;
     }
   }
+  if (Array.isArray(lValue)) lValue = lValue[0];
+  if (lValue === undefined || lValue === null) return null;
   return formatNumber(lValue, localeOptions, {
     maximumFractionDigits: precision === undefined ? DEFAULT_FLOAT_PRECISION : precision,
   });

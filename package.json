@@ -31,7 +31,7 @@
   "dependencies": {
     "@ctrl/tinycolor": "^3.4.0",
     "@material/mwc-ripple": "^0.25.3",
-    "apexcharts": "^3.35.0",
+    "apexcharts": "^3.36.0",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.9.0",
     "home-assistant-js-websocket": "^7.0.2",
