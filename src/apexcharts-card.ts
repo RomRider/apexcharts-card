@@ -766,6 +766,7 @@ class ChartsCard extends LitElement {
       }
       console.log(layout);
       this._apexChart = new ApexCharts(graph, layout);
+      console.log(layout);
       this._apexChart.render();
       if (this._config.series_in_brush.length) {
         const brush = this.shadowRoot.querySelector('#brush');
