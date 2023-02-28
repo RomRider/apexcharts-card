@@ -764,9 +764,7 @@ class ChartsCard extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
-      console.log(layout);
       this._apexChart = new ApexCharts(graph, layout);
-      console.log(layout);
       this._apexChart.render();
       if (this._config.series_in_brush.length) {
         const brush = this.shadowRoot.querySelector('#brush');

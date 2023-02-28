@@ -280,8 +280,6 @@ function getXTooltipFormatter(
         } as any).format(val);
       }
     : function (val, _a, _b, hours_12 = hours12) {
-        // eslint-disable-next-line prefer-rest-params
-        console.log("x",arguments);
         if (!val) return "";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Intl.DateTimeFormat(lang, {
@@ -299,8 +297,6 @@ function getXTooltipFormatter(
 
 function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (value, opts, conf = config, hass2 = hass) {
-    // eslint-disable-next-line prefer-rest-params
-    console.log("y",arguments);
     if (!opts) return value;
     let lValue = value;
     if (conf.series_in_graph[opts.seriesIndex]?.invert && lValue) {
