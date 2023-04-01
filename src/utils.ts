@@ -211,7 +211,7 @@ export function getLovelace(): LovelaceConfig | null {
   root = root && root.shadowRoot;
   root = root && root.querySelector("home-assistant-main");
   root = root && root.shadowRoot;
-  root = root && root.querySelector("mwc-drawer partial-panel-resolver");
+  root = root && root.querySelector("ha-drawer partial-panel-resolver");
   root = (root && root.shadowRoot) || root;
   root = root && root.querySelector("ha-panel-lovelace");
   root = root && root.shadowRoot;
