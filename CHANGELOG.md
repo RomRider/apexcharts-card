@@ -1,3 +1,11 @@
+### [2.0.4](https://github.com/RomRider/apexcharts-card/compare/v2.0.3...v2.0.4) (2023-04-02)
+
+
+### Bug Fixes
+
+* actually really fix the issue with HA 2023.4 beta and above ([972f2c0](https://github.com/RomRider/apexcharts-card/commit/972f2c0150df923790cf30108ab90fed46db482f)), closes [#529](https://github.com/RomRider/apexcharts-card/issues/529)
+* extra space at bottom because of the card's action-handler ([533a784](https://github.com/RomRider/apexcharts-card/commit/533a7842d191733a8b2d541c34f91445dcf8661f))
+
 ### [2.0.4-dev.1](https://github.com/RomRider/apexcharts-card/compare/v2.0.3...v2.0.4-dev.1) (2023-04-02)
 
 
