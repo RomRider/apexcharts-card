@@ -13,17 +13,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 14.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3.5.1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - name: Cache Node.js modules
         uses: actions/cache@v3.0.11
         with:
           path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.OS }}-node-14.x-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.OS }}-node-16.x-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-node-14.x
+            ${{ runner.OS }}-node-16.x
             ${{ runner.OS }}-
       - name: Install dependencies
         run: npm ci
