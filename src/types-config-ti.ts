@@ -46,7 +46,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "yaxis": t.opt(t.array("ChartCardYAxisExternal")),
 });
 
-export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'));
+export const ChartCardChartType = t.union(t.lit('line'), t.lit('scatter'), t.lit('pie'), t.lit('donut'), t.lit('radialBar'), t.lit('rangeArea'));
 
 export const ChartCardBrushExtConfig = t.iface([], {
   "selection_span": t.opt("string"),
@@ -67,7 +67,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
   "attribute": t.opt("string"),
   "name": t.opt("string"),
-  "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
+  "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'), t.lit('rangeArea'))),
   "color": t.opt("string"),
   "opacity": t.opt("number"),
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
@@ -77,7 +77,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
   "statistics": t.opt(t.iface([], {
-    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'))),
+    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'), t.lit('range'))),
     "period": t.opt("StatisticsPeriod"),
     "align": t.opt(t.union(t.lit('start'), t.lit('end'), t.lit('middle'))),
   })),
@@ -109,6 +109,7 @@ export const ActionsConfig = t.iface([], {
 
 export const ChartCardSeriesShowConfigExt = t.iface([], {
   "as_duration": t.opt("ChartCardPrettyTime"),
+  "legend": t.opt("boolean"),
   "legend_value": t.opt("boolean"),
   "in_header": t.opt(t.union("boolean", t.lit('raw'), t.lit('before_now'), t.lit('after_now'))),
   "name_in_header": t.opt("boolean"),

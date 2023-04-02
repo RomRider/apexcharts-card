@@ -13,6 +13,7 @@ export const DEFAULT_DURATION = '1h';
 export const DEFAULT_FUNC = 'raw';
 export const DEFAULT_GROUP_BY_FILL = 'last';
 export const DEFAULT_FILL_RAW = 'null';
+export const DEFAULT_SHOW_LEGEND = true;
 export const DEFAULT_SHOW_LEGEND_VALUE = true;
 export const DEFAULT_SHOW_IN_HEADER = true;
 export const DEFAULT_SHOW_IN_CHART = true;
@@ -40,7 +41,7 @@ export const DEFAULT_COLORS = [
 ];
 
 export const NO_VALUE = 'N/A';
-export const TIMESERIES_TYPES = ['line', 'scatter', undefined];
+export const TIMESERIES_TYPES = ['rangeArea', 'line', 'scatter', undefined];
 export const PLAIN_COLOR_TYPES = ['scatter', 'radialBar', 'pie', 'donut'];
 
 export const DEFAULT_MIN = 0;

@@ -59,6 +59,7 @@ import {
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
+  DEFAULT_SHOW_LEGEND,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
   DEFAULT_SHOW_OFFSET_IN_NAME,
@@ -423,6 +424,7 @@ class ChartsCard extends LitElement {
           }
           if (!serie.show) {
             serie.show = {
+              legend: DEFAULT_SHOW_LEGEND,
               legend_value: DEFAULT_SHOW_LEGEND_VALUE,
               in_header: DEFAULT_SHOW_IN_HEADER,
               in_chart: DEFAULT_SHOW_IN_CHART,
@@ -430,6 +432,8 @@ class ChartsCard extends LitElement {
               offset_in_name: DEFAULT_SHOW_OFFSET_IN_NAME,
             };
           } else {
+            serie.show.legend =
+              serie.show.legend === undefined ? DEFAULT_SHOW_LEGEND : serie.show.legend;
             serie.show.legend_value =
               serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
             serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
@@ -811,7 +815,7 @@ class ChartsCard extends LitElement {
               );
             } else {
               // not raw
-              this._headerState[index] = graph.lastState;
+              this._headerState[index] = Array.isArray(graph.lastState)?graph.lastState[0]:graph.lastState;
             }
           }
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
@@ -867,7 +871,7 @@ class ChartsCard extends LitElement {
               }
               data = 0;
             } else {
-              const lastState = graph.lastState;
+              const lastState = Array.isArray(graph.lastState)?graph.lastState[0]:graph.lastState;
               data = lastState || 0;
               if (this._config?.series[index].show.in_header !== 'raw') {
                 this._headerState[index] = lastState;
@@ -905,7 +909,7 @@ class ChartsCard extends LitElement {
           gradient: {
             type: 'vertical',
             colorStops: this._config.series_in_graph.map((serie, index) => {
-              if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+              if (!serie.color_threshold || ![undefined, 'area', 'rangeArea', 'line'].includes(serie.type)) return [];
               const min = this._graphs?.[serie.index]?.min;
               const max = this._graphs?.[serie.index]?.max;
               if (min === undefined || max === undefined) return [];
@@ -920,7 +924,7 @@ class ChartsCard extends LitElement {
             gradient: {
               type: 'vertical',
               colorStops: this._config.series_in_brush.map((serie, index) => {
-                if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+                if (!serie.color_threshold || ![undefined, 'area', 'rangeArea', 'line'].includes(serie.type)) return [];
                 const min = this._graphs?.[serie.index]?.min;
                 const max = this._graphs?.[serie.index]?.max;
                 if (min === undefined || max === undefined) return [];
@@ -1181,15 +1185,19 @@ class ChartsCard extends LitElement {
         let max: number | null = null;
         minMax?.forEach((elt) => {
           if (!elt) return;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const val_min = Array.isArray(elt.min[1])?Math.min(elt.min[1][0]!,elt.min[1][1]!):elt.min[1]
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const val_max = Array.isArray(elt.max[1])?Math.max(elt.max[1][0]!,elt.max[1][1]!):elt.max[1]
           if (min === undefined || min === null) {
-            min = elt.min[1];
-          } else if (elt.min[1] !== null && min > elt.min[1]) {
-            min = elt.min[1];
+            min = val_min;
+          } else if (val_min !== null && min > val_min) {
+            min = val_min;
           }
           if (max === undefined || max === null) {
-            max = elt.max[1];
-          } else if (elt.max[1] !== null && max < elt.max[1]) {
-            max = elt.max[1];
+            max = val_max;
+          } else if (val_max !== null && max < val_max) {
+            max = val_max;
           }
         });
         if (yaxis.align_to !== undefined) {
@@ -1313,7 +1321,7 @@ class ChartsCard extends LitElement {
         return [];
       }
       let color: string | undefined = undefined;
-      const defaultOp = serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
+      const defaultOp = serie.opacity !== undefined ? serie.opacity : (serie.type === 'area' || serie.type === 'rangeArea') ? DEFAULT_AREA_OPACITY : 1;
       let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
       if (thres.value > max && arr[index - 1]) {
         const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);

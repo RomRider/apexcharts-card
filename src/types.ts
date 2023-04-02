@@ -32,6 +32,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
 }
 
 export interface ChartCardSeriesShowConfig extends ChartCardSeriesShowConfigExt {
+  legend: boolean;
   legend_value: boolean;
   in_header: boolean | 'raw' | 'before_now' | 'after_now';
   name_in_header: boolean;
@@ -46,9 +47,13 @@ export interface EntityEntryCache {
   data: EntityCachePoints;
 }
 
+export type StateValue = RangeValue | number | null;
+
+export type RangeValue = [number|null, number|null];
+
 export type EntityCachePoints = Array<HistoryPoint>;
 
-export type HistoryPoint = [number, number | null];
+export type HistoryPoint = [number, StateValue];
 
 export interface Statistics {
   [statisticId: string]: StatisticValue[];
