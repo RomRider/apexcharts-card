@@ -153,7 +153,8 @@ export function getPercentFromValue(value: number, min: number | undefined, max:
   return ((value - lMin) * 100) / (lMax - lMin);
 }
 
-export function getLovelace(): LovelaceConfig | null {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getLovelace(): any | null {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let root: any = document.querySelector('home-assistant');
   root = root && root.shadowRoot;

@@ -12,7 +12,7 @@ import {
   HistoryPoint,
   minmax_type,
 } from './types';
-import { getLovelace, handleAction, HomeAssistant } from 'custom-card-helpers';
+import { handleAction, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
@@ -37,6 +37,7 @@ import {
   truncateFloat,
   validateInterval,
   validateOffset,
+  getLovelace,
 } from './utils';
 import ApexCharts from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
