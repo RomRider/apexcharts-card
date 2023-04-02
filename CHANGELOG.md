@@ -1,3 +1,10 @@
+### [2.0.3-dev.1](https://github.com/RomRider/apexcharts-card/compare/v2.0.2...v2.0.3-dev.1) (2023-04-02)
+
+
+### Bug Fixes
+
+* card broken with HA 2023.4.0bXX and above ([e1aaf69](https://github.com/RomRider/apexcharts-card/commit/e1aaf691aee8bb4e8c8b75eb3fb301d1c31d20b6)), closes [#527](https://github.com/RomRider/apexcharts-card/issues/527)
+
 ### [2.0.2](https://github.com/RomRider/apexcharts-card/compare/v2.0.1...v2.0.2) (2022-12-08)
 
 
