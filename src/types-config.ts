@@ -110,7 +110,7 @@ export interface ActionsConfig {
 export interface ChartCardSeriesShowConfigExt {
   as_duration?: ChartCardPrettyTime;
   legend_value?: boolean;
-  in_header?: boolean | 'raw' | 'before_now' | 'after_now';
+  in_header?: boolean | 'raw' | 'before_now' | 'after_now' | 'hide_null';
   name_in_header?: boolean;
   header_color_threshold?: boolean;
   in_chart?: boolean;
