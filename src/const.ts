@@ -19,6 +19,8 @@ export const DEFAULT_SHOW_IN_HEADER = true;
 export const DEFAULT_SHOW_IN_CHART = true;
 export const DEFAULT_SHOW_NAME_IN_HEADER = true;
 export const DEFAULT_SHOW_OFFSET_IN_NAME = true;
+export const DEFAULT_HIDE_NULL_IN_HEADER = false;
+export const DEFAULT_HIDE_ZERO_IN_HEADER = false;
 export const DEFAULT_STATISTICS_TYPE = 'mean';
 export const DEFAULT_STATISTICS_PERIOD = 'hour';
 

@@ -64,6 +64,8 @@ import {
   DEFAULT_SHOW_IN_LEGEND,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
+  DEFAULT_HIDE_NULL_IN_HEADER,
+  DEFAULT_HIDE_ZERO_IN_HEADER,
   DEFAULT_SHOW_OFFSET_IN_NAME,
   DEFAULT_UPDATE_DELAY,
   moment,
@@ -405,6 +407,8 @@ class ChartsCard extends LitElement {
               in_header: DEFAULT_SHOW_IN_HEADER,
               in_chart: DEFAULT_SHOW_IN_CHART,
               name_in_header: DEFAULT_SHOW_NAME_IN_HEADER,
+              hide_null_in_header: DEFAULT_HIDE_NULL_IN_HEADER,
+              hide_zero_in_header: DEFAULT_HIDE_ZERO_IN_HEADER,
               offset_in_name: DEFAULT_SHOW_OFFSET_IN_NAME,
             };
           } else {
@@ -420,6 +424,10 @@ class ChartsCard extends LitElement {
                 : serie.show.in_header;
             serie.show.name_in_header =
               serie.show.name_in_header === undefined ? DEFAULT_SHOW_NAME_IN_HEADER : serie.show.name_in_header;
+            serie.show.hide_null_in_header =
+              serie.show.hide_null_in_header === undefined ? DEFAULT_HIDE_NULL_IN_HEADER : serie.show.hide_null_in_header;
+            serie.show.hide_zero_in_header =
+              serie.show.hide_zero_in_header === undefined ? DEFAULT_HIDE_ZERO_IN_HEADER : serie.show.hide_zero_in_header;
             serie.show.offset_in_name =
               serie.show.offset_in_name === undefined ? DEFAULT_SHOW_OFFSET_IN_NAME : serie.show.offset_in_name;
           }
@@ -682,7 +690,11 @@ class ChartsCard extends LitElement {
     return html`
       <div id="header__states">
         ${this._config?.series.map((serie, index) => {
-          if (serie.show.in_header) {
+          if (
+            serie.show.in_header &&
+            (!serie.show.hide_null_in_header || this._headerState?.[index] !== null) &&
+            (!serie.show.hide_zero_in_header || this._headerState?.[index] !== 0)
+          ) {
             return html`
               <div
                 id="states__state"
