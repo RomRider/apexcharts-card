@@ -673,7 +673,7 @@ class ChartsCard extends LitElement {
     return html`
       <div id="header__states">
         ${this._config?.series.map((serie, index) => {
-          if (serie.show.in_header) {
+          if (serie.show.in_header && (serie.show.in_header != 'hide_null' || this._headerState?.[index] !== null)) {
             return html`
               <div
                 id="states__state"

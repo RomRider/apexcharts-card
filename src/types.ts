@@ -33,7 +33,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
 
 export interface ChartCardSeriesShowConfig extends ChartCardSeriesShowConfigExt {
   legend_value: boolean;
-  in_header: boolean | 'raw' | 'before_now' | 'after_now';
+  in_header: boolean | 'raw' | 'before_now' | 'after_now' | 'hide_null';
   name_in_header: boolean;
   in_chart: boolean;
   offset_in_name: boolean;
