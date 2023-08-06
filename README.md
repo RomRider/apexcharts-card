@@ -77,15 +77,21 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 
 ### Manual install
 
-1. Download and copy `apexcharts-card.js` from the [latest release](https://github.com/RomRider/apexcharts-card/releases/latest) into your `config/www` directory.
+1. Download and copy `apexcharts-card.js` from the [latest release](https://github.com/RomRider/apexcharts-card/releases/latest) into your `"config"/www` directory.
 
 2. Add the resource reference as decribed below.
 
-### CLI install
+#### CLI install
 
-1. Move into your `config/www` directory.
-
-2. Grab `apexcharts-card.js`:
+1. Move into your "config" directory (where the `configuration.yaml` is)
+```
+cd $(dirname $(find / -name configuration.yaml 2>/dev/null))
+```
+2. Create and enter directory `www`
+```
+mkdir www; cd $_
+```
+3. Grab `apexcharts-card.js`:
 
 ```
 $ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.0.4/apexcharts-card.js
@@ -93,7 +99,9 @@ $ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.0.4/ape
 
 3. Add the resource reference as decribed below.
 
-### Add resource reference
+#### Add resource reference
+
+##### Via Lovelace config
 
 If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` inside your `configuration.yaml`:
 
@@ -102,7 +110,7 @@ resources:
   - url: /local/apexcharts-card.js?v=2.0.4
     type: module
 ```
-
+##### Via GUI
 Else, if you prefer the graphical editor, use the menu to add the resource:
 
 1. Make sure, advanced mode is enabled in your user profile (click on your user name to get there)
