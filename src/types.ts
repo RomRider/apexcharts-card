@@ -64,6 +64,7 @@ export interface StatisticValue {
   min: number | null;
   sum: number | null;
   state: number | null;
+  change: number | null;
 }
 
 export type HassHistory = Array<[HassHistoryEntry] | undefined>;
