@@ -79,6 +79,7 @@ export function getLayoutConfig(
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, false),
+      dashArray: getStrokeDashing(config, false),
     },
     markers: {
       showNullDataPoints: false,
@@ -163,6 +164,7 @@ export function getBrushLayoutConfig(
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, true),
+      dashArray: getStrokeDashing(config, true),
     },
     markers: {
       showNullDataPoints: false,
@@ -449,6 +451,18 @@ function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
       return serie.stroke_width;
     }
     return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
+  });
+}
+
+function getStrokeDashing(config: ChartCardConfig, brush: boolean) {
+  if (config.chart_type !== undefined && config.chart_type !== 'line')
+    return 0;
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
+    if (serie.stroke_dashing !== undefined) {
+      return serie.stroke_dashing;
+    }
+    return 0;
   });
 }
 
