@@ -405,7 +405,7 @@ Some of the things you can do:
 
 Your javascript code will receive:
 * `x`: a state or a value of the attribute if you defined one (it can be a `string`, `null` or a `number` depending on the entity type you've assigned)
-* `hass`: the full `hass` object (`hass.states['other.entity']` to get the state object of another entity for eg.)
+* `hass`: the full `hass` object (e.g. use `hass.states['other.entity'].state` to get the state object of another entity)
 * `entity`: the full state object of the entity from the history entry currently being transformed
 
 And should return a `number`, a `float` or `null`.
@@ -445,7 +445,7 @@ Inside your javascript code, you'll have access to those variables:
 * `entity`: the entity object
 * `start` (Date object): the start Date object of the graph currently displayed
 * `end` (Date object): the end Date object of the graph currently displayed
-* `hass`: the complete `hass` object
+* `hass`: the complete `hass` object (e.g. use `hass.states['other.entity'].state` to get the state object of another entity)
 * `moment`: the [Moment.JS](https://momentjs.com/) object to help you manipulate time and dates
 
 Let's take this example:
