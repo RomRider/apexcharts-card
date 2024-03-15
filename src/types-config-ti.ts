@@ -61,7 +61,7 @@ export const ChartCardSpanExtConfig = t.iface([], {
 
 export const ChartCardStartEnd = t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'), t.lit('isoWeek'));
 
-export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('month'));
+export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'));
 
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
