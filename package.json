@@ -1,6 +1,6 @@
 {
   "name": "apexcharts-card",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "A Home Assistant Lovelace card using ApexCharts to render graphs",
   "main": "src/apexcharts-card.ts",
   "scripts": {
