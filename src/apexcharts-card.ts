@@ -848,8 +848,7 @@ class ChartsCard extends LitElement {
         if (this._config.stacked_last_is_total)
           for (let i = 0; i < graphData.series.length; i++)
             {
-              let sum=0;
-              let j=0;
+              let sum=0;let j=0;
               for (j = 0; j < graphData.series[i].data.length-1; j++)
                 sum += graphData.series[i].data[j][1] || 0;
               graphData.series[i].data[j][1] -= sum;
