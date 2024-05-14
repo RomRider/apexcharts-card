@@ -143,6 +143,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `hours_12` | boolean | | v1.8.0 | If undefined, it will follow Home-Assistant's user time format. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
 | `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
+| `stacked_last_is_total` | boolean | `false` | v1.0.0 | Enable if you want the last series data to be considered as total |
 | `layout` | string | | v1.0.0 | See [layouts](#layouts) |
 | `header` | object | | v1.0.0 | See [header](#header-options) |
 | `now` | object | | v1.5.0 | See [now](#now-options) |

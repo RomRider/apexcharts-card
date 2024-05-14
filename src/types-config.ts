@@ -28,6 +28,7 @@ export interface ChartCardExternalConfig {
   };
   cache?: boolean;
   stacked?: boolean;
+  stacked_last_is_total?: boolean;
   layout?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;

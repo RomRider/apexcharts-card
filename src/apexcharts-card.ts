@@ -845,6 +845,15 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;
         });
+        if (this._config.stacked_last_is_total)
+          for (let i = 0; i < graphData.series.length; i++)
+            {
+              let sum=0;
+              let j=0;
+              for (j = 0; j < graphData.series[i].length-1; j++)
+                sum += graphData.series[i].data[j][1] || 0;
+              graphData.series[i].data[j][1] -= sum;
+            }
         graphData.annotations = this._computeAnnotations(start, end, now);
         if (this._yAxisConfig) {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
