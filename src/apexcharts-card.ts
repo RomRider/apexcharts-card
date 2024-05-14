@@ -850,7 +850,7 @@ class ChartsCard extends LitElement {
             {
               let sum=0;
               let j=0;
-              for (j = 0; j < graphData.series[i].length-1; j++)
+              for (j = 0; j < graphData.series[i].data.length-1; j++)
                 sum += graphData.series[i].data[j][1] || 0;
               graphData.series[i].data[j][1] -= sum;
             }
