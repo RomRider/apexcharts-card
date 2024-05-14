@@ -846,13 +846,10 @@ class ChartsCard extends LitElement {
           return;
         });
         if (this._config.stacked_last_is_total)
-          for (let i = 0; i < graphData.series.length; i++)
-            {
-              let sum=0;let j=0;
-              for (j = 0; j < graphData.series[i].data.length-1; j++)
-                sum += graphData.series[i].data[j][1] || 0;
-              graphData.series[i].data[j][1] -= sum;
-            }
+          for (let i = 0; i < graphData.series.length-1; i++)
+              for (let j = 0; j < graphData.series[i].data.length; j++)
+                graphData.series[graphData.series.length-1].data[j][1] -= graphData.series[i].data[j][1] || 0;
+
         graphData.annotations = this._computeAnnotations(start, end, now);
         if (this._yAxisConfig) {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
