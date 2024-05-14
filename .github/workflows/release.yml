@@ -1,6 +1,7 @@
 name: Release
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   release-bundle:
