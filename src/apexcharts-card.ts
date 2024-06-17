@@ -845,11 +845,7 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;
         });
-        if (this._config.stacked)
-          for (let i = 0; i < graphData.series.length-1; i++)
-            for (let j = 0; j < graphData.series[i].data.length; j++)
-              graphData.series[i].data[j][0] = graphData.series[graphData.series.length-1].data[j][0];
-
+        
         if (this._config.stacked_last_is_total)
           for (let i = 0; i < graphData.series.length-1; i++)
               for (let j = 0; j < graphData.series[i].data.length; j++)
