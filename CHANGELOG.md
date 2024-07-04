@@ -1,3 +1,12 @@
+## [2.1.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v2.0.4...v2.1.0-dev.1) (2024-07-04)
+
+
+### Features
+
+* Add change type for statistics ([#555](https://github.com/RomRider/apexcharts-card/issues/555)) ([608fbe5](https://github.com/RomRider/apexcharts-card/commit/608fbe577672752177a9b000c692e120b844f9f3)), closes [#552](https://github.com/RomRider/apexcharts-card/issues/552)
+* **statistics:** add weekly statistics period ([#680](https://github.com/RomRider/apexcharts-card/issues/680)) ([e923126](https://github.com/RomRider/apexcharts-card/commit/e923126d162b49a344a673df8cd413078d48adf0))
+* support for server time ([55c8f97](https://github.com/RomRider/apexcharts-card/commit/55c8f9720bd3ddcf37a7a9f8c8f9d4609bc1c728)), closes [#709](https://github.com/RomRider/apexcharts-card/issues/709) [#579](https://github.com/RomRider/apexcharts-card/issues/579)
+
 ### [2.0.4](https://github.com/RomRider/apexcharts-card/compare/v2.0.3...v2.0.4) (2023-04-02)
 
 
