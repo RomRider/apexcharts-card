@@ -77,7 +77,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
   "statistics": t.opt(t.iface([], {
-    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'))),
+    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'), t.lit('change'))),
     "period": t.opt("StatisticsPeriod"),
     "align": t.opt(t.union(t.lit('start'), t.lit('end'), t.lit('middle'))),
   })),
