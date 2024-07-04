@@ -5,7 +5,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
-import { formatNumber, FrontendLocaleData, HomeAssistant, LovelaceConfig } from 'custom-card-helpers';
+import { formatNumber, FrontendLocaleData, HomeAssistant } from 'custom-card-helpers';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -120,7 +120,7 @@ export function computeTextColor(backgroundColor: string): string {
 
 export function validateInterval(interval: string, prefix: string): number {
   const parsed = parse(interval);
-  if (parsed === null) {
+  if (parsed === undefined) {
     throw new Error(`'${prefix}: ${interval}' is not a valid range of time`);
   }
   return parsed;
