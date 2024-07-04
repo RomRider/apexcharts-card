@@ -138,7 +138,7 @@ export default class GraphEntry {
   public minMaxWithTimestamp(
     start: number,
     end: number,
-    serverOffset = 0,
+    offset: number,
   ): { min: HistoryPoint; max: HistoryPoint } | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
     if (this._computedHistory.length === 1)
@@ -153,9 +153,9 @@ export default class GraphEntry {
       },
       { min: [0, null], max: [0, null] },
     );
-    if (serverOffset) {
-      if (minMax.min[0]) minMax.min[0] -= serverOffset;
-      if (minMax.max[0]) minMax.max[0] -= serverOffset;
+    if (offset) {
+      if (minMax.min[0]) minMax.min[0] -= offset;
+      if (minMax.max[0]) minMax.max[0] -= offset;
     }
     return minMax;
   }
@@ -169,7 +169,7 @@ export default class GraphEntry {
       }) - 1;
     if (lastHistoryIndexBeforeStart >= 0)
       lastTimestampBeforeStart = this._computedHistory[lastHistoryIndexBeforeStart][0];
-    return this.minMaxWithTimestamp(lastTimestampBeforeStart, end);
+    return this.minMaxWithTimestamp(lastTimestampBeforeStart, end, 0);
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {

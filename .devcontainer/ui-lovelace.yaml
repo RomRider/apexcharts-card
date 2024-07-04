@@ -1247,6 +1247,7 @@ views:
                   func: avg
               - entity: sensor.random_0_1000
                 name: All
+                time_delta: +10min
                 float_precision: 0
                 transform: return Number(x) + 800;
                 show:

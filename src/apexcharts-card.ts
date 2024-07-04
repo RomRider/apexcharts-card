@@ -1025,7 +1025,7 @@ class ChartsCard extends LitElement {
               ? new Date(start.getTime() + this._seriesOffset[index]).getTime()
               : start.getTime(),
             this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]).getTime() : end.getTime(),
-            this._serverTimeOffset,
+            this._serverTimeOffset - (this._seriesTimeDelta[index] || 0),
           ) || {
             min: [0, null],
             max: [0, null],
