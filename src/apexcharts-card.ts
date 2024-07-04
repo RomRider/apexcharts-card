@@ -38,6 +38,8 @@ import {
   validateInterval,
   validateOffset,
   getLovelace,
+  isUsingServerTimezone,
+  computeTimezoneDiffWithLocal,
 } from './utils';
 import ApexCharts from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
@@ -80,6 +82,7 @@ import {
 import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
+import { OverrideFrontendLocaleData } from './types-ha';
 
 /* eslint no-console: 0 */
 console.info(
@@ -162,6 +165,8 @@ class ChartsCard extends LitElement {
   private _brushSelectionSpan = 0;
 
   private _yAxisConfig?: ChartCardYAxis[];
+
+  private _serverTimeOffset = 0;
 
   @property({ attribute: false }) _lastUpdated: Date = new Date();
 
@@ -287,6 +292,7 @@ class ChartsCard extends LitElement {
       this._loaded = false;
       this._dataLoaded = false;
       this._updating = false;
+      this._serverTimeOffset = 0;
       if (this._apexBrush) {
         this._apexBrush.destroy();
         this._apexBrush = undefined;
@@ -753,6 +759,10 @@ class ChartsCard extends LitElement {
   private async _initialLoad() {
     await this.updateComplete;
 
+    if (isUsingServerTimezone(this._hass)) {
+      this._serverTimeOffset = computeTimezoneDiffWithLocal(this._hass?.config.time_zone);
+    }
+
     if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
       this._loaded = true;
       const graph = this.shadowRoot.querySelector('#graph');
@@ -826,18 +836,26 @@ class ChartsCard extends LitElement {
           const offset = (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
           if (offset) {
             data = offsetData(graph.history, offset);
+          } else if (this._serverTimeOffset) {
+            data = offsetData(graph.history, this._serverTimeOffset);
           } else {
             data = [...graph.history];
           }
           if (this._config?.series[index].type !== 'column' && this._config?.series[index].extend_to) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const lastPoint = data.slice(-1)[0]!;
-            if (this._config?.series[index].extend_to === 'end' && lastPoint[0] < end.getTime()) {
+            if (
+              this._config?.series[index].extend_to === 'end' &&
+              lastPoint[0] < end.getTime() - this._serverTimeOffset
+            ) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data.push([end.getTime(), lastPoint[1]]);
-            } else if (this._config?.series[index].extend_to === 'now' && lastPoint[0] < now.getTime()) {
+              data.push([end.getTime() - this._serverTimeOffset, lastPoint[1]]);
+            } else if (
+              this._config?.series[index].extend_to === 'now' &&
+              lastPoint[0] < now.getTime() - this._serverTimeOffset
+            ) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data.push([now.getTime(), lastPoint[1]]);
+              data.push([now.getTime() - this._serverTimeOffset, lastPoint[1]]);
             }
           }
           const result = this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
@@ -845,14 +863,14 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;
         });
-        graphData.annotations = this._computeAnnotations(start, end, now);
+        graphData.annotations = this._computeAnnotations(start, end, new Date(now.getTime() - this._serverTimeOffset));
         if (this._yAxisConfig) {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
         }
         if (!this._apexBrush) {
           graphData.xaxis = {
-            min: start.getTime(),
-            max: this._findEndOfChart(end, false),
+            min: start.getTime() - this._serverTimeOffset,
+            max: this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false),
           };
         }
       } else {
@@ -949,8 +967,8 @@ class ChartsCard extends LitElement {
         TIMESERIES_TYPES.includes(this._config.chart_type) ? false : true,
       );
       if (this._apexBrush) {
-        const newMin = start.getTime();
-        const newMax = this._findEndOfChart(end, false);
+        const newMin = start.getTime() - this._serverTimeOffset;
+        const newMax = this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false);
         brushData.xaxis = {
           min: newMin,
           max: newMax,
@@ -1008,6 +1026,7 @@ class ChartsCard extends LitElement {
               ? new Date(start.getTime() + this._seriesOffset[index]).getTime()
               : start.getTime(),
             this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]).getTime() : end.getTime(),
+            this._serverTimeOffset,
           ) || {
             min: [0, null],
             max: [0, null],
@@ -1444,14 +1463,18 @@ class ChartsCard extends LitElement {
   private _getSpanDates(): { start: Date; end: Date } {
     let end = new Date();
     let start = new Date(end.getTime() - this._graphSpan + 1);
-    // Span
+    const curMoment = moment();
+    if ((this._hass?.locale as OverrideFrontendLocaleData).time_zone === 'server') {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      curMoment.tz(this._hass!.config.time_zone);
+    }
     if (this._config?.span?.start) {
       // Just Span
-      const startM = moment().startOf(this._config.span.start);
+      const startM = curMoment.startOf(this._config.span.start);
       start = startM.toDate();
       end = new Date(start.getTime() + this._graphSpan);
     } else if (this._config?.span?.end) {
-      const endM = moment().endOf(this._config.span.end);
+      const endM = curMoment.endOf(this._config.span.end);
       end = new Date(endM.toDate().getTime() + 1);
       start = new Date(end.getTime() - this._graphSpan + 1);
     }

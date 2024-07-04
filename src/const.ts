@@ -1,4 +1,4 @@
-import Moment from 'moment';
+import Moment from 'moment-timezone';
 import { extendMoment } from 'moment-range';
 import momentDurationFormatSetup from 'moment-duration-format';
 

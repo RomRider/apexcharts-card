@@ -1,4 +1,5 @@
 {
-    "name": "apexcharts-card",
-    "render_readme": true
+  "name": "apexcharts-card",
+  "homeassistant": "2023.7.0",
+  "render_readme": true
 }

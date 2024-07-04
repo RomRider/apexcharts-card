@@ -1314,6 +1314,7 @@ views:
                   const tomorrow = new Date(start.getTime() + 25 * 1000 * 60 * 60);
                   const tomorrow2 = new Date(start.getTime() + 28 * 1000 * 60 * 60);
                   return [
+                    [start.getTime(), 5],
                     [tomorrow.getTime(), 30],
                     [tomorrow2.getTime(), 20]
                   ];

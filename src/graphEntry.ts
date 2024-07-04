@@ -135,11 +135,15 @@ export default class GraphEntry {
     return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
   }
 
-  public minMaxWithTimestamp(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
+  public minMaxWithTimestamp(
+    start: number,
+    end: number,
+    serverOffset = 0,
+  ): { min: HistoryPoint; max: HistoryPoint } | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
     if (this._computedHistory.length === 1)
       return { min: [start, this._computedHistory[0][1]], max: [end, this._computedHistory[0][1]] };
-    return this._computedHistory.reduce(
+    const minMax = this._computedHistory.reduce(
       (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
         if (point[1] === null) return acc;
         if (point[0] > end || point[0] < start) return acc;
@@ -149,6 +153,11 @@ export default class GraphEntry {
       },
       { min: [0, null], max: [0, null] },
     );
+    if (serverOffset) {
+      if (minMax.min[0]) minMax.min[0] -= serverOffset;
+      if (minMax.max[0]) minMax.max[0] -= serverOffset;
+    }
+    return minMax;
   }
 
   public minMaxWithTimestampForYAxis(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
