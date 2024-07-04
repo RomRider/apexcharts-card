@@ -833,11 +833,10 @@ class ChartsCard extends LitElement {
             return;
           }
           let data: EntityCachePoints = [];
-          const offset = (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
+          const offset =
+            this._serverTimeOffset + (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
           if (offset) {
             data = offsetData(graph.history, offset);
-          } else if (this._serverTimeOffset) {
-            data = offsetData(graph.history, this._serverTimeOffset);
           } else {
             data = [...graph.history];
           }
