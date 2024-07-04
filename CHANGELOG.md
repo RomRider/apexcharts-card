@@ -1,3 +1,11 @@
+## [2.1.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.1...v2.1.0-dev.2) (2024-07-04)
+
+
+### Bug Fixes
+
+* `extremas` with `time_delta` would generate wrong results ([f7ab3e8](https://github.com/RomRider/apexcharts-card/commit/f7ab3e808a577d0ea6a6d9e3b76d386ab761e43c)), closes [#713](https://github.com/RomRider/apexcharts-card/issues/713)
+* display was wrong when using server time + serie offset ([84357f9](https://github.com/RomRider/apexcharts-card/commit/84357f9bc85a7111e73ec6aa2c91a402d90cbfc8)), closes [#579](https://github.com/RomRider/apexcharts-card/issues/579)
+
 ## [2.1.0-dev.1](https://github.com/RomRider/apexcharts-card/compare/v2.0.4...v2.1.0-dev.1) (2024-07-04)
 
 
