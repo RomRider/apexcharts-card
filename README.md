@@ -166,7 +166,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
-| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
+| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down), `monotoneCubic` (create a monotone cubic spline) |
 | ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
 | `extend_to` | boolean or string | `end` | v2.0.0 | If value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (usefull for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
