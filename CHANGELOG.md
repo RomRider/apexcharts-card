@@ -1,3 +1,12 @@
+## [2.1.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.2...v2.1.0-dev.3) (2024-07-05)
+
+
+### Features
+
+* **locales:** Support for new locales ([2fca527](https://github.com/RomRider/apexcharts-card/commit/2fca527345e0ec7cc4072903cbd1089fe40a2b66))
+* **series:** Direct support for dashed lines ([29aad77](https://github.com/RomRider/apexcharts-card/commit/29aad77ef1d2bedbc04c507d2319ed1f6f764f23)), closes [#413](https://github.com/RomRider/apexcharts-card/issues/413)
+* **series:** support for `monotoneCubic` curves ([998cb99](https://github.com/RomRider/apexcharts-card/commit/998cb994b6c8295b430fb138c54d1a9e30e7506a))
+
 ## [2.1.0-dev.2](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.1...v2.1.0-dev.2) (2024-07-04)
 
 
