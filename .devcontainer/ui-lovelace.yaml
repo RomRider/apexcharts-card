@@ -1077,6 +1077,7 @@ views:
                     entity: sensor.random_0_1000
               - entity: sensor.random0_100
                 transform: 'return Number(x) + 1230;'
+                stroke_dash: 2
             yaxis:
               - min: 0
                 max: ~1200
