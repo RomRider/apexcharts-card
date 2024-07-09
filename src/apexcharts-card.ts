@@ -372,36 +372,6 @@ class ChartsCard extends LitElement {
 
       const defColors = this._config?.color_list || DEFAULT_COLORS;
       if (this._config) {
-        if (this._config.yaxis && this._config.yaxis.length > 1) {
-          if (
-            this._config.series.some((serie) => {
-              return !serie.yaxis_id;
-            })
-          ) {
-            throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
-          }
-          if (
-            this._config.yaxis.some((yaxis) => {
-              return !yaxis.id;
-            })
-          ) {
-            throw new Error(`Multiple yaxis detected: Some yaxis are missing an 'id'.`);
-          }
-        }
-        if (this._config.yaxis) {
-          const yAxisConfig = this._generateYAxisConfig(this._config);
-          if (this._config.apex_config) {
-            this._config.apex_config.yaxis = yAxisConfig;
-          } else {
-            this._config.apex_config = {
-              yaxis: yAxisConfig,
-            };
-          }
-          this._yAxisConfig?.forEach((yaxis) => {
-            [yaxis.min, yaxis.min_type] = this._getTypeOfMinMax(yaxis.min);
-            [yaxis.max, yaxis.max_type] = this._getTypeOfMinMax(yaxis.max);
-          });
-        }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
           serie.ignore_history = !!(
@@ -493,6 +463,36 @@ class ChartsCard extends LitElement {
             this._config!.series_in_brush.push(serie);
           }
         });
+        if (this._config.yaxis && this._config.yaxis.length > 1) {
+          if (
+            this._config.series_in_graph.some((serie) => {
+              return !serie.yaxis_id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
+          }
+          if (
+            this._config.yaxis.some((yaxis) => {
+              return !yaxis.id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some yaxis are missing an 'id'.`);
+          }
+        }
+        if (this._config.yaxis) {
+          const yAxisConfig = this._generateYAxisConfig(this._config);
+          if (this._config.apex_config) {
+            this._config.apex_config.yaxis = yAxisConfig;
+          } else {
+            this._config.apex_config = {
+              yaxis: yAxisConfig,
+            };
+          }
+          this._yAxisConfig?.forEach((yaxis) => {
+            [yaxis.min, yaxis.min_type] = this._getTypeOfMinMax(yaxis.min);
+            [yaxis.max, yaxis.max_type] = this._getTypeOfMinMax(yaxis.max);
+          });
+        }
         this._headerColors = this._headerColors.slice(0, this._config?.series.length);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -508,7 +508,7 @@ class ChartsCard extends LitElement {
     if (!config.yaxis) return undefined;
     const burned: boolean[] = [];
     this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
-    const yaxisConfig: ApexYAxis[] = config.series.map((serie, serieIndex) => {
+    const yaxisConfig: ApexYAxis[] = config.series_in_graph.map((serie, serieIndex) => {
       let idx = -1;
       if (config.yaxis?.length !== 1) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -1355,6 +1355,12 @@ views:
         stacked: true
         cache: false
         graph_span: 5min
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+        yaxis:
+          - id: should_work
         series:
           - entity: sensor.random0_100
             stack_group: group1
@@ -1366,12 +1372,25 @@ views:
               duration: 1min
             show:
               in_legend: false
+              in_header: false
           - entity: sensor.random0_100
             stack_group: group1
             type: column
+            show:
+              in_header: false
             # name: pioup
           - entity: sensor.random_0_1000
             type: column
+            show:
+              in_header: false
+            group_by:
+              duration: 1min
+          - entity: sensor.random_0_1000
+            name: only in header
+            type: column
+            show:
+              in_chart: false
+              in_header: true
             group_by:
               duration: 1min
             # stack_group: group1
