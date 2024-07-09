@@ -162,6 +162,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
+| `stack_group` | string | | NEXT_VERSION | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |

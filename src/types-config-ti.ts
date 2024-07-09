@@ -68,6 +68,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "attribute": t.opt("string"),
   "name": t.opt("string"),
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
+  "stack_group": t.opt("string"),
   "color": t.opt("string"),
   "opacity": t.opt("number"),
   "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'), t.lit('monotoneCubic'))),

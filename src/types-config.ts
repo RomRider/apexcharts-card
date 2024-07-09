@@ -68,6 +68,7 @@ export interface ChartCardAllSeriesExternalConfig {
   attribute?: string;
   name?: string;
   type?: 'line' | 'column' | 'area';
+  stack_group?: string;
   color?: string;
   opacity?: number;
   curve?: 'smooth' | 'straight' | 'stepline' | 'monotoneCubic';

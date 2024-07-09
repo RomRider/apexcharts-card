@@ -189,6 +189,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, bru
     return series.map((serie, index) => {
       return {
         name: computeName(index, series, undefined, hass?.states[serie.entity]),
+        group: config.stacked && serie.type === 'column' ? serie.stack_group : undefined,
         type: serie.type,
         data: [],
       };

@@ -1348,3 +1348,28 @@ views:
               type: mean
               period: 5minute
           - entity: sensor.temperature
+  - title: Test 3
+    panel: false
+    cards:
+      - type: custom:apexcharts-card
+        stacked: true
+        # cache: false
+        graph_span: 5min
+        series:
+          - entity: sensor.random0_100
+            stack_group: group1
+            group_by:
+              duration: 1min
+            type: column
+            name: tes2t
+            group_by:
+              duration: 1min
+          - entity: sensor.random0_100
+            stack_group: group1
+            type: column
+            # name: pioup
+          - entity: sensor.random_0_1000
+            type: column
+            group_by:
+              duration: 1min
+            # stack_group: group1
