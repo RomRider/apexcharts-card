@@ -436,7 +436,7 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
 }
 
 function getLegendMarkers(config: ChartCardConfig) {
-  return { width: config.series_in_graph.map((serie) => (serie.show.in_legend ? DEFAULT_LEGEND_MARKER_WIDTH : 0)) };
+  return { size: config.series_in_graph.map((serie) => (serie.show.in_legend ? DEFAULT_LEGEND_MARKER_WIDTH : 0)) };
 }
 
 function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
