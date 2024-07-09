@@ -1,3 +1,11 @@
+## [2.1.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.3...v2.1.0-dev.4) (2024-07-09)
+
+
+### Features
+
+* **series:** hide specific serie in legend with `in_legend: false` ([12cb893](https://github.com/RomRider/apexcharts-card/commit/12cb8933270eb133aece07938acef6fec70ff58d)), closes [#74](https://github.com/RomRider/apexcharts-card/issues/74)
+* **series:** Support for stack group of columns ([2935b4e](https://github.com/RomRider/apexcharts-card/commit/2935b4efb73d67014b8043c369e089ce692dfc24)), closes [#673](https://github.com/RomRider/apexcharts-card/issues/673) [#550](https://github.com/RomRider/apexcharts-card/issues/550)
+
 ## [2.1.0-dev.3](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.2...v2.1.0-dev.3) (2024-07-05)
 
 
