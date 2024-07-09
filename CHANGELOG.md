@@ -1,3 +1,10 @@
+### [2.1.1](https://github.com/RomRider/apexcharts-card/compare/v2.1.0...v2.1.1) (2024-07-09)
+
+
+### Bug Fixes
+
+* **yaxis:** when `in_chart: false`, `yaxis` generated config would be wrong ([5932f2f](https://github.com/RomRider/apexcharts-card/commit/5932f2fc7ebb260677753b3c7526d3fb42b6da95)), closes [#724](https://github.com/RomRider/apexcharts-card/issues/724)
+
 ## [2.1.0](https://github.com/RomRider/apexcharts-card/compare/v2.0.4...v2.1.0) (2024-07-09)
 
 
