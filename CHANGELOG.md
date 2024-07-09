@@ -1,3 +1,24 @@
+## [2.1.0](https://github.com/RomRider/apexcharts-card/compare/v2.0.4...v2.1.0) (2024-07-09)
+
+
+### Features
+
+* Add change type for statistics ([#555](https://github.com/RomRider/apexcharts-card/issues/555)) ([608fbe5](https://github.com/RomRider/apexcharts-card/commit/608fbe577672752177a9b000c692e120b844f9f3)), closes [#552](https://github.com/RomRider/apexcharts-card/issues/552)
+* **locales:** Support for new locales ([2fca527](https://github.com/RomRider/apexcharts-card/commit/2fca527345e0ec7cc4072903cbd1089fe40a2b66))
+* **series:** Direct support for dashed lines ([29aad77](https://github.com/RomRider/apexcharts-card/commit/29aad77ef1d2bedbc04c507d2319ed1f6f764f23)), closes [#413](https://github.com/RomRider/apexcharts-card/issues/413)
+* **series:** hide specific serie in legend with `in_legend: false` ([12cb893](https://github.com/RomRider/apexcharts-card/commit/12cb8933270eb133aece07938acef6fec70ff58d)), closes [#74](https://github.com/RomRider/apexcharts-card/issues/74)
+* **series:** support for `monotoneCubic` curves ([998cb99](https://github.com/RomRider/apexcharts-card/commit/998cb994b6c8295b430fb138c54d1a9e30e7506a))
+* **series:** Support for stack group of columns ([2935b4e](https://github.com/RomRider/apexcharts-card/commit/2935b4efb73d67014b8043c369e089ce692dfc24)), closes [#673](https://github.com/RomRider/apexcharts-card/issues/673) [#550](https://github.com/RomRider/apexcharts-card/issues/550)
+* **statistics:** add weekly statistics period ([#680](https://github.com/RomRider/apexcharts-card/issues/680)) ([e923126](https://github.com/RomRider/apexcharts-card/commit/e923126d162b49a344a673df8cd413078d48adf0))
+* support for server time ([55c8f97](https://github.com/RomRider/apexcharts-card/commit/55c8f9720bd3ddcf37a7a9f8c8f9d4609bc1c728)), closes [#709](https://github.com/RomRider/apexcharts-card/issues/709) [#579](https://github.com/RomRider/apexcharts-card/issues/579)
+
+
+### Bug Fixes
+
+* `extremas` with `time_delta` would generate wrong results ([f7ab3e8](https://github.com/RomRider/apexcharts-card/commit/f7ab3e808a577d0ea6a6d9e3b76d386ab761e43c)), closes [#713](https://github.com/RomRider/apexcharts-card/issues/713)
+* display was wrong when using server time + serie offset ([84357f9](https://github.com/RomRider/apexcharts-card/commit/84357f9bc85a7111e73ec6aa2c91a402d90cbfc8)), closes [#579](https://github.com/RomRider/apexcharts-card/issues/579)
+* **series:** fix `in_legend` for apexcharts.js v3.50.0 ([221b0a5](https://github.com/RomRider/apexcharts-card/commit/221b0a50ad46e47050653ba0ee4a544a3fb3a6df))
+
 ## [2.1.0-dev.4](https://github.com/RomRider/apexcharts-card/compare/v2.1.0-dev.3...v2.1.0-dev.4) (2024-07-09)
 
 
