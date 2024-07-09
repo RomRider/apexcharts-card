@@ -1353,7 +1353,7 @@ views:
     cards:
       - type: custom:apexcharts-card
         stacked: true
-        # cache: false
+        cache: false
         graph_span: 5min
         series:
           - entity: sensor.random0_100
@@ -1364,6 +1364,8 @@ views:
             name: tes2t
             group_by:
               duration: 1min
+            show:
+              in_legend: false
           - entity: sensor.random0_100
             stack_group: group1
             type: column

@@ -111,6 +111,7 @@ export interface ActionsConfig {
 
 export interface ChartCardSeriesShowConfigExt {
   as_duration?: ChartCardPrettyTime;
+  in_legend?: boolean;
   legend_value?: boolean;
   in_header?: boolean | 'raw' | 'before_now' | 'after_now';
   name_in_header?: boolean;

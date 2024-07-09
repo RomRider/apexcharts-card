@@ -3,6 +3,7 @@ import parse from 'parse-duration';
 import {
   DEFAULT_AREA_OPACITY,
   DEFAULT_FLOAT_PRECISION,
+  DEFAULT_LEGEND_MARKER_WIDTH,
   DEFAULT_SERIE_TYPE,
   HOUR_24,
   NO_VALUE,
@@ -72,6 +73,7 @@ export function getLayoutConfig(
       position: 'bottom',
       show: true,
       formatter: getLegendFormatter(config, hass),
+      markers: getLegendMarkers(config),
     },
     stroke: {
       curve: getStrokeCurve(config, false),
@@ -390,6 +392,9 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       undefined,
       hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
     );
+    if (!conf.series_in_graph[opts.seriesIndex].show.in_legend) {
+      return [];
+    }
     if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
       return [name];
     } else {
@@ -428,6 +433,10 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       return [name + ':', valueString];
     }
   };
+}
+
+function getLegendMarkers(config: ChartCardConfig) {
+  return { width: config.series_in_graph.map((serie) => (serie.show.in_legend ? DEFAULT_LEGEND_MARKER_WIDTH : 0)) };
 }
 
 function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
