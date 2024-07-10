@@ -1212,6 +1212,15 @@ views:
                     title: Synology NAS
             series:
               - entity: sensor.random_0_1000
+                name: Test Index
+                float_precision: 0
+                show:
+                  extremas: min
+                  in_chart: false
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
                 name: Min
                 float_precision: 0
                 show:

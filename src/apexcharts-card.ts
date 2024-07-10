@@ -1024,11 +1024,13 @@ class ChartsCard extends LitElement {
       points: this._config?.series_in_graph.flatMap((serie, index) => {
         if (serie.show.extremas) {
           const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(
-            this._seriesOffset[index]
-              ? new Date(start.getTime() + this._seriesOffset[index]).getTime()
+            this._seriesOffset[serie.index]
+              ? new Date(start.getTime() + this._seriesOffset[serie.index]).getTime()
               : start.getTime(),
-            this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]).getTime() : end.getTime(),
-            this._serverTimeOffset - (this._seriesTimeDelta[index] || 0),
+            this._seriesOffset[serie.index]
+              ? new Date(end.getTime() + this._seriesOffset[serie.index]).getTime()
+              : end.getTime(),
+            this._serverTimeOffset - (this._seriesTimeDelta[serie.index] || 0),
           ) || {
             min: [0, null],
             max: [0, null],
@@ -1042,7 +1044,7 @@ class ChartsCard extends LitElement {
             extremas.push(
               ...this._getPointAnnotationStyle(
                 min,
-                this._seriesOffset[index],
+                this._seriesOffset[serie.index],
                 bgColor,
                 txtColor,
                 serie,
@@ -1058,7 +1060,7 @@ class ChartsCard extends LitElement {
             extremas.push(
               ...this._getPointAnnotationStyle(
                 max,
-                this._seriesOffset[index],
+                this._seriesOffset[serie.index],
                 bgColor,
                 txtColor,
                 serie,
