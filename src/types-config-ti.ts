@@ -31,6 +31,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "show": t.opt(t.iface([], {
     "loading": t.opt("boolean"),
     "last_updated": t.opt("boolean"),
+    "version": t.opt("boolean"),
   })),
   "cache": t.opt("boolean"),
   "stacked": t.opt("boolean"),

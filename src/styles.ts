@@ -121,6 +121,18 @@ export const stylesApex: CSSResultGroup = css`
     opacity: 0.5;
   }
 
+  #version_info {
+    font-size: 0.63em;
+    font-weight: 300;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: absolute;
+    bottom: 0px;
+    left: 4px;
+    opacity: 0.5;
+  }
+
   /* Apex Charts Default CSS */
   .apexcharts-canvas {
     position: relative;

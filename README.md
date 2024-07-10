@@ -279,6 +279,7 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
 | `last_updated` | boolean | `false` | v1.10.0 | Show the last time the chart was updated on the bottom right |
+| `version` | boolean | `false` | NEXT_VERSION | Show the card version on the bottom left (useful for debug) |
 
 ### `header` Options
 

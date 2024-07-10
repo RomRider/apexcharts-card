@@ -593,7 +593,7 @@ class ChartsCard extends LitElement {
             ${this._config.series_in_brush.length ? html`<div id="brush"></div>` : ``}
           </div>
         </div>
-        ${this._renderLastUpdated()}
+        ${this._renderLastUpdated()} ${this._renderVersion()}
       </ha-card>
     `;
   }
@@ -755,6 +755,13 @@ class ChartsCard extends LitElement {
   private _renderLastUpdated(): TemplateResult {
     if (this._config?.show?.last_updated) {
       return html` <div id="last_updated">${formatApexDate(this._config, this._hass, this._lastUpdated, true)}</div> `;
+    }
+    return html``;
+  }
+
+  private _renderVersion(): TemplateResult {
+    if (this._config?.show?.version) {
+      return html` <div id="version_info">apexcharts-card v${pjson.version}</div> `;
     }
     return html``;
   }

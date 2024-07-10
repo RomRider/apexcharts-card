@@ -1364,6 +1364,8 @@ views:
         stacked: true
         cache: false
         graph_span: 5min
+        show:
+          version: true
         header:
           show: true
           show_states: true
