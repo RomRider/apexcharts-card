@@ -1,3 +1,10 @@
+### [2.1.2](https://github.com/RomRider/apexcharts-card/compare/v2.1.1...v2.1.2) (2024-07-10)
+
+
+### Bug Fixes
+
+* **series:** extremas would be wrong in some cases with `in_header: false` ([019b4ee](https://github.com/RomRider/apexcharts-card/commit/019b4ee1c7432e780a3f10ab6bf366fc1e5ded65)), closes [#725](https://github.com/RomRider/apexcharts-card/issues/725)
+
 ### [2.1.1](https://github.com/RomRider/apexcharts-card/compare/v2.1.0...v2.1.1) (2024-07-09)
 
 
