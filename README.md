@@ -106,7 +106,7 @@ resources:
 Else, if you prefer the graphical editor, use the menu to add the resource:
 
 1. Make sure, advanced mode is enabled in your user profile (click on your user name to get there)
-2. Navigate to Configuration -> Lovelace Dashboards -> Resources Tab. Hit orange (+) icon
+2. Navigate to Settings -> Dashboards -> ⋮ in the top-right corner -> Resources -> blue "Add Resource" button
 3. Enter URL `/local/apexcharts-card.js` and select type "JavaScript Module".
 4. Restart Home Assistant.
 
