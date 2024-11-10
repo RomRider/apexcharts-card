@@ -34,6 +34,7 @@ export const stylesApex: CSSResultGroup = css`
   #header {
     padding: 8px 16px 0px;
     grid-area: header;
+    overflow: hidden;
   }
   #header.floating {
     position: absolute;
