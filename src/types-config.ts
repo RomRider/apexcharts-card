@@ -39,6 +39,8 @@ export interface ChartCardExternalConfig {
   card_mod?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   view_layout?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  visibility?: any;
   index?: number;
   view_index?: number;
   brush?: ChartCardBrushExtConfig;
