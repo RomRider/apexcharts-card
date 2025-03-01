@@ -10,7 +10,7 @@
 
 ![Header](https://github.com/RomRider/apexcharts-card/raw/master/docs/Header.png)
 
-This is a higly customizable graph card for [Home-Assistant](https://www.home-assistant.io)'s Lovelace UI.<br/>
+This is a highly customizable graph card for [Home-Assistant](https://www.home-assistant.io)'s Lovelace UI.<br/>
 
 It is based on [ApexCharts.js](https://apexcharts.com) and offers most of the features of the library.
 
