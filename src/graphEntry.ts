@@ -114,6 +114,10 @@ export default class GraphEntry {
     return this.history.length > 0 ? this.history[this.history.length - 1][1] : null;
   }
 
+  get hasDataGenerator(): boolean {
+    return this._config.data_generator != undefined;
+  }
+
   public nowValue(now: number, before: boolean): number | null {
     if (this.history.length === 0) return null;
     const index = this.history.findIndex((point, index, arr) => {
@@ -189,7 +193,7 @@ export default class GraphEntry {
       : localForage.setItem(`${key}_${this._md5Config}-raw`, data);
   }
 
-  public async _updateHistory(start: Date, end: Date): Promise<boolean> {
+  public async _updateHistory(start: Date, end: Date, series: (EntityCachePoints | undefined)[]): Promise<boolean> {
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
@@ -219,7 +223,7 @@ export default class GraphEntry {
     let history: EntityEntryCache | undefined = undefined;
 
     if (this._config.data_generator) {
-      history = await this._generateData(start, end);
+      history = await this._generateData(start, end, series);
     } else {
       this._realStart = new Date(start);
       this._realEnd = new Date(end);
@@ -433,7 +437,11 @@ export default class GraphEntry {
     return this._hass?.callApi('GET', url);
   }
 
-  private async _generateData(start: Date, end: Date): Promise<EntityEntryCache> {
+  private async _generateData(
+    start: Date,
+    end: Date,
+    series: (EntityCachePoints | undefined)[],
+  ): Promise<EntityEntryCache> {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
     let data;
@@ -444,9 +452,10 @@ export default class GraphEntry {
         'end',
         'hass',
         'moment',
+        'series',
         `'use strict'; ${this._config.data_generator}`,
       );
-      data = await datafn(this._entityState, start, end, this._hass, moment);
+      data = await datafn(this._entityState, start, end, this._hass, moment, series);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       const funcTrimmed =

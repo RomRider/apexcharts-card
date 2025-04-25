@@ -449,6 +449,7 @@ Inside your javascript code, you'll have access to those variables:
 * `end` (Date object): the end Date object of the graph currently displayed
 * `hass`: the complete `hass` object
 * `moment`: the [Moment.JS](https://momentjs.com/) object to help you manipulate time and dates
+* `series`: An array of data series, which is the output of other non-data-generator series in the chart.
 
 Let's take this example:
 * My sensor (`sensor.test`) has this state as its last state:

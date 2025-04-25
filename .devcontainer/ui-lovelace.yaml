@@ -1403,3 +1403,23 @@ views:
             group_by:
               duration: 1min
             # stack_group: group1
+  - title: Main3
+    panel: true
+    cards:
+      - type: custom:apexcharts-card
+        cache: false
+        graph_span: 10min
+        header:
+          show: true
+          title: Test Generated Series
+          show_states: true
+        all_series_config:
+          stroke_width: 1
+        series:
+          - entity: sensor.random0_100
+          - entity: sensor.random_0_1000
+          - entity: sensor.random0_100
+            data_generator: |
+              return series[0].map((a, i) => {
+                return [a[0], a[1] + series[1][i][1]];
+              });

@@ -799,13 +799,32 @@ class ChartsCard extends LitElement {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const caching = editMode === true ? false : this._config!.cache;
     try {
-      const promise = this._graphs.map((graph, index) => {
-        if (graph) graph.cache = caching;
-        return graph?._updateHistory(
-          this._seriesOffset[index] ? new Date(start.getTime() + this._seriesOffset[index]) : start,
-          this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]) : end,
-        );
-      });
+      let promise = this._graphs
+        .filter((graph) => !graph?.hasDataGenerator)
+        .map((graph, index) => {
+          if (graph) graph.cache = caching;
+          return graph?._updateHistory(
+            this._seriesOffset[index] ? new Date(start.getTime() + this._seriesOffset[index]) : start,
+            this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]) : end,
+            [],
+          );
+        });
+      await Promise.all(promise);
+      // Produce data generator series in a second round, to allow then to access data from other
+      // series.
+      const series: (EntityCachePoints | undefined)[] = this._graphs
+        .filter((graph) => !graph?.hasDataGenerator)
+        .map((g) => g?.history);
+      promise = this._graphs
+        .filter((graph) => graph?.hasDataGenerator)
+        .map((graph, index) => {
+          if (graph) graph.cache = caching;
+          return graph?._updateHistory(
+            this._seriesOffset[index] ? new Date(start.getTime() + this._seriesOffset[index]) : start,
+            this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]) : end,
+            series,
+          );
+        });
       await Promise.all(promise);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let graphData: any = { series: [] };
