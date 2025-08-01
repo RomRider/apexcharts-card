@@ -61,23 +61,25 @@ export interface ChartCardSpanExtConfig {
 
 export type ChartCardStartEnd = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year' | 'isoWeek';
 
-export type StatisticsPeriod = '5minute' | 'hour' | 'day' | 'month';
+export type StatisticsPeriod = '5minute' | 'hour' | 'day' | 'week' | 'month';
 
 export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
   attribute?: string;
   name?: string;
   type?: 'line' | 'column' | 'area';
+  stack_group?: string;
   color?: string;
   opacity?: number;
-  curve?: 'smooth' | 'straight' | 'stepline';
+  curve?: 'smooth' | 'straight' | 'stepline' | 'monotoneCubic';
   stroke_width?: number;
+  stroke_dash?: number;
   extend_to?: false | 'end' | 'now';
   unit?: string;
   invert?: boolean;
   data_generator?: string;
   statistics?: {
-    type?: 'mean' | 'max' | 'min' | 'sum' | 'state';
+    type?: 'mean' | 'max' | 'min' | 'sum' | 'state' | 'change';
     period?: StatisticsPeriod;
     align?: 'start' | 'end' | 'middle';
   };
@@ -109,6 +111,7 @@ export interface ActionsConfig {
 
 export interface ChartCardSeriesShowConfigExt {
   as_duration?: ChartCardPrettyTime;
+  in_legend?: boolean;
   legend_value?: boolean;
   in_header?: boolean | 'raw' | 'before_now' | 'after_now';
   name_in_header?: boolean;

@@ -38,6 +38,8 @@ import {
   validateInterval,
   validateOffset,
   getLovelace,
+  isUsingServerTimezone,
+  computeTimezoneDiffWithLocal,
 } from './utils';
 import ApexCharts from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
@@ -59,6 +61,7 @@ import {
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
+  DEFAULT_SHOW_IN_LEGEND,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
   DEFAULT_SHOW_OFFSET_IN_NAME,
@@ -80,6 +83,7 @@ import {
 import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
+import { OverrideFrontendLocaleData } from './types-ha';
 
 /* eslint no-console: 0 */
 console.info(
@@ -162,6 +166,8 @@ class ChartsCard extends LitElement {
   private _brushSelectionSpan = 0;
 
   private _yAxisConfig?: ChartCardYAxis[];
+
+  private _serverTimeOffset = 0;
 
   @property({ attribute: false }) _lastUpdated: Date = new Date();
 
@@ -287,6 +293,7 @@ class ChartsCard extends LitElement {
       this._loaded = false;
       this._dataLoaded = false;
       this._updating = false;
+      this._serverTimeOffset = 0;
       if (this._apexBrush) {
         this._apexBrush.destroy();
         this._apexBrush = undefined;
@@ -365,36 +372,6 @@ class ChartsCard extends LitElement {
 
       const defColors = this._config?.color_list || DEFAULT_COLORS;
       if (this._config) {
-        if (this._config.yaxis && this._config.yaxis.length > 1) {
-          if (
-            this._config.series.some((serie) => {
-              return !serie.yaxis_id;
-            })
-          ) {
-            throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
-          }
-          if (
-            this._config.yaxis.some((yaxis) => {
-              return !yaxis.id;
-            })
-          ) {
-            throw new Error(`Multiple yaxis detected: Some yaxis are missing an 'id'.`);
-          }
-        }
-        if (this._config.yaxis) {
-          const yAxisConfig = this._generateYAxisConfig(this._config);
-          if (this._config.apex_config) {
-            this._config.apex_config.yaxis = yAxisConfig;
-          } else {
-            this._config.apex_config = {
-              yaxis: yAxisConfig,
-            };
-          }
-          this._yAxisConfig?.forEach((yaxis) => {
-            [yaxis.min, yaxis.min_type] = this._getTypeOfMinMax(yaxis.min);
-            [yaxis.max, yaxis.max_type] = this._getTypeOfMinMax(yaxis.max);
-          });
-        }
         this._graphs = this._config.series.map((serie, index) => {
           serie.index = index;
           serie.ignore_history = !!(
@@ -423,6 +400,7 @@ class ChartsCard extends LitElement {
           }
           if (!serie.show) {
             serie.show = {
+              in_legend: DEFAULT_SHOW_IN_LEGEND,
               legend_value: DEFAULT_SHOW_LEGEND_VALUE,
               in_header: DEFAULT_SHOW_IN_HEADER,
               in_chart: DEFAULT_SHOW_IN_CHART,
@@ -430,6 +408,7 @@ class ChartsCard extends LitElement {
               offset_in_name: DEFAULT_SHOW_OFFSET_IN_NAME,
             };
           } else {
+            serie.show.in_legend = serie.show.in_legend === undefined ? DEFAULT_SHOW_IN_LEGEND : serie.show.in_legend;
             serie.show.legend_value =
               serie.show.legend_value === undefined ? DEFAULT_SHOW_LEGEND_VALUE : serie.show.legend_value;
             serie.show.in_chart = serie.show.in_chart === undefined ? DEFAULT_SHOW_IN_CHART : serie.show.in_chart;
@@ -484,6 +463,36 @@ class ChartsCard extends LitElement {
             this._config!.series_in_brush.push(serie);
           }
         });
+        if (this._config.yaxis && this._config.yaxis.length > 1) {
+          if (
+            this._config.series_in_graph.some((serie) => {
+              return !serie.yaxis_id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some series are missing the 'yaxis_id' configuration.`);
+          }
+          if (
+            this._config.yaxis.some((yaxis) => {
+              return !yaxis.id;
+            })
+          ) {
+            throw new Error(`Multiple yaxis detected: Some yaxis are missing an 'id'.`);
+          }
+        }
+        if (this._config.yaxis) {
+          const yAxisConfig = this._generateYAxisConfig(this._config);
+          if (this._config.apex_config) {
+            this._config.apex_config.yaxis = yAxisConfig;
+          } else {
+            this._config.apex_config = {
+              yaxis: yAxisConfig,
+            };
+          }
+          this._yAxisConfig?.forEach((yaxis) => {
+            [yaxis.min, yaxis.min_type] = this._getTypeOfMinMax(yaxis.min);
+            [yaxis.max, yaxis.max_type] = this._getTypeOfMinMax(yaxis.max);
+          });
+        }
         this._headerColors = this._headerColors.slice(0, this._config?.series.length);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -499,7 +508,7 @@ class ChartsCard extends LitElement {
     if (!config.yaxis) return undefined;
     const burned: boolean[] = [];
     this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
-    const yaxisConfig: ApexYAxis[] = config.series.map((serie, serieIndex) => {
+    const yaxisConfig: ApexYAxis[] = config.series_in_graph.map((serie, serieIndex) => {
       let idx = -1;
       if (config.yaxis?.length !== 1) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -753,6 +762,10 @@ class ChartsCard extends LitElement {
   private async _initialLoad() {
     await this.updateComplete;
 
+    if (isUsingServerTimezone(this._hass)) {
+      this._serverTimeOffset = computeTimezoneDiffWithLocal(this._hass?.config.time_zone);
+    }
+
     if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
       this._loaded = true;
       const graph = this.shadowRoot.querySelector('#graph');
@@ -823,7 +836,8 @@ class ChartsCard extends LitElement {
             return;
           }
           let data: EntityCachePoints = [];
-          const offset = (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
+          const offset =
+            this._serverTimeOffset + (this._seriesOffset[index] || 0) - (this._seriesTimeDelta[index] || 0);
           if (offset) {
             data = offsetData(graph.history, offset);
           } else {
@@ -832,12 +846,18 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].type !== 'column' && this._config?.series[index].extend_to) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const lastPoint = data.slice(-1)[0]!;
-            if (this._config?.series[index].extend_to === 'end' && lastPoint[0] < end.getTime()) {
+            if (
+              this._config?.series[index].extend_to === 'end' &&
+              lastPoint[0] < end.getTime() - this._serverTimeOffset
+            ) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data.push([end.getTime(), lastPoint[1]]);
-            } else if (this._config?.series[index].extend_to === 'now' && lastPoint[0] < now.getTime()) {
+              data.push([end.getTime() - this._serverTimeOffset, lastPoint[1]]);
+            } else if (
+              this._config?.series[index].extend_to === 'now' &&
+              lastPoint[0] < now.getTime() - this._serverTimeOffset
+            ) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              data.push([now.getTime(), lastPoint[1]]);
+              data.push([now.getTime() - this._serverTimeOffset, lastPoint[1]]);
             }
           }
           const result = this._config?.series[index].invert ? { data: this._invertData(data) } : { data };
@@ -845,14 +865,14 @@ class ChartsCard extends LitElement {
           if (this._config?.series[index].show.in_brush) brushData.series.push(result);
           return;
         });
-        graphData.annotations = this._computeAnnotations(start, end, now);
+        graphData.annotations = this._computeAnnotations(start, end, new Date(now.getTime() - this._serverTimeOffset));
         if (this._yAxisConfig) {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
         }
         if (!this._apexBrush) {
           graphData.xaxis = {
-            min: start.getTime(),
-            max: this._findEndOfChart(end, false),
+            min: start.getTime() - this._serverTimeOffset,
+            max: this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false),
           };
         }
       } else {
@@ -949,8 +969,8 @@ class ChartsCard extends LitElement {
         TIMESERIES_TYPES.includes(this._config.chart_type) ? false : true,
       );
       if (this._apexBrush) {
-        const newMin = start.getTime();
-        const newMax = this._findEndOfChart(end, false);
+        const newMin = start.getTime() - this._serverTimeOffset;
+        const newMax = this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false);
         brushData.xaxis = {
           min: newMin,
           max: newMax,
@@ -1004,10 +1024,13 @@ class ChartsCard extends LitElement {
       points: this._config?.series_in_graph.flatMap((serie, index) => {
         if (serie.show.extremas) {
           const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(
-            this._seriesOffset[index]
-              ? new Date(start.getTime() + this._seriesOffset[index]).getTime()
+            this._seriesOffset[serie.index]
+              ? new Date(start.getTime() + this._seriesOffset[serie.index]).getTime()
               : start.getTime(),
-            this._seriesOffset[index] ? new Date(end.getTime() + this._seriesOffset[index]).getTime() : end.getTime(),
+            this._seriesOffset[serie.index]
+              ? new Date(end.getTime() + this._seriesOffset[serie.index]).getTime()
+              : end.getTime(),
+            this._serverTimeOffset - (this._seriesTimeDelta[serie.index] || 0),
           ) || {
             min: [0, null],
             max: [0, null],
@@ -1021,7 +1044,7 @@ class ChartsCard extends LitElement {
             extremas.push(
               ...this._getPointAnnotationStyle(
                 min,
-                this._seriesOffset[index],
+                this._seriesOffset[serie.index],
                 bgColor,
                 txtColor,
                 serie,
@@ -1037,7 +1060,7 @@ class ChartsCard extends LitElement {
             extremas.push(
               ...this._getPointAnnotationStyle(
                 max,
-                this._seriesOffset[index],
+                this._seriesOffset[serie.index],
                 bgColor,
                 txtColor,
                 serie,
@@ -1444,14 +1467,18 @@ class ChartsCard extends LitElement {
   private _getSpanDates(): { start: Date; end: Date } {
     let end = new Date();
     let start = new Date(end.getTime() - this._graphSpan + 1);
-    // Span
+    const curMoment = moment();
+    if ((this._hass?.locale as OverrideFrontendLocaleData).time_zone === 'server') {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      curMoment.tz(this._hass!.config.time_zone);
+    }
     if (this._config?.span?.start) {
       // Just Span
-      const startM = moment().startOf(this._config.span.start);
+      const startM = curMoment.startOf(this._config.span.start);
       start = startM.toDate();
       end = new Date(start.getTime() + this._graphSpan);
     } else if (this._config?.span?.end) {
-      const endM = moment().endOf(this._config.span.end);
+      const endM = curMoment.endOf(this._config.span.end);
       end = new Date(endM.toDate().getTime() + 1);
       start = new Date(end.getTime() - this._graphSpan + 1);
     }

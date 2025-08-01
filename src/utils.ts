@@ -5,7 +5,8 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
-import { formatNumber, FrontendLocaleData, HomeAssistant, LovelaceConfig } from 'custom-card-helpers';
+import { formatNumber, FrontendLocaleData, HomeAssistant } from 'custom-card-helpers';
+import { OverrideFrontendLocaleData } from './types-ha';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -120,7 +121,7 @@ export function computeTextColor(backgroundColor: string): string {
 
 export function validateInterval(interval: string, prefix: string): number {
   const parsed = parse(interval);
-  if (parsed === null) {
+  if (parsed === undefined) {
     throw new Error(`'${prefix}: ${interval}' is not a valid range of time`);
   }
   return parsed;
@@ -324,4 +325,13 @@ export function myFormatNumber(
   return formatNumber(lValue, localeOptions, {
     maximumFractionDigits: precision === undefined ? DEFAULT_FLOAT_PRECISION : precision,
   });
+}
+
+export function computeTimezoneDiffWithLocal(timezone: string | undefined): number {
+  if (!timezone) return 0;
+  return (moment().utcOffset() - moment().tz(timezone).utcOffset()) * 60 * 1000;
+}
+
+export function isUsingServerTimezone(/*config: ChartCardConfig, */ hass: HomeAssistant | undefined): boolean {
+  return (hass?.locale as OverrideFrontendLocaleData).time_zone === 'server';
 }

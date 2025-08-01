@@ -61,23 +61,25 @@ export const ChartCardSpanExtConfig = t.iface([], {
 
 export const ChartCardStartEnd = t.union(t.lit('minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'), t.lit('year'), t.lit('isoWeek'));
 
-export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('month'));
+export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'));
 
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
   "attribute": t.opt("string"),
   "name": t.opt("string"),
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
+  "stack_group": t.opt("string"),
   "color": t.opt("string"),
   "opacity": t.opt("number"),
-  "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'))),
+  "curve": t.opt(t.union(t.lit('smooth'), t.lit('straight'), t.lit('stepline'), t.lit('monotoneCubic'))),
   "stroke_width": t.opt("number"),
+  "stroke_dash": t.opt("number"),
   "extend_to": t.opt(t.union(t.lit(false), t.lit('end'), t.lit('now'))),
   "unit": t.opt("string"),
   "invert": t.opt("boolean"),
   "data_generator": t.opt("string"),
   "statistics": t.opt(t.iface([], {
-    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'))),
+    "type": t.opt(t.union(t.lit('mean'), t.lit('max'), t.lit('min'), t.lit('sum'), t.lit('state'), t.lit('change'))),
     "period": t.opt("StatisticsPeriod"),
     "align": t.opt(t.union(t.lit('start'), t.lit('end'), t.lit('middle'))),
   })),
@@ -109,6 +111,7 @@ export const ActionsConfig = t.iface([], {
 
 export const ChartCardSeriesShowConfigExt = t.iface([], {
   "as_duration": t.opt("ChartCardPrettyTime"),
+  "in_legend": t.opt("boolean"),
   "legend_value": t.opt("boolean"),
   "in_header": t.opt(t.union("boolean", t.lit('raw'), t.lit('before_now'), t.lit('after_now'))),
   "name_in_header": t.opt("boolean"),

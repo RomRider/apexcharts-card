@@ -88,7 +88,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.0.4/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.1.2/apexcharts-card.js
 ```
 
 3. Add the resource reference as described below.
@@ -99,7 +99,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=2.0.4
+  - url: /local/apexcharts-card.js?v=2.1.2
     type: module
 ```
 
@@ -162,11 +162,13 @@ The card strictly validates all the options available (but not for the `apex_con
 | :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | v1.0.0 | Override the name of the entity |
+| `stack_group` | string | | v2.1.0 | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
+| `stroke_dash` | number | `0` | v2.1.0 | Creates a dashed line. The higher the number, the bigger the dash. |
 | `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
-| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down) |
+| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down), `monotoneCubic` (create a monotone cubic spline) |
 | ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
 | `extend_to` | boolean or string | `end` | v2.0.0 | If the value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (usefull for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
@@ -267,8 +269,8 @@ series:
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` or `state` |
-| `period` | string | `hour` | v2.0.0 | Period of statistics to pull. Can be one of `5minute`, `hour`, `day` or `month` |
+| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` `state` or `change` |
+| `period` | string | `hour` | v2.0.0 | Period of statistics to pull. Can be one of `5minute`, `hour`, `day`, `week` or `month` |
 | `align` | string | `middle` | v2.0.0 | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 
 ### Main `show` Options
@@ -284,8 +286,8 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `title` | string | | v1.1.0 | The title of the chart you want to display |
-| `title_actions` | object | v2.0.0 | Actions to perform while taping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
-| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positioning will be supported later |
+| `title_actions` | object | v2.0.0 | Actions to perform while tapping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
+| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the series |
 | `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |

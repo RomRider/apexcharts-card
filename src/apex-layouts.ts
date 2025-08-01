@@ -3,6 +3,7 @@ import parse from 'parse-duration';
 import {
   DEFAULT_AREA_OPACITY,
   DEFAULT_FLOAT_PRECISION,
+  DEFAULT_LEGEND_MARKER_WIDTH,
   DEFAULT_SERIE_TYPE,
   HOUR_24,
   NO_VALUE,
@@ -72,6 +73,7 @@ export function getLayoutConfig(
       position: 'bottom',
       show: true,
       formatter: getLegendFormatter(config, hass),
+      markers: getLegendMarkers(config),
     },
     stroke: {
       curve: getStrokeCurve(config, false),
@@ -79,6 +81,7 @@ export function getLayoutConfig(
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, false),
+      dashArray: getStrokeDash(config, false),
     },
     markers: {
       showNullDataPoints: false,
@@ -163,6 +166,7 @@ export function getBrushLayoutConfig(
       colors:
         config.chart_type === 'pie' || config.chart_type === 'donut' ? ['var(--card-background-color)'] : undefined,
       width: getStrokeWidth(config, true),
+      dashArray: getStrokeDash(config, false),
     },
     markers: {
       showNullDataPoints: false,
@@ -187,6 +191,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, bru
     return series.map((serie, index) => {
       return {
         name: computeName(index, series, undefined, hass?.states[serie.entity]),
+        group: config.stacked && serie.type === 'column' ? serie.stack_group : undefined,
         type: serie.type,
         data: [],
       };
@@ -387,6 +392,9 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
       undefined,
       hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
     );
+    if (!conf.series_in_graph[opts.seriesIndex].show.in_legend) {
+      return [];
+    }
     if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
       return [name];
     } else {
@@ -427,6 +435,10 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
   };
 }
 
+function getLegendMarkers(config: ChartCardConfig) {
+  return { size: config.series_in_graph.map((serie) => (serie.show.in_legend ? DEFAULT_LEGEND_MARKER_WIDTH : 0)) };
+}
+
 function getStrokeCurve(config: ChartCardConfig, brush: boolean) {
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
@@ -449,6 +461,13 @@ function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
       return serie.stroke_width;
     }
     return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
+  });
+}
+
+function getStrokeDash(config: ChartCardConfig, brush: boolean) {
+  const series = brush ? config.series_in_brush : config.series_in_graph;
+  return series.map((serie) => {
+    return serie.stroke_dash;
   });
 }
 

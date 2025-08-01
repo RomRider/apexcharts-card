@@ -1077,6 +1077,7 @@ views:
                     entity: sensor.random_0_1000
               - entity: sensor.random0_100
                 transform: 'return Number(x) + 1230;'
+                stroke_dash: 2
             yaxis:
               - min: 0
                 max: ~1200
@@ -1211,6 +1212,15 @@ views:
                     title: Synology NAS
             series:
               - entity: sensor.random_0_1000
+                name: Test Index
+                float_precision: 0
+                show:
+                  extremas: min
+                  in_chart: false
+                group_by:
+                  duration: 2min
+                  func: avg
+              - entity: sensor.random_0_1000
                 name: Min
                 float_precision: 0
                 show:
@@ -1247,6 +1257,7 @@ views:
                   func: avg
               - entity: sensor.random_0_1000
                 name: All
+                time_delta: +10min
                 float_precision: 0
                 transform: return Number(x) + 800;
                 show:
@@ -1314,6 +1325,7 @@ views:
                   const tomorrow = new Date(start.getTime() + 25 * 1000 * 60 * 60);
                   const tomorrow2 = new Date(start.getTime() + 28 * 1000 * 60 * 60);
                   return [
+                    [start.getTime(), 5],
                     [tomorrow.getTime(), 30],
                     [tomorrow2.getTime(), 20]
                   ];
@@ -1345,3 +1357,49 @@ views:
               type: mean
               period: 5minute
           - entity: sensor.temperature
+  - title: Test 3
+    panel: false
+    cards:
+      - type: custom:apexcharts-card
+        stacked: true
+        cache: false
+        graph_span: 5min
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+        yaxis:
+          - id: should_work
+        series:
+          - entity: sensor.random0_100
+            stack_group: group1
+            group_by:
+              duration: 1min
+            type: column
+            name: tes2t
+            group_by:
+              duration: 1min
+            show:
+              in_legend: false
+              in_header: false
+          - entity: sensor.random0_100
+            stack_group: group1
+            type: column
+            show:
+              in_header: false
+            # name: pioup
+          - entity: sensor.random_0_1000
+            type: column
+            show:
+              in_header: false
+            group_by:
+              duration: 1min
+          - entity: sensor.random_0_1000
+            name: only in header
+            type: column
+            show:
+              in_chart: false
+              in_header: true
+            group_by:
+              duration: 1min
+            # stack_group: group1

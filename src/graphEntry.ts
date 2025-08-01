@@ -135,11 +135,15 @@ export default class GraphEntry {
     return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
   }
 
-  public minMaxWithTimestamp(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
+  public minMaxWithTimestamp(
+    start: number,
+    end: number,
+    offset: number,
+  ): { min: HistoryPoint; max: HistoryPoint } | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
     if (this._computedHistory.length === 1)
       return { min: [start, this._computedHistory[0][1]], max: [end, this._computedHistory[0][1]] };
-    return this._computedHistory.reduce(
+    const minMax = this._computedHistory.reduce(
       (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
         if (point[1] === null) return acc;
         if (point[0] > end || point[0] < start) return acc;
@@ -149,6 +153,11 @@ export default class GraphEntry {
       },
       { min: [0, null], max: [0, null] },
     );
+    if (offset) {
+      if (minMax.min[0]) minMax.min[0] -= offset;
+      if (minMax.max[0]) minMax.max[0] -= offset;
+    }
+    return minMax;
   }
 
   public minMaxWithTimestampForYAxis(start: number, end: number): { min: HistoryPoint; max: HistoryPoint } | undefined {
@@ -160,7 +169,7 @@ export default class GraphEntry {
       }) - 1;
     if (lastHistoryIndexBeforeStart >= 0)
       lastTimestampBeforeStart = this._computedHistory[lastHistoryIndexBeforeStart][0];
-    return this.minMaxWithTimestamp(lastTimestampBeforeStart, end);
+    return this.minMaxWithTimestamp(lastTimestampBeforeStart, end, 0);
   }
 
   private async _getCache(key: string, compressed: boolean): Promise<EntityEntryCache | undefined> {
@@ -279,6 +288,8 @@ export default class GraphEntry {
                 displayDate = new Date(startDate.getTime() + 1800000); // 30min
               } else if (this._config.statistics.period === 'day') {
                 displayDate = new Date(startDate.getTime() + 43200000); // 12h
+              } else if (this._config.statistics.period === 'week') {
+                displayDate = new Date(startDate.getTime() + 259200000); // 3.5d
               } else {
                 displayDate = new Date(startDate.getTime() + 1296000000); // 15d
               }
