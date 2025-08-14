@@ -644,7 +644,7 @@ export const stylesApex: CSSResultGroup = css`
 
   .apexcharts-toolbar {
     position: absolute;
-    z-index: 11;
+    z-index: 1;
     max-width: 176px;
     text-align: right;
     border-radius: 3px;
