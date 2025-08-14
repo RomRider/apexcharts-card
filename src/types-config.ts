@@ -41,6 +41,8 @@ export interface ChartCardExternalConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   view_layout?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  visibility?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any  
   grid_options?: any;  
   index?: number;
   view_index?: number;
