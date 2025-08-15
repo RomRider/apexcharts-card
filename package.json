@@ -31,7 +31,7 @@
   "dependencies": {
     "@ctrl/tinycolor": "^3.6.1",
     "@material/mwc-ripple": "^0.25.3",
-    "apexcharts": "^5.3.3",
+    "apexcharts": "^4.3.3",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.9.0",
     "lit": "^2.8.0",
