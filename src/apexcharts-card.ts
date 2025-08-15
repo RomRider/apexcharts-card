@@ -84,6 +84,7 @@ import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
 import { OverrideFrontendLocaleData } from './types-ha';
+
 /* eslint no-console: 0 */
 console.info(
   `%c APEXCHARTS-CARD %c v${pjson.version} `,
