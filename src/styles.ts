@@ -1,13 +1,13 @@
 import { css, CSSResultGroup } from 'lit';
 
 export const stylesApex: CSSResultGroup = css`
-  :host {
-    display: block;
-  }
-
   ha-card {
     overflow: hidden;
     position: relative;
+  }
+
+  ha-card.section {
+    height: 100%;
   }
 
   .wrapper {
@@ -15,11 +15,16 @@ export const stylesApex: CSSResultGroup = css`
     grid-template-areas: 'header' 'graph';
     grid-template-columns: 1fr;
     grid-template-rows: min-content 1fr;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
   }
 
   #graph-wrapper {
     height: 100%;
     grid-area: graph;
+    min-width: 0;
+    min-height: 0;
   }
 
   #brush {
@@ -35,6 +40,7 @@ export const stylesApex: CSSResultGroup = css`
     padding: 8px 16px 0px;
     grid-area: header;
     overflow: hidden;
+    min-width: 0;
   }
   #header.floating {
     position: absolute;

@@ -131,6 +131,7 @@ The card stricly validates all the options available (but not for the `apex_conf
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
+| `section_mode` | boolean | `false` | NEXT_VERSION | Set to `true` when the card is used in a section view (sets CSS height to `100%`) |
 | `config_templates` | array | | v1.6.0 | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
 | `color_list` | array | | v1.6.0 | Define the array of colors applied to the series. Will be overriden by each serie's color if defined. Usefull for `config_templates` mainly. |
 | `all_series_config` | object | | v1.6.0 | If something is defined here it will apply this config to all the series. It accepts the same options as a serie minus `entity`. It is useful to avoid repetition but the same thing can be achieve in each serie individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |

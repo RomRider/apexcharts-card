@@ -8,6 +8,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "type": t.lit('custom:apexcharts-card'),
   "config_templates": t.opt(t.union(t.array("string"), "string")),
   "color_list": t.opt(t.array("string")),
+  "section_mode": t.opt("boolean"),
   "locale": t.opt("string"),
   "experimental": t.opt(t.iface([], {
     "color_threshold": t.opt("boolean"),
