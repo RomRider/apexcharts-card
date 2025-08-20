@@ -1,3 +1,11 @@
+## 2.2.0-dev.2 (2025-08-20)
+
+* docs: Fix typos and improve grammar in README.md (#698) ([6655949](https://github.com/RomRider/apexcharts-card/commit/6655949)), closes [#698](https://github.com/RomRider/apexcharts-card/issues/698)
+* docs: Updated install instructions ([37f3fa2](https://github.com/RomRider/apexcharts-card/commit/37f3fa2))
+* feat(series): Extend `stroke_dash` to support an array for more complex dashing patterns (#902) ([cafbcec](https://github.com/RomRider/apexcharts-card/commit/cafbcec)), closes [#902](https://github.com/RomRider/apexcharts-card/issues/902)
+* Fix: Text color selection for given background now takes into account human perception. (#820) ([f09756f](https://github.com/RomRider/apexcharts-card/commit/f09756f)), closes [#820](https://github.com/RomRider/apexcharts-card/issues/820)
+* chore(deps): Update release dependencies and some outdated packages ([07b901a](https://github.com/RomRider/apexcharts-card/commit/07b901a))
+
 ## 2.2.0-dev.1 (2025-08-20)
 
 * chore: Update CI ([ad124f7](https://github.com/RomRider/apexcharts-card/commit/ad124f7))
