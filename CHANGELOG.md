@@ -1,3 +1,8 @@
+## 2.2.0-dev.3 (2025-08-20)
+
+* feat(series): Add option to hide null or zero values in the header (#544) ([baf2066](https://github.com/RomRider/apexcharts-card/commit/baf2066)), closes [#544](https://github.com/RomRider/apexcharts-card/issues/544) [#543](https://github.com/RomRider/apexcharts-card/issues/543)
+* chore(ci): Fix release notes generator ([8d204fc](https://github.com/RomRider/apexcharts-card/commit/8d204fc))
+
 ## 2.2.0-dev.2 (2025-08-20)
 
 * docs: Fix typos and improve grammar in README.md (#698) ([6655949](https://github.com/RomRider/apexcharts-card/commit/6655949)), closes [#698](https://github.com/RomRider/apexcharts-card/issues/698)
