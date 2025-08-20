@@ -571,11 +571,14 @@ class ChartsCard extends LitElement {
       wrapper: true,
       'with-header': this._config.header?.show || true,
     };
+    const haCardClasses: ClassInfo = {
+      section: this._config?.section_mode || false,
+    };
 
     const standardHeaderTitle = this._config.header?.standard_format ? this._config.header?.title : undefined;
 
     return html`
-      <ha-card header=${ifDefined(standardHeaderTitle)}>
+      <ha-card header=${ifDefined(standardHeaderTitle)} class=${classMap(haCardClasses)}>
         <div id="spinner-wrapper">
           <div id="spinner" class=${classMap(spinnerClass)}>
             <div></div>
@@ -1564,6 +1567,15 @@ class ChartsCard extends LitElement {
 
   public getCardSize(): number {
     return 3;
+  }
+
+  public getGridOptions() {
+    return {
+      rows: 4,
+      columns: 12,
+      min_rows: 2,
+      min_columns: 6,
+    };
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[], entitiesFallback: string[]) {

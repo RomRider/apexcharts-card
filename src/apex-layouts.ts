@@ -24,6 +24,7 @@ export function getLayoutConfig(
   const locales = getLocales();
   const def = {
     chart: {
+      height: config.section_mode ? '100%' : undefined,
       locales: [
         (config.locale && locales[config.locale]) || (hass?.language && locales[hass.language]) || getDefaultLocale(),
       ],

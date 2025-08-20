@@ -121,7 +121,7 @@ export function computeTextColor(backgroundColor: string): string {
 
 export function validateInterval(interval: string, prefix: string): number {
   const parsed = parse(interval);
-  if (parsed === undefined) {
+  if (parsed === null) {
     throw new Error(`'${prefix}: ${interval}' is not a valid range of time`);
   }
   return parsed;

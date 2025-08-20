@@ -2,6 +2,7 @@ export interface ChartCardExternalConfig {
   type: 'custom:apexcharts-card';
   config_templates?: string[] | string;
   color_list?: string[];
+  section_mode?: boolean;
   locale?: string;
   experimental?: {
     color_threshold?: boolean;
@@ -40,6 +41,10 @@ export interface ChartCardExternalConfig {
   card_mod?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   view_layout?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  visibility?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  grid_options?: any;
   index?: number;
   view_index?: number;
   brush?: ChartCardBrushExtConfig;
