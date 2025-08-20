@@ -1,8 +1,10 @@
 lovelace:
-  mode: yaml
-  resources:
-    - url: http://127.0.0.1:5000/apexcharts-card.js
-      type: module
+  mode: storage
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      title: yaml
+      filename: test/ui-lovelace.yaml
 
 default_config:
 
@@ -74,5 +76,3 @@ automation:
         target:
           entity_id:
             - sensor.counter_no_significant_update
-
-browser_mod:

@@ -1,6 +1,6 @@
 {
   "name": "apexcharts-card",
-  "version": "2.1.2",
+  "version": "2.2.0-dev.2",
   "description": "A Home Assistant Lovelace card using ApexCharts to render graphs",
   "main": "src/apexcharts-card.ts",
   "scripts": {
@@ -31,7 +31,7 @@
   "dependencies": {
     "@ctrl/tinycolor": "^3.6.1",
     "@material/mwc-ripple": "^0.25.3",
-    "apexcharts": "^3.50.0",
+    "apexcharts": "^5.3.3",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.9.0",
     "lit": "^2.8.0",
@@ -41,7 +41,7 @@
     "moment-duration-format": "^2.3.2",
     "moment-range": "^4.0.2",
     "moment-timezone": "^0.5.45",
-    "parse-duration": "^1.1.0",
+    "parse-duration": "^2.1.4",
     "spark-md5": "^3.0.2",
     "tinycolor": "^0.0.1",
     "ts-interface-checker": "^1.0.2"
@@ -55,11 +55,11 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/npm": "^9.0.2",
-    "@semantic-release/release-notes-generator": "^10.0.3",
+    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.0.3",
     "@types/lz-string": "^1.5.0",
     "@types/moment-duration-format": "^2.2.6",
     "@types/spark-md5": "^3.0.4",
@@ -71,7 +71,7 @@
     "rollup-plugin-serve": "^1.1.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
-    "semantic-release": "^19.0.5",
+    "semantic-release": "^24.2.7",
     "ts-interface-builder": "^0.3.3",
     "typescript": "^4.9.5"
   }

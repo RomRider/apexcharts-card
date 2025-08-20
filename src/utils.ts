@@ -112,7 +112,7 @@ export function computeColor(color: string): string {
 
 export function computeTextColor(backgroundColor: string): string {
   const colorObj = new TinyColor(backgroundColor);
-  if (colorObj.isValid && colorObj.getLuminance() > 0.5) {
+  if (colorObj.isValid && colorObj.isLight()) {
     return '#000'; // bright colors - black font
   } else {
     return '#fff'; // dark colors - white font
@@ -121,7 +121,7 @@ export function computeTextColor(backgroundColor: string): string {
 
 export function validateInterval(interval: string, prefix: string): number {
   const parsed = parse(interval);
-  if (parsed === undefined) {
+  if (parsed === null) {
     throw new Error(`'${prefix}: ${interval}' is not a valid range of time`);
   }
   return parsed;
