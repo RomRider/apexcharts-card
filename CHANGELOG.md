@@ -1,3 +1,22 @@
+## [2.2.0](https://github.com/RomRider/apexcharts-card/compare/v2.1.2...v2.2.0) (2025-08-20)
+
+### Features
+
+* Display the card version on the card (useful for debugging) ([ac800c5](https://github.com/RomRider/apexcharts-card/commit/ac800c543669376ea531e0dadd0c18761e4d22c0))
+* **series:** Add option to hide null or zero values in the header ([#544](https://github.com/RomRider/apexcharts-card/issues/544)) ([baf2066](https://github.com/RomRider/apexcharts-card/commit/baf206600922be253fc431c720bb4ce54ed8b046)), closes [#543](https://github.com/RomRider/apexcharts-card/issues/543)
+* **series:** Extend `stroke_dash` to support an array for more complex dashing patterns ([#902](https://github.com/RomRider/apexcharts-card/issues/902)) ([cafbcec](https://github.com/RomRider/apexcharts-card/commit/cafbcec989725f0bd4d23cec9474aba2cffa5e3c))
+* Support for sections views using `section_mode` ([fe85144](https://github.com/RomRider/apexcharts-card/commit/fe85144b646f2470dcc329574662f778e2cedc46)), closes [#927](https://github.com/RomRider/apexcharts-card/issues/927) [#837](https://github.com/RomRider/apexcharts-card/issues/837) [#904](https://github.com/RomRider/apexcharts-card/issues/904) [#736](https://github.com/RomRider/apexcharts-card/issues/736)
+
+### Bug Fixes
+
+* graph rendering too wide when heading title is too long ([#812](https://github.com/RomRider/apexcharts-card/issues/812)) ([094280d](https://github.com/RomRider/apexcharts-card/commit/094280ddf56365fa8a1fc8372ec66d26f37d2972))
+* Text color selection for given background now takes into account human perception. ([#820](https://github.com/RomRider/apexcharts-card/issues/820)) ([f09756f](https://github.com/RomRider/apexcharts-card/commit/f09756ff33caa7a092de6a2492699fe3b0436d95))
+
+### Documentation
+
+* Fix typos and improve grammar in README.md ([#698](https://github.com/RomRider/apexcharts-card/issues/698)) ([6655949](https://github.com/RomRider/apexcharts-card/commit/665594979b9c39e5b02c04fc10b0a0b022874311))
+* Updated install instructions ([37f3fa2](https://github.com/RomRider/apexcharts-card/commit/37f3fa2820372d1480eda57455dfde980def5044))
+
 ## 2.2.0-dev.3 (2025-08-20)
 
 * feat(series): Add option to hide null or zero values in the header (#544) ([baf2066](https://github.com/RomRider/apexcharts-card/commit/baf2066)), closes [#544](https://github.com/RomRider/apexcharts-card/issues/544) [#543](https://github.com/RomRider/apexcharts-card/issues/543)

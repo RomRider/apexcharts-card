@@ -88,7 +88,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.1.2/apexcharts-card.js
+$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.2.0/apexcharts-card.js
 ```
 
 3. Add the resource reference as described below.
@@ -99,7 +99,7 @@ If you configure Lovelace via YAML, add a reference to `apexcharts-card.js` insi
 
 ```yaml
 resources:
-  - url: /local/apexcharts-card.js?v=2.1.2
+  - url: /local/apexcharts-card.js?v=2.2.0
     type: module
 ```
 
@@ -131,7 +131,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `section_mode` | boolean | `false` | NEXT_VERSION | Set to `true` when the card is used in a section view (sets CSS height to `100%`) |
+| `section_mode` | boolean | `false` | v2.2.0 | Set to `true` when the card is used in a section view (sets CSS height to `100%`) |
 | `config_templates` | array | | v1.6.0 | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
 | `color_list` | array | | v1.6.0 | Define the array of colors applied to the series. Will be overridden by each series's color if defined. Useful for `config_templates` mainly. |
 | `all_series_config` | object | | v1.6.0 | If something is defined here it will apply this config to all the series. It accepts the same options as a series minus `entity`. It is useful to avoid repetition but the same thing can be achieved in each series individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
@@ -197,8 +197,8 @@ The card strictly validates all the options available (but not for the `apex_con
 | `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
 | `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific series in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. If the graph spans into the future (using `data_generator`): `before_now` would display the value just before the current time and `after_now` would display the value just after the current time (Introduced in v1.8.0) |
 | `name_in_header` | boolean | `true` | v1.8.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series under its state in the header |
-| `null_in_header` | boolean | `true` | NEXT_VERSION | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is null |
-| `zero_in_header` | boolean | `true` | NEXT_VERSION | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is zero |
+| `null_in_header` | boolean | `true` | v2.2.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is null |
+| `zero_in_header` | boolean | `true` | v2.2.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is zero |
 | `header_color_threshold` | boolean | `false` | v1.7.0 | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
 | `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the series from the chart |
 | `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this series directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`). If you set it to `percent`, it will display the percentage of the series instead of the value in the case of a `pie` or `donut` chart. |
@@ -282,7 +282,7 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
 | `last_updated` | boolean | `false` | v1.10.0 | Show the last time the chart was updated on the bottom right |
-| `version` | boolean | `false` | NEXT_VERSION | Show the card version on the bottom left (useful for debug) |
+| `version` | boolean | `false` | v2.2.0 | Show the card version on the bottom left (useful for debug) |
 
 ### `header` Options
 
