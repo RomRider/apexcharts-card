@@ -121,6 +121,8 @@ export interface ChartCardSeriesShowConfigExt {
   legend_value?: boolean;
   in_header?: boolean | 'raw' | 'before_now' | 'after_now';
   name_in_header?: boolean;
+  null_in_header?: boolean;
+  zero_in_header?: boolean;
   header_color_threshold?: boolean;
   in_chart?: boolean;
   datalabels?: boolean | 'total' | 'percent';
