@@ -48,6 +48,7 @@ However, some things might be broken :grin:
     - [Min/Max Format](#minmax-format)
     - [Examples](#examples)
   - [Apex Charts Options Example](#apex-charts-options-example)
+  - [Sections Views](#sections-views)
   - [Layouts](#layouts)
   - [Configuration Templates](#configuration-templates)
     - [General](#general)
@@ -131,7 +132,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
 | :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `section_mode` | boolean | `false` | v2.2.0 | Set to `true` when the card is used in a section view (sets CSS height to `100%`) |
+| `section_mode` | boolean | `false` | v2.2.0 | Set to `true` when the card is used in a section view (sets CSS height to `100%`). See [Sections Views](#sections-views) |
 | `config_templates` | array | | v1.6.0 | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
 | `color_list` | array | | v1.6.0 | Define the array of colors applied to the series. Will be overridden by each series's color if defined. Useful for `config_templates` mainly. |
 | `all_series_config` | object | | v1.6.0 | If something is defined here it will apply this config to all the series. It accepts the same options as a series minus `entity`. It is useful to avoid repetition but the same thing can be achieved in each series individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
@@ -633,6 +634,22 @@ apex_config:
           return "42";
         }
 ```
+
+### Sections Views
+
+When the card is used in a Home Assistant sections view, `section_mode: true` should be set to align with the grid provided by the sections view. If not, then the card will not align with the grid.
+You can also define the `grid_options` manually as with any other card and it will change the size of the card in the dashboard. This only works if `section_mode` is `true`.
+
+```yaml
+type: custom:apexcharts-card
+section_mode: true
+grid_options:
+  rows: 4 # default is 6
+  columns: 6 # default is 12
+```
+
+![sections](docs/sections.png)
+
 
 ### Layouts
 
