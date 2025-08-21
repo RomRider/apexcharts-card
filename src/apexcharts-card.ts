@@ -508,7 +508,7 @@ class ChartsCard extends LitElement {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
     // Full reset only happens in editor mode
-    this._reset();
+    // this._reset();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -580,7 +580,7 @@ class ChartsCard extends LitElement {
       'with-header': this._config.header?.show || true,
     };
     const haCardClasses: ClassInfo = {
-      section: this._config?.section_mode || false,
+      section: this._config.section_mode || false,
     };
 
     const standardHeaderTitle = this._config.header?.standard_format ? this._config.header?.title : undefined;
@@ -782,13 +782,15 @@ class ChartsCard extends LitElement {
   }
 
   private async _initialLoad() {
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await this.updateComplete;
     if (isUsingServerTimezone(this._hass)) {
       this._serverTimeOffset = computeTimezoneDiffWithLocal(this._hass?.config.time_zone);
     }
-
-    if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
+    const graph = this.shadowRoot?.querySelector('#graph');
+    const brush = this.shadowRoot?.querySelector('#brush');
+    if (!this._apexChart && graph && this._config) {
       this._loaded = true;
-      const graph = this.shadowRoot.querySelector('#graph');
       const layout = getLayoutConfig(this._config, this._hass, this._graphs);
       if (this._config.series_in_brush.length) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -797,8 +799,7 @@ class ChartsCard extends LitElement {
       this._apexChart = new ApexCharts(graph, layout);
       const promises: Promise<void>[] = [];
       promises.push(this._apexChart.render());
-      if (this._config.series_in_brush.length) {
-        const brush = this.shadowRoot.querySelector('#brush');
+      if (this._config.series_in_brush.length && brush) {
         this._apexBrush = new ApexCharts(
           brush,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
