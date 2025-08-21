@@ -120,6 +120,7 @@ export interface ChartCardSeriesShowConfigExt {
   in_legend?: boolean;
   legend_value?: boolean;
   in_header?: boolean | 'raw' | 'before_now' | 'after_now';
+  unit?: boolean | 'before_value';
   name_in_header?: boolean;
   null_in_header?: boolean;
   zero_in_header?: boolean;
