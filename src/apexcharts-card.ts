@@ -1582,8 +1582,11 @@ class ChartsCard extends LitElement {
   }
 
   public getGridOptions() {
+    if (!this._config?.section_mode) {
+      return {};
+    }
     return {
-      rows: 4,
+      rows: 6,
       columns: 12,
       min_rows: 2,
       min_columns: 6,
