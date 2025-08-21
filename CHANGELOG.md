@@ -1,3 +1,9 @@
+## [2.2.2](https://github.com/RomRider/apexcharts-card/compare/v2.2.1...v2.2.2) (2025-08-21)
+
+### Bug Fixes
+
+* Charts would sometimes not display if used inside a vertical or horizontal stack card ([2fa43df](https://github.com/RomRider/apexcharts-card/commit/2fa43dfc76f25d8341d4ff893abf9746db2216cb)), closes [#945](https://github.com/RomRider/apexcharts-card/issues/945)
+
 ## [2.2.1](https://github.com/RomRider/apexcharts-card/compare/v2.2.0...v2.2.1) (2025-08-21)
 
 ### Bug Fixes
