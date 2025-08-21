@@ -508,7 +508,7 @@ class ChartsCard extends LitElement {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
     // Full reset only happens in editor mode
-    // this._reset();
+    this._reset();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
