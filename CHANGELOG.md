@@ -1,3 +1,9 @@
+## [2.2.3](https://github.com/RomRider/apexcharts-card/compare/v2.2.2...v2.2.3) (2025-08-21)
+
+### Bug Fixes
+
+* Fix the chart not rendering sometimes ([1c09cf6](https://github.com/RomRider/apexcharts-card/commit/1c09cf69704b1597fd875e152772e92f24f51636)), closes [#945](https://github.com/RomRider/apexcharts-card/issues/945)
+
 ## [2.2.2](https://github.com/RomRider/apexcharts-card/compare/v2.2.1...v2.2.2) (2025-08-21)
 
 ### Bug Fixes
