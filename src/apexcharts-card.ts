@@ -12,7 +12,7 @@ import {
   HistoryPoint,
   minmax_type,
 } from './types';
-import { handleAction, HomeAssistant } from 'custom-card-helpers';
+import { handleAction, HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
@@ -86,7 +86,7 @@ import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
 import { OverrideFrontendLocaleData } from './types-ha';
-
+import "./apexcharts-card-editor";
 /* eslint no-console: 0 */
 console.info(
   `%c APEXCHARTS-CARD %c v${pjson.version} `,
@@ -202,6 +202,10 @@ class ChartsCard extends LitElement {
     super.disconnectedCallback();
   }
 
+  static async getConfigElement(): Promise<LovelaceCardEditor> {
+    return document.createElement("apexcharts-card-editor");
+  }
+  
   private _updateOnInterval(): void {
     if (!this._updating && this._hass) {
       this._updating = true;
@@ -1042,62 +1046,63 @@ class ChartsCard extends LitElement {
       start.getFullYear() === end.getFullYear() &&
       start.getMonth() === end.getMonth() &&
       start.getDate() === end.getDate();
-    const minMaxPoints = this._config?.series_in_graph.flatMap((serie, index) => {
-      if (serie.show.extremas) {
-        const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(
-          this._seriesOffset[serie.index]
-            ? new Date(start.getTime() + this._seriesOffset[serie.index]).getTime()
-            : start.getTime(),
-          this._seriesOffset[serie.index]
-            ? new Date(end.getTime() + this._seriesOffset[serie.index]).getTime()
-            : end.getTime(),
-          this._serverTimeOffset - (this._seriesTimeDelta[serie.index] || 0),
-        ) || {
-          min: [0, null],
-          max: [0, null],
-        };
-        const bgColor = computeColor(this._colors[index]);
-        const txtColor = computeTextColor(bgColor);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const extremas: any = [];
-        if (min[0] && ['min', 'min+time', true, 'time'].includes(serie.show.extremas)) {
-          const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'min+time';
-          extremas.push(
-            ...this._getPointAnnotationStyle(
-              min,
-              this._seriesOffset[serie.index],
-              bgColor,
-              txtColor,
-              serie,
-              index,
-              serie.invert,
-              sameDay,
-              withTime,
-            ),
-          );
+    return {
+      points: this._config?.series_in_graph.flatMap((serie, index) => {
+        if (serie.show.extremas) {
+          const { min, max } = this._graphs?.[serie.index]?.minMaxWithTimestamp(
+            this._seriesOffset[serie.index]
+              ? new Date(start.getTime() + this._seriesOffset[serie.index]).getTime()
+              : start.getTime(),
+            this._seriesOffset[serie.index]
+              ? new Date(end.getTime() + this._seriesOffset[serie.index]).getTime()
+              : end.getTime(),
+            this._serverTimeOffset - (this._seriesTimeDelta[serie.index] || 0),
+          ) || {
+            min: [0, null],
+            max: [0, null],
+          };
+          const bgColor = computeColor(this._colors[index]);
+          const txtColor = computeTextColor(bgColor);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const extremas: any = [];
+          if (min[0] && ['min', 'min+time', true, 'time'].includes(serie.show.extremas)) {
+            const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'min+time';
+            extremas.push(
+              ...this._getPointAnnotationStyle(
+                min,
+                this._seriesOffset[serie.index],
+                bgColor,
+                txtColor,
+                serie,
+                index,
+                serie.invert,
+                sameDay,
+                withTime,
+              ),
+            );
+          }
+          if (max[0] && ['max', 'max+time', true, 'time'].includes(serie.show.extremas)) {
+            const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'max+time';
+            extremas.push(
+              ...this._getPointAnnotationStyle(
+                max,
+                this._seriesOffset[serie.index],
+                bgColor,
+                txtColor,
+                serie,
+                index,
+                serie.invert,
+                sameDay,
+                withTime,
+              ),
+            );
+          }
+          return extremas;
+        } else {
+          return [];
         }
-        if (max[0] && ['max', 'max+time', true, 'time'].includes(serie.show.extremas)) {
-          const withTime = serie.show.extremas === 'time' || serie.show.extremas === 'max+time';
-          extremas.push(
-            ...this._getPointAnnotationStyle(
-              max,
-              this._seriesOffset[serie.index],
-              bgColor,
-              txtColor,
-              serie,
-              index,
-              serie.invert,
-              sameDay,
-              withTime,
-            ),
-          );
-        }
-        return extremas;
-      } else {
-        return [];
-      }
-    });
-    return { points: [...(minMaxPoints || []), ...(this._config?.apex_config?.annotations?.points || [])] };
+      }),
+    };
   }
 
   private _getPointAnnotationStyle(
@@ -1192,7 +1197,6 @@ class ChartsCard extends LitElement {
             },
             borderColor: color,
           },
-          ...(this._config?.apex_config?.annotations?.xaxis || []),
         ],
       };
     }
