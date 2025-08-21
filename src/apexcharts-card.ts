@@ -1233,9 +1233,13 @@ class ChartsCard extends LitElement {
           }
           if (max === undefined || max === null) {
             max = elt.max[1];
-          } else if (elt.max[1] !== null && max < elt.max[1]) {
-            max = elt.max[1];
-          }
+          } else if (elt.max[1] !== null) {
+            if (this._config?.stacked) {
+              max += elt.max[1];
+            } else if (max < elt.max[1]) {
+              max = elt.max[1];
+			}
+		  }
         });
         if (yaxis.align_to !== undefined) {
           if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
