@@ -312,20 +312,27 @@ export function truncateFloat(
 export function myFormatNumber(
   num: string | number | null | undefined,
   localeOptions?: FrontendLocaleData,
-  precision?: number | undefined,
+  precision?: number,
 ): string | null {
-  let lValue: string | number | null | undefined = num;
-  if (lValue === undefined || lValue === null) return null;
-  if (typeof lValue === 'string') {
-    lValue = parseFloat(lValue);
-    if (Number.isNaN(lValue)) {
-      return num as string;
-    }
+  if (num === null || num === undefined) {
+    return null;
   }
-  return formatNumber(lValue, localeOptions, {
-    maximumFractionDigits: precision === undefined ? DEFAULT_FLOAT_PRECISION : precision,
-  });
+
+  let value: number;
+  if (typeof num === 'string') {
+    value = parseFloat(num);
+    if (Number.isNaN(value)) {
+      return num;
+    }
+  } else {
+    value = num;
+  }
+  const effectivePrecision = precision ?? DEFAULT_FLOAT_PRECISION;
+  const fixedPrecisionValue = value.toFixed(effectivePrecision);
+  return formatNumber(fixedPrecisionValue, localeOptions);
 }
+
+
 
 export function computeTimezoneDiffWithLocal(timezone: string | undefined): number {
   if (!timezone) return 0;
