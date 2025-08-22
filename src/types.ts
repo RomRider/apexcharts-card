@@ -34,6 +34,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
 export interface ChartCardSeriesShowConfig extends ChartCardSeriesShowConfigExt {
   legend_value: boolean;
   in_header: boolean | 'raw' | 'before_now' | 'after_now';
+  unit: boolean | 'before_value';
   name_in_header: boolean;
   null_in_header: boolean;
   zero_in_header: boolean;

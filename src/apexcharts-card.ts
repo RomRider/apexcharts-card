@@ -61,6 +61,7 @@ import {
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
+  DEFAULT_SHOW_UNIT,
   DEFAULT_SHOW_IN_LEGEND,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
@@ -405,6 +406,7 @@ class ChartsCard extends LitElement {
               in_legend: DEFAULT_SHOW_IN_LEGEND,
               legend_value: DEFAULT_SHOW_LEGEND_VALUE,
               in_header: DEFAULT_SHOW_IN_HEADER,
+              unit: DEFAULT_SHOW_UNIT,
               in_chart: DEFAULT_SHOW_IN_CHART,
               name_in_header: DEFAULT_SHOW_NAME_IN_HEADER,
               null_in_header: DEFAULT_SHOW_NULL_IN_HEADER,
@@ -742,6 +744,9 @@ class ChartsCard extends LitElement {
                 }}"
               >
                 <div id="state__value">
+                  ${serie.show.unit === 'before_value'
+                      ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
+                      : ''}
                   <span id="state" style="${this._computeHeaderStateColor(serie, this._headerState?.[index])}"
                     >${this._headerState?.[index] === 0
                       ? 0
@@ -749,7 +754,7 @@ class ChartsCard extends LitElement {
                       ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
                       : this._computeLastState(this._headerState?.[index], index) || NO_VALUE}</span
                   >
-                  ${!serie.show.as_duration
+                  ${!serie.show.as_duration && (serie.show.unit === undefined || (serie.show.unit !== false && serie.show.unit !== 'before_value'))
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
                     : ''}
                 </div>
