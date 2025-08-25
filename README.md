@@ -73,6 +73,8 @@ However, some things might be broken :grin:
 
 ### HACS (recommended)
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=RomRider&repository=apexcharts-card&category=Dashboard)
+
 This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community Store).
 <small>_HACS is a third-party community store and is not included in Home Assistant out of the box._</small>
 
