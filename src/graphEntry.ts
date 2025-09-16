@@ -13,7 +13,6 @@ import {
 import { compress, decompress, log } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
-import { DateRange } from 'moment-range';
 import { DEFAULT_STATISTICS_PERIOD, DEFAULT_STATISTICS_TYPE, moment } from './const';
 import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
@@ -220,7 +219,6 @@ export default class GraphEntry {
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
       const monthMode = /\bmonth\b/i.test(this._config?.group_by?.duration);
-	  
       const nbBuckets = monthMode
         ? (monthsBetween(startOfMonth(start.getTime()), startOfMonth(end.getTime())))
         : (Math.floor(range / this._groupByDurationMs) +
