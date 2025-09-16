@@ -219,7 +219,7 @@ export default class GraphEntry {
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
-      const monthMode = /\bmonth\b/i.test(this._config?.group_by?.duration?);
+      const monthMode = /\bmonth\b/i.test(this._config?.group_by?.duration);
 	  
       const nbBuckets = monthMode
         ? (monthsBetween(startOfMonth(start.getTime()), startOfMonth(end.getTime())))
