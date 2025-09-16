@@ -20,6 +20,27 @@ import SparkMD5 from 'spark-md5';
 import { ChartCardSpanExtConfig, StatisticsPeriod } from './types-config';
 import * as pjson from '../package.json';
 
+// --- group_by month helpers  ---
+function startOfMonth(d: number) {
+  const x = new Date(d);
+  x.setDate(1);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function addMonths(d, n) {
+  const x = new Date(d);
+  // Preserve "start of month" alignment to avoid DST/time drift
+  const day = 1;
+  x.setDate(day);
+  x.setMonth(x.getMonth() + n);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function monthsBetween(a, b) {
+  // a and b are Date objects; returns whole months difference (b >= a)
+  return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+}
+
 export default class GraphEntry {
   private _computedHistory?: EntityCachePoints;
 
@@ -50,6 +71,10 @@ export default class GraphEntry {
   private _realEnd: Date;
 
   private _groupByDurationMs: number;
+
+  private _buckets;
+
+  private _isMonthGrouping = false;
 
   private _md5Config: string;
 
@@ -82,6 +107,7 @@ export default class GraphEntry {
     // Valid because tested during init;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._groupByDurationMs = parse(this._config.group_by.duration)!;
+    this._buckets = [];
     this._md5Config = SparkMD5.hash(`${this._graphSpan}${JSON.stringify(this._config)}${JSON.stringify(span)}`);
   }
 
@@ -193,8 +219,16 @@ export default class GraphEntry {
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
-      const nbBuckets = Math.floor(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
+      const monthMode = /\bmonth\b/i.test(this._config?.group_by?.duration?);
+	  
+      const nbBuckets = monthMode
+        ? (monthsBetween(startOfMonth(start.getTime()), startOfMonth(end.getTime())))
+        : (Math.floor(range / this._groupByDurationMs) +
+          ((range % this._groupByDurationMs) > 0 ? 1 : 0));  
       startHistory = new Date(end.getTime() - (nbBuckets + 1) * this._groupByDurationMs);
+      this._buckets = monthMode
+        ? Array.from({ length: nbBuckets + 1 }, (_,_i) => addMonths(startOfMonth(start.getTime()), _i))
+        : Array.from({ length: nbBuckets + 2 }, (_,_i) => end.getTime() - _i * this._groupByDurationMs).reverse();    
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
@@ -374,7 +408,7 @@ export default class GraphEntry {
       return false;
     }
     if (this._config.group_by.func !== 'raw') {
-      const res: EntityCachePoints = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
+      const res: EntityCachePoints = this._dataBucketer(history).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
       if ([undefined, 'line', 'area'].includes(this._config.type)) {
@@ -486,11 +520,11 @@ export default class GraphEntry {
     return undefined;
   }
 
-  private _dataBucketer(history: EntityEntryCache, timeRange: DateRange): HistoryBuckets {
-    const ranges = Array.from(timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
+  private _dataBucketer(history: EntityEntryCache): HistoryBuckets {
+																																																																		
     // const res: EntityCachePoints[] = [[]];
     const buckets: HistoryBuckets = [];
-    ranges.forEach((range, index) => {
+    this._buckets.forEach((range, index) => {
       buckets[index] = { timestamp: range.valueOf(), data: [] };
     });
     history?.data.forEach((entry) => {
