@@ -1,6 +1,6 @@
 {
   "name": "apexcharts-card",
-  "version": "2.2.0",
+  "version": "2.2.3",
   "description": "A Home Assistant Lovelace card using ApexCharts to render graphs",
   "main": "src/apexcharts-card.ts",
   "scripts": {
@@ -34,7 +34,7 @@
     "apexcharts": "^5.3.3",
     "array-flat-polyfill": "^1.0.1",
     "custom-card-helpers": "^1.9.0",
-    "lit": "^2.8.0",
+    "lit": "^3.3.1",
     "localforage": "^1.10.0",
     "lz-string": "^1.5.0",
     "moment": "^2.30.1",
