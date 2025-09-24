@@ -1,3 +1,26 @@
+## [2.2.3](https://github.com/RomRider/apexcharts-card/compare/v2.2.2...v2.2.3) (2025-08-21)
+
+### Bug Fixes
+
+* Fix the chart not rendering sometimes ([1c09cf6](https://github.com/RomRider/apexcharts-card/commit/1c09cf69704b1597fd875e152772e92f24f51636)), closes [#945](https://github.com/RomRider/apexcharts-card/issues/945)
+
+## [2.2.2](https://github.com/RomRider/apexcharts-card/compare/v2.2.1...v2.2.2) (2025-08-21)
+
+### Bug Fixes
+
+* Charts would sometimes not display if used inside a vertical or horizontal stack card ([2fa43df](https://github.com/RomRider/apexcharts-card/commit/2fa43dfc76f25d8341d4ff893abf9746db2216cb)), closes [#945](https://github.com/RomRider/apexcharts-card/issues/945)
+
+## [2.2.1](https://github.com/RomRider/apexcharts-card/compare/v2.2.0...v2.2.1) (2025-08-21)
+
+### Bug Fixes
+
+* **annotations:** Do not erase `apex_config` manually defined xaxis and points annotations ([375de4f](https://github.com/RomRider/apexcharts-card/commit/375de4f47d3e73db1136e090b3a0fc0c17f883ab)), closes [#932](https://github.com/RomRider/apexcharts-card/issues/932)
+* **sections:** Bring back the old behavior when `section_mode` is not `true` and card is used in section views ([99d6c2c](https://github.com/RomRider/apexcharts-card/commit/99d6c2cb9f907a3a9799b7a68e6356777aa1aae6)), closes [#942](https://github.com/RomRider/apexcharts-card/issues/942)
+
+### Documentation
+
+* **sections:** Add documentation about sections views ([4f25703](https://github.com/RomRider/apexcharts-card/commit/4f25703bb00c48aef2e82d93e5b1b6f667235280))
+
 ## [2.2.0](https://github.com/RomRider/apexcharts-card/compare/v2.1.2...v2.2.0) (2025-08-20)
 
 ### Features

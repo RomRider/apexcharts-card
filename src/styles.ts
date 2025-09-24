@@ -15,14 +15,18 @@ export const stylesApex: CSSResultGroup = css`
     grid-template-areas: 'header' 'graph';
     grid-template-columns: 1fr;
     grid-template-rows: min-content 1fr;
+  }
+  ha-card.section .wrapper {
+    height: 100%;
     min-width: 0;
     min-height: 0;
-    height: 100%;
   }
 
   #graph-wrapper {
     height: 100%;
     grid-area: graph;
+  }
+  ha-card.section #graph-wrapper {
     min-width: 0;
     min-height: 0;
   }
@@ -40,6 +44,8 @@ export const stylesApex: CSSResultGroup = css`
     padding: 8px 16px 0px;
     grid-area: header;
     overflow: hidden;
+  }
+  ha-card.section #header {
     min-width: 0;
   }
   #header.floating {

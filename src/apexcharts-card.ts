@@ -513,7 +513,7 @@ class ChartsCard extends LitElement {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
     // Full reset only happens in editor mode
-    this._reset();
+    // this._reset();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -585,7 +585,7 @@ class ChartsCard extends LitElement {
       'with-header': this._config.header?.show || true,
     };
     const haCardClasses: ClassInfo = {
-      section: this._config?.section_mode || false,
+      section: this._config.section_mode || false,
     };
 
     const standardHeaderTitle = this._config.header?.standard_format ? this._config.header?.title : undefined;
@@ -787,31 +787,32 @@ class ChartsCard extends LitElement {
   }
 
   private async _initialLoad() {
+    await new Promise((resolve) => requestAnimationFrame(resolve));
     await this.updateComplete;
-
     if (isUsingServerTimezone(this._hass)) {
       this._serverTimeOffset = computeTimezoneDiffWithLocal(this._hass?.config.time_zone);
     }
-
-    if (!this._apexChart && this.shadowRoot && this._config && this.shadowRoot.querySelector('#graph')) {
+    const graph = this.shadowRoot?.querySelector('#graph');
+    const brush = this.shadowRoot?.querySelector('#brush');
+    if (!this._apexChart && graph && this._config) {
       this._loaded = true;
-      const graph = this.shadowRoot.querySelector('#graph');
       const layout = getLayoutConfig(this._config, this._hass, this._graphs);
       if (this._config.series_in_brush.length) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
       this._apexChart = new ApexCharts(graph, layout);
-      this._apexChart.render();
-      if (this._config.series_in_brush.length) {
-        const brush = this.shadowRoot.querySelector('#brush');
+      const promises: Promise<void>[] = [];
+      promises.push(this._apexChart.render());
+      if (this._config.series_in_brush.length && brush) {
         this._apexBrush = new ApexCharts(
           brush,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id),
         );
-        this._apexBrush.render();
+        promises.push(this._apexBrush.render());
       }
+      await Promise.all(promises);
       this._firstDataLoad();
     }
   }
@@ -990,10 +991,13 @@ class ChartsCard extends LitElement {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentMax = (this._apexChart as any).axes?.w?.globals?.maxX;
       this._headerState = [...this._headerState];
-      this._apexChart?.updateOptions(
-        graphData,
-        false,
-        TIMESERIES_TYPES.includes(this._config.chart_type) ? false : true,
+      const chartUpdates: Promise<void>[] = [];
+      chartUpdates.push(
+        this._apexChart?.updateOptions(
+          graphData,
+          false,
+          TIMESERIES_TYPES.includes(this._config.chart_type) ? false : true,
+        ),
       );
       if (this._apexBrush) {
         const newMin = start.getTime() - this._serverTimeOffset;
@@ -1027,8 +1031,9 @@ class ChartsCard extends LitElement {
         brushData.chart.selection.stroke = { color: selectionColor };
         brushData.chart.selection.fill = { color: selectionColor, opacity: 0.1 };
         this._brushInit = true;
-        this._apexBrush?.updateOptions(brushData, false, false);
+        chartUpdates.push(this._apexBrush?.updateOptions(brushData, false, false));
       }
+      await Promise.all(chartUpdates);
     } catch (err) {
       log(err);
     }
@@ -1587,8 +1592,11 @@ class ChartsCard extends LitElement {
   }
 
   public getGridOptions() {
+    if (!this._config?.section_mode) {
+      return {};
+    }
     return {
-      rows: 4,
+      rows: 6,
       columns: 12,
       min_rows: 2,
       min_columns: 6,
