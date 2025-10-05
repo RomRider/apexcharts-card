@@ -309,9 +309,9 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
     );
     let tooltipValue = '';
     if (conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       tooltipValue = `<strong>${prettyPrintTime(
         lValue,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         conf.series_in_graph[opts.seriesIndex].show.as_duration!,
       )}</strong>`;
     } else if (conf.series_in_graph[opts.seriesIndex]?.show.unit === 'before_value') {
