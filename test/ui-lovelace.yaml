@@ -22,6 +22,22 @@ views:
         columns: 3
         cards:
           - type: custom:apexcharts-card
+            graph_span: 30min
+            header:
+              show: true
+              show_states: true
+
+            series:
+              - entity: sensor.random0_100
+                unit: '%'
+                show:
+                  as_duration: second
+                  unit: before_value
+              - entity: sensor.random_0_1000
+                unit: '%'
+                show:
+                  unit: before_value
+          - type: custom:apexcharts-card
             apex_config:
               chart:
                 toolbar:

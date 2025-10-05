@@ -307,10 +307,21 @@ function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | und
       undefined,
       hass2?.states[conf.series_in_graph[opts.seriesIndex].entity],
     );
-    return conf.series_in_graph[opts.seriesIndex]?.show.as_duration
-      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        [`<strong>${prettyPrintTime(lValue, conf.series_in_graph[opts.seriesIndex].show.as_duration!)}</strong>`]
-      : [`<strong>${lValue} ${uom}</strong>`];
+    let tooltipValue = '';
+    if (conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      tooltipValue = `<strong>${prettyPrintTime(
+        lValue,
+        conf.series_in_graph[opts.seriesIndex].show.as_duration!,
+      )}</strong>`;
+    } else if (conf.series_in_graph[opts.seriesIndex]?.show.unit === 'before_value') {
+      tooltipValue = `<strong>${uom} ${lValue}</strong>`;
+    } else if (conf.series_in_graph[opts.seriesIndex]?.show.unit === true) {
+      tooltipValue = `<strong>${lValue} ${uom}</strong>`;
+    } else {
+      tooltipValue = `<strong>${lValue}</strong>`;
+    }
+    return [tooltipValue];
   };
 }
 
@@ -419,7 +430,13 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
             );
       let valueString = '';
       if (value === undefined || value === null) {
-        valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
+        if (conf.series_in_graph[opts.seriesIndex]?.show.unit === 'before_value') {
+          valueString = `<strong>${uom} ${NO_VALUE}</strong>`;
+        } else if (conf.series_in_graph[opts.seriesIndex]?.show.unit === true) {
+          valueString = `<strong>${NO_VALUE} ${uom}</strong>`;
+        } else {
+          valueString = `<strong>${NO_VALUE}</strong>`;
+        }
       } else {
         if (conf.series_in_graph[opts.seriesIndex]?.show.as_duration) {
           valueString = `<strong>${prettyPrintTime(
@@ -428,7 +445,13 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
             conf.series_in_graph[opts.seriesIndex].show.as_duration!,
           )}</strong>`;
         } else {
-          valueString = `<strong>${value} ${uom}</strong>`;
+          if (conf.series_in_graph[opts.seriesIndex]?.show.unit === 'before_value') {
+            valueString = `<strong>${uom} ${value}</strong>`;
+          } else if (conf.series_in_graph[opts.seriesIndex]?.show.unit === true) {
+            valueString = `<strong>${value} ${uom}</strong>`;
+          } else {
+            valueString = `<strong>${value}</strong>`;
+          }
         }
       }
       return [name + ':', valueString];

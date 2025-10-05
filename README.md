@@ -207,6 +207,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the series in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From v2.0.0, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
 | `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
 | `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, it appends the offset information to the name of the series. If `false`, it doesn't |
+| `unit` | boolean or string | `true` | NEXT_VERSION | If `false`, the unit won't be displayed. If set to `before_value`, the unit will be displayed in front of the value. Does nothing when `as_duration` is set to `true` |
 
 ### `header_actions` or `title_actions` options
 

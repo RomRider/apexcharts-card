@@ -744,9 +744,9 @@ class ChartsCard extends LitElement {
                 }}"
               >
                 <div id="state__value">
-                  ${serie.show.unit === 'before_value'
-                      ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
-                      : ''}
+                  ${!serie.show.as_duration && serie.show.unit === 'before_value'
+                    ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
+                    : ''}
                   <span id="state" style="${this._computeHeaderStateColor(serie, this._headerState?.[index])}"
                     >${this._headerState?.[index] === 0
                       ? 0
@@ -754,7 +754,7 @@ class ChartsCard extends LitElement {
                       ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
                       : this._computeLastState(this._headerState?.[index], index) || NO_VALUE}</span
                   >
-                  ${!serie.show.as_duration && (serie.show.unit === undefined || (serie.show.unit !== false && serie.show.unit !== 'before_value'))
+                  ${!serie.show.as_duration && serie.show.unit === true
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
                     : ''}
                 </div>
