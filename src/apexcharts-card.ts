@@ -98,7 +98,7 @@ console.info(
 (globalThis as any).ApexCharts = ApexCharts;
 
 localForage.config({
-  name: 'apexchart-card',
+  name: 'apexchart-card-dev',
   version: 1.0,
   storeName: 'entity_history_cache',
   description: 'ApexCharts-card uses caching for the entity history',
@@ -329,6 +329,25 @@ class ChartsCard extends LitElement {
       if (!configDup.experimental?.disable_config_validation) {
         ChartCardExternalConfig.strictCheck(configDup);
       }
+      
+      // Additional validation for time_range
+      if (configDup.time_range) {
+        const start = configDup.time_range.start instanceof Date 
+          ? configDup.time_range.start 
+          : new Date(configDup.time_range.start);
+        const end = configDup.time_range.end instanceof Date 
+          ? configDup.time_range.end 
+          : new Date(configDup.time_range.end);
+          
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+          throw new Error('Invalid date format in time_range. Use ISO 8601 format or Date objects.');
+        }
+        
+        if (start >= end) {
+          throw new Error('time_range.start must be earlier than time_range.end');
+        }
+      }
+      
       if (configDup.all_series_config) {
         configDup.series.forEach((serie, index) => {
           const allDup = JSON.parse(JSON.stringify(configDup.all_series_config));
@@ -1492,6 +1511,24 @@ class ChartsCard extends LitElement {
   }
 
   private _getSpanDates(): { start: Date; end: Date } {
+    // Check if explicit time_range is provided
+    if (this._config?.time_range) {
+      const startTime = this._config.time_range.start instanceof Date 
+        ? this._config.time_range.start 
+        : new Date(this._config.time_range.start);
+      const endTime = this._config.time_range.end instanceof Date 
+        ? this._config.time_range.end 
+        : new Date(this._config.time_range.end);
+      
+      // Validate the dates
+      if (!isNaN(startTime.getTime()) && !isNaN(endTime.getTime())) {
+        return { start: startTime, end: endTime };
+      } else {
+        console.warn('Invalid time_range dates provided, falling back to default behavior');
+      }
+    }
+
+    // Original logic for span-based dates
     let end = new Date();
     let start = new Date(end.getTime() - this._graphSpan + 1);
     const curMoment = moment();

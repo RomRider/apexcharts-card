@@ -24,6 +24,10 @@ export const ChartCardExternalConfig = t.iface([], {
   "series": t.array("ChartCardSeriesExternalConfig"),
   "graph_span": t.opt("string"),
   "span": t.opt("ChartCardSpanExtConfig"),
+  "time_range": t.opt(t.iface([], {
+    "start": t.union("string", "Date"),
+    "end": t.union("string", "Date"),
+  })),
   "now": t.opt(t.iface([], {
     "show": t.opt("boolean"),
     "color": t.opt("string"),

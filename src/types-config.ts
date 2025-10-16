@@ -18,6 +18,10 @@ export interface ChartCardExternalConfig {
   series: ChartCardSeriesExternalConfig[];
   graph_span?: string;
   span?: ChartCardSpanExtConfig;
+  time_range?: {
+    start: string | Date;
+    end: string | Date;
+  };
   now?: {
     show?: boolean;
     color?: string;
