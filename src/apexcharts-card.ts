@@ -98,7 +98,7 @@ console.info(
 (globalThis as any).ApexCharts = ApexCharts;
 
 localForage.config({
-  name: 'apexchart-card-dev',
+  name: 'apexchart-card',
   version: 1.0,
   storeName: 'entity_history_cache',
   description: 'ApexCharts-card uses caching for the entity history',

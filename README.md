@@ -42,6 +42,7 @@ However, some things might be broken :grin:
   - [`func` Options](#func-options)
   - [`chart_type` Options](#chart_type-options)
   - [`span` Options](#span-options)
+  - [`time_range` Options](#time_range-options)
   - [`transform` Option](#transform-option)
   - [`data_generator` Option](#data_generator-option)
   - [`yaxis` Options. Multi-Y axis](#yaxis-options-multi-y-axis)
@@ -67,6 +68,7 @@ However, some things might be broken :grin:
   - [Compare data from today with yesterday](#compare-data-from-today-with-yesterday)
   - [Change the line thickness](#change-the-line-thickness)
   - [Use apexcharts-card with auto-entities](#use-apexcharts-card-with-auto-entities)
+  - [Use time_range for specific time periods](#use-time_range-for-specific-time-periods)
   - [Change the height of the graph](#change-the-height-of-the-graph)
 
 ## Installation
@@ -141,6 +143,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | `update_delay` | string | `1500ms` | v1.4.0 | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
 | `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
 | `span` | object | | v1.2.0 | See [span](#span-options) |
+| `time_range` | object | | v2.3.0 | Specify exact start and end timestamps for the graph. Overrides `graph_span` and `span` when provided. See [time_range](#time_range-options) |
 | `show` | object | | v1.0.0 | See [show](#main-show-options) |
 | `hours_12` | boolean | | v1.8.0 | If undefined, it will follow Home-Assistant's user time format. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
 | `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
@@ -400,6 +403,43 @@ Eg:
   span:
     end: day
   ```
+
+### `time_range` Options
+
+| Name | Type | Since | Description |
+| ---- | :--: | :---: | ----------- |
+| `start` | string or Date | v2.3.0 | Start timestamp in ISO 8601 format (e.g., "2024-01-01T00:00:00") or Date object |
+| `end` | string or Date | v2.3.0 | End timestamp in ISO 8601 format (e.g., "2024-01-31T23:59:59") or Date object |
+
+The `time_range` option allows you to specify exact start and end timestamps for the x-axis, providing precise control over the time period displayed in your chart. When `time_range` is specified, it takes priority and overrides both `graph_span` and `span` configurations.
+
+#### Examples:
+
+* Display data for a specific day:
+  ```yaml
+  type: custom:apexcharts-card
+  time_range:
+    start: "2024-01-01T00:00:00"
+    end: "2024-01-01T23:59:59"
+  series:
+    - entity: sensor.temperature
+  ```
+
+* Display data with timezone specification:
+  ```yaml
+  type: custom:apexcharts-card
+  time_range:
+    start: "2024-01-15T08:00:00+01:00"
+    end: "2024-01-15T18:00:00+01:00"
+  series:
+    - entity: sensor.power_consumption
+  ```
+
+**Important Notes:**
+1. Use ISO 8601 format: `YYYY-MM-DDTHH:mm:ss` or `YYYY-MM-DDTHH:mm:ss±HH:mm`
+2. Start time must be earlier than end time
+3. If no timezone is specified, the system timezone will be used
+4. Invalid dates will trigger console warnings and fallback to default behavior
 
 ### `transform` Option
 
@@ -1074,6 +1114,41 @@ filter:
         entity: this.entity_id
 card:
   type: custom:apexcharts-card
+```
+
+### Use time_range for specific time periods
+
+Display data for exact time periods instead of relative spans:
+
+```yaml
+type: custom:apexcharts-card
+time_range:
+  start: "2024-01-01T00:00:00"
+  end: "2024-01-07T23:59:59"
+header:
+  show: true
+  title: "First Week of January"
+series:
+  - entity: sensor.temperature
+    name: "Temperature"
+  - entity: sensor.humidity
+    name: "Humidity"
+    type: column
+```
+
+Compare with timezone-aware timestamps:
+
+```yaml
+type: custom:apexcharts-card
+time_range:
+  start: "2024-06-15T08:00:00+02:00"
+  end: "2024-06-15T18:00:00+02:00"
+header:
+  show: true
+  title: "Summer Day (CEST)"
+series:
+  - entity: sensor.solar_power
+    name: "Solar Generation"
 ```
 
 ### Change the height of the graph
