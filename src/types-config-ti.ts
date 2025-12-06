@@ -46,6 +46,10 @@ export const ChartCardExternalConfig = t.iface([], {
   "grid_options": t.opt("any"),
   "index": t.opt("number"),
   "view_index": t.opt("number"),
+  "ll_template": t.opt("string"),
+  "ll_context": t.opt("any"),
+  "ll_key": t.opt("string"),
+  "ll_priority": t.opt("number"),
   "brush": t.opt("ChartCardBrushExtConfig"),
   "yaxis": t.opt(t.array("ChartCardYAxisExternal")),
 });

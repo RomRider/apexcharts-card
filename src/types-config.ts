@@ -47,6 +47,11 @@ export interface ChartCardExternalConfig {
   grid_options?: any;
   index?: number;
   view_index?: number;
+  ll_template?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ll_context?: any;
+  ll_key?: string;
+  ll_priority?: number;
   brush?: ChartCardBrushExtConfig;
   yaxis?: ChartCardYAxisExternal[];
 }
