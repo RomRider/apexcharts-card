@@ -45,16 +45,13 @@ export interface ChartCardExternalConfig {
   visibility?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   grid_options?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ll_template?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ll_context?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ll_key?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ll_priority?: any;
   index?: number;
   view_index?: number;
+  ll_template?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ll_context?: any;
+  ll_key?: string;
+  ll_priority?: number;
   brush?: ChartCardBrushExtConfig;
   yaxis?: ChartCardYAxisExternal[];
 }
