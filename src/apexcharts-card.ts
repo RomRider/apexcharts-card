@@ -1134,6 +1134,7 @@ class ChartsCard extends LitElement {
       label: {
         text: myFormatNumber(value[1], this._hass?.locale, serie.float_precision),
         borderColor: 'var(--card-background-color)',
+        offsetY: (value[1] ?? 0) < 0 ? 30 : 0,
         borderWidth: 2,
         style: {
           background: bgColor,
@@ -1164,7 +1165,7 @@ class ChartsCard extends LitElement {
         label: {
           text: `${Intl.DateTimeFormat(lang, options).format(value[0])}`,
           borderColor: 'var(--card-background-color)',
-          offsetY: -22,
+          offsetY: (value[1] ?? 0) < 0 ? 38 : -22,
           borderWidth: 0,
           style: {
             background: bgColorTime.toHexString(),
