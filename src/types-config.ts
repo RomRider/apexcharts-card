@@ -40,6 +40,8 @@ export interface ChartCardExternalConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   card_mod?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  uix?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   view_layout?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   visibility?: any;
