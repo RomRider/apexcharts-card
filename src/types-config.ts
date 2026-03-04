@@ -9,6 +9,7 @@ export interface ChartCardExternalConfig {
     disable_config_validation?: boolean;
     hidden_by_default?: boolean;
     brush?: boolean;
+    legend_isolate_on_click?: boolean;
   };
   hours_12?: boolean;
   chart_type?: ChartCardChartType;

@@ -802,6 +802,14 @@ class ChartsCard extends LitElement {
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
       this._apexChart = new ApexCharts(graph, layout);
+      // Defensive guard: ensure chart.events is always an object before render().
+      // ApexCharts v5 accesses chart.events.beforeMount without null-checking,
+      // which throws if chart.events is undefined after config merging.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = (this._apexChart as any).w;
+      if (w?.config?.chart && !w.config.chart.events) {
+        w.config.chart.events = {};
+      }
       const promises: Promise<void>[] = [];
       promises.push(this._apexChart.render());
       if (this._config.series_in_brush.length && brush) {

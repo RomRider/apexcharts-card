@@ -15,6 +15,7 @@ export const ChartCardExternalConfig = t.iface([], {
     "disable_config_validation": t.opt("boolean"),
     "hidden_by_default": t.opt("boolean"),
     "brush": t.opt("boolean"),
+    "legend_isolate_on_click": t.opt("boolean"),
   })),
   "hours_12": t.opt("boolean"),
   "chart_type": t.opt("ChartCardChartType"),

@@ -58,6 +58,7 @@ However, some things might be broken :grin:
   - [`color_threshold` experimental feature](#color_threshold-experimental-feature)
   - [`hidden_by_default` experimental feature](#hidden_by_default-experimental-feature)
   - [`brush` experimental feature](#brush-experimental-feature)
+  - [`legend_isolate_on_click` experimental feature](#legend_isolate_on_click-experimental-feature)
 - [Known issues](#known-issues)
 - [Roadmap](#roadmap)
 - [Examples](#examples-1)
@@ -800,6 +801,7 @@ Generates the same result as repeating the configuration in each series:
 | `disable_config_validation` | boolean | `false` | v1.6.0 | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
 | `hidden_by_default` | boolean | `false` | v1.6.0 | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
 | `brush` | boolean | `false` | v1.8.0 | Will display a brush which allows you to select a portion of time to display on the main chart. See [brush](#brush-experimental-feature) |
+| `legend_isolate_on_click` | boolean | `false` | v2.3.0 | When clicking a legend item, isolate that series (hide all others). Click again to restore all. See [legend_isolate_on_click](#legend_isolate_on_click-experimental-feature) |
 
 ### `color_threshold` experimental feature
 
@@ -916,6 +918,24 @@ series:
       in_brush: true
       # add this also if you want your series to only show up in the brush
       in_chart: false
+```
+
+### `legend_isolate_on_click` experimental feature
+
+This option changes the legend click behavior so that clicking a series name **isolates** that series (hides all others). Clicking the same series again restores all series. It only works correctly if all series have a unique name.
+
+This is how to use it:
+```yaml
+type: custom:apexcharts-card
+experimental:
+  legend_isolate_on_click: true
+series:
+  - entity: sensor.living_room_temperature
+    name: Living Room
+  - entity: sensor.kitchen_temperature
+    name: Kitchen
+  - entity: sensor.bedroom_temperature
+    name: Bedroom
 ```
 
 ## Known issues
