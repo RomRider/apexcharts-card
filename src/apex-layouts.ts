@@ -42,6 +42,9 @@ export function getLayoutConfig(
       toolbar: {
         show: false,
       },
+      events: {
+        ...(config.experimental?.legend_isolate_on_click ? { legendClick: getLegendIsolateClickHandler() } : {}),
+      },
     },
     grid: {
       strokeDashArray: 3,
@@ -75,6 +78,7 @@ export function getLayoutConfig(
       show: true,
       formatter: getLegendFormatter(config, hass),
       markers: getLegendMarkers(config),
+      ...(config.experimental?.legend_isolate_on_click ? { onItemClick: { toggleDataSeries: false } } : {}),
     },
     stroke: {
       curve: getStrokeCurve(config, false),
@@ -490,6 +494,29 @@ function getFillType(config: ChartCardConfig, brush: boolean) {
       return 'solid';
     });
   }
+}
+
+function getLegendIsolateClickHandler() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return function (chartContext: any, seriesIndex: number, opts: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const series: any[] = opts.config?.series ?? [];
+    const collapsed: number[] = opts.globals?.collapsedSeriesIndices ?? [];
+    const visibleCount = series.length - collapsed.length;
+    if (visibleCount === 1 && !collapsed.includes(seriesIndex)) {
+      // Only this series is visible → restore all series
+      series.forEach((serie) => chartContext.showSeries(serie.name));
+    } else {
+      // Isolate the clicked series: show it and hide all others
+      series.forEach((serie, i) => {
+        if (i === seriesIndex) {
+          chartContext.showSeries(serie.name);
+        } else {
+          chartContext.hideSeries(serie.name);
+        }
+      });
+    }
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

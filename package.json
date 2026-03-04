@@ -9,7 +9,8 @@
     "rollup": "rollup -c",
     "lint": "eslint src/*.ts",
     "watch": "npm run build:types-check && rollup -c --watch",
-    "postversion": "npm run build"
+    "postversion": "npm run build",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -68,6 +69,7 @@
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "eslint": "^8.57.0",
     "home-assistant-js-websocket": "^9.4.0",
+    "patch-package": "^8.0.1",
     "rollup-plugin-serve": "^1.1.1",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.2",
