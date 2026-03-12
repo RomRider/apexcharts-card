@@ -267,11 +267,29 @@ export default class GraphEntry {
         const newHistory = await this._fetchStatistics(fetchStart, fetchEnd, this._config.statistics.period);
         if (newHistory && newHistory.length > 0) {
           updateGraphHistory = true;
+
+          let prevItem: StatisticValue | null = null;
+          const newFilledHistory: StatisticValue[] = [];
+          newHistory.forEach((item) => {
+            if (prevItem) {
+              const step = Number(item.end) - Number(item.start);
+              let currentStart = Number(prevItem.end);
+              const targetEnd = Number(item.start);
+              while (currentStart < targetEnd && step > 0) {
+                const currentEnd = Math.min(currentStart + step, targetEnd);
+                newFilledHistory.push({ statistic_id: prevItem.statistic_id, start: currentStart.toString(), end: currentEnd.toString(), last_reset: null, max: null, mean: null, min: null, sum: null, state: null, change: null });
+                currentStart = currentEnd;
+              }
+            }
+            newFilledHistory.push(item);
+            prevItem = item;
+          });
+
           let lastNonNull: number | null = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
-          newStateHistory = newHistory.map((item) => {
+          newStateHistory = newFilledHistory.map((item) => {
             let stateParsed: number | null = null;
             [lastNonNull, stateParsed] = this._transformAndFill(
               item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
