@@ -96,6 +96,7 @@ export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "show": t.opt("ChartCardSeriesShowConfigExt"),
   "group_by": t.opt(t.iface([], {
     "duration": t.opt("string"),
+    "offset": t.opt("string"),
     "func": t.opt("GroupByFunc"),
     "fill": t.opt("GroupByFill"),
     "start_with_last": t.opt("boolean"),

@@ -76,6 +76,7 @@ import {
 import {
   DEFAULT_COLORS,
   DEFAULT_DURATION,
+  DEFAULT_OFFSET,
   DEFAULT_FUNC,
   DEFAULT_GROUP_BY_FILL,
   DEFAULT_GRAPH_SPAN,
@@ -394,9 +395,10 @@ class ChartsCard extends LitElement {
           serie.extend_to = serie.extend_to !== undefined ? serie.extend_to : 'end';
           serie.type = this._config?.chart_type ? undefined : serie.type || DEFAULT_SERIE_TYPE;
           if (!serie.group_by) {
-            serie.group_by = { duration: DEFAULT_DURATION, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
+            serie.group_by = { duration: DEFAULT_DURATION, offset: DEFAULT_OFFSET, func: DEFAULT_FUNC, fill: DEFAULT_GROUP_BY_FILL };
           } else {
             serie.group_by.duration = serie.group_by.duration || DEFAULT_DURATION;
+            serie.group_by.offset = serie.group_by.offset || DEFAULT_OFFSET;
             serie.group_by.func = serie.group_by.func || DEFAULT_FUNC;
             serie.group_by.fill = serie.group_by.fill || DEFAULT_GROUP_BY_FILL;
           }
@@ -432,6 +434,7 @@ class ChartsCard extends LitElement {
               serie.show.offset_in_name === undefined ? DEFAULT_SHOW_OFFSET_IN_NAME : serie.show.offset_in_name;
           }
           validateInterval(serie.group_by.duration, `series[${index}].group_by.duration`);
+          validateOffset(serie.group_by.offset, `series[${index}].group_by.offset`);
           if (serie.color_threshold && serie.color_threshold.length > 0) {
             const sorted: ChartCardColorThreshold[] = JSON.parse(JSON.stringify(serie.color_threshold));
             sorted.sort((a, b) => (a.value < b.value ? -1 : 1));
@@ -893,9 +896,10 @@ class ChartsCard extends LitElement {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
         }
         if (!this._apexBrush) {
+          const newMinMax = this._findStartAndEndOfChart(new Date(start.getTime() - this._serverTimeOffset), new Date(end.getTime() - this._serverTimeOffset), false);
           graphData.xaxis = {
-            min: start.getTime() - this._serverTimeOffset,
-            max: this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false),
+            min: newMinMax.start,
+            max: newMinMax.end,
           };
         }
       } else {
@@ -995,11 +999,10 @@ class ChartsCard extends LitElement {
         ),
       );
       if (this._apexBrush) {
-        const newMin = start.getTime() - this._serverTimeOffset;
-        const newMax = this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false);
+        const newMinMax = this._findStartAndEndOfChart(new Date(start.getTime() - this._serverTimeOffset), new Date(end.getTime() - this._serverTimeOffset), true);
         brushData.xaxis = {
-          min: newMin,
-          max: newMax,
+          min: newMinMax.start,
+          max: newMinMax.end,
         };
         if (brushIsAtEnd || !this._brushInit) {
           brushData.chart = {
@@ -1016,8 +1019,8 @@ class ChartsCard extends LitElement {
             selection: {
               enabled: true,
               xaxis: {
-                min: currentMin < newMin ? newMin : currentMin,
-                max: currentMin < newMin ? newMin + (currentMax - currentMin) : currentMax,
+                min: currentMin < newMinMax.start ? newMinMax.start : currentMin,
+                max: currentMin < newMinMax.end ? newMinMax.end + (currentMax - currentMin) : currentMax,
               },
             },
           };
@@ -1461,27 +1464,33 @@ class ChartsCard extends LitElement {
   }
 
   /*
-    Makes the chart end at the last timestamp of the data when everything displayed is a
+    Makes the chart start and end at the first / last timestamp of the data when everything displayed is a
     column and group_by is enabled for every serie
   */
-  private _findEndOfChart(end: Date, brush: boolean): number {
-    const localEnd = new Date(end);
+  private _findStartAndEndOfChart(start: Date, end: Date, brush: boolean): {start: number, end: number} {
+    let offsetStart: number | undefined = 0;
     let offsetEnd: number | undefined = 0;
     const series = brush ? this._config?.series_in_brush : this._config?.series_in_graph;
     const onlyGroupBy = series?.reduce((acc, serie) => {
       return acc && serie.group_by.func !== 'raw';
     }, series?.length > 0);
     if (onlyGroupBy) {
+      const range = end.getTime() - start.getTime();
+      offsetStart = series?.reduce((acc, serie) => {
+        const dur = parse(serie.group_by.duration)!;
+        const off = ((parse(serie.group_by.offset)! % dur) + dur) % dur; // Any possible offset is identiacal to one within [0, duration)
+        if (acc === -1 || (range + off) % dur < acc) return (range + off) % dur;
+        return acc;
+      }, -1);
       offsetEnd = series?.reduce((acc, serie) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const dur = parse(serie.group_by.duration)!;
-        if (acc === -1 || dur < acc) {
-          return dur;
-        }
+        const off = ((parse(serie.group_by.offset)! % dur) + dur) % dur; // Any possible offset is identiacal to one within [0, duration)
+        if (acc === -1 || (dur - off) < acc) return dur - off;
         return acc;
       }, -1);
     }
-    return new Date(localEnd.getTime() - (offsetEnd ? offsetEnd : 0)).getTime();
+    return {start: new Date(start.getTime() + (offsetStart ?? 0)).getTime(), end: new Date(end.getTime() - (offsetEnd ?? 0)).getTime()};
   }
 
   private _invertData(data: EntityCachePoints): EntityCachePoints {

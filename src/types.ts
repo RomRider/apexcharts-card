@@ -23,6 +23,7 @@ export interface ChartCardSeriesConfig extends ChartCardSeriesExternalConfig {
   index: number;
   group_by: {
     duration: string;
+    offset: string;
     func: GroupByFunc;
     fill: GroupByFill;
     start_with_last?: boolean;
