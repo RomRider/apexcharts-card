@@ -10,6 +10,7 @@ export const HOUR_24 = ONE_HOUR * 24;
 export const DEFAULT_GRAPH_SPAN = '24h';
 export const DEFAULT_SERIE_TYPE = 'line';
 export const DEFAULT_DURATION = '1h';
+export const DEFAULT_OFFSET = '+0h';
 export const DEFAULT_FUNC = 'raw';
 export const DEFAULT_GROUP_BY_FILL = 'last';
 export const DEFAULT_FILL_RAW = 'null';

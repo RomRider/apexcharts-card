@@ -51,6 +51,8 @@ export default class GraphEntry {
 
   private _groupByDurationMs: number;
 
+  private _groupByOffsetMs: number;
+
   private _md5Config: string;
 
   constructor(
@@ -82,6 +84,7 @@ export default class GraphEntry {
     // Valid because tested during init;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this._groupByDurationMs = parse(this._config.group_by.duration)!;
+    this._groupByOffsetMs = ((parse(this._config.group_by.offset)! % this._groupByDurationMs) + this._groupByDurationMs) % this._groupByDurationMs; // Any possible offset is identiacal to one within [0, duration)
     this._md5Config = SparkMD5.hash(`${this._graphSpan}${JSON.stringify(this._config)}${JSON.stringify(span)}`);
   }
 
@@ -192,9 +195,9 @@ export default class GraphEntry {
   public async _updateHistory(start: Date, end: Date): Promise<boolean> {
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
-      const range = end.getTime() - start.getTime();
-      const nbBuckets = Math.floor(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
-      startHistory = new Date(end.getTime() - (nbBuckets + 1) * this._groupByDurationMs);
+      const range = end.getTime() - start.getTime() + this._groupByOffsetMs;
+      const nbBuckets = Math.ceil(range / this._groupByDurationMs);
+      startHistory = new Date(end.getTime() + this._groupByOffsetMs - nbBuckets * this._groupByDurationMs);
     }
     if (!this._entityState || this._updating) return false;
     this._updating = true;
@@ -487,6 +490,7 @@ export default class GraphEntry {
   }
 
   private _dataBucketer(history: EntityEntryCache, timeRange: DateRange): HistoryBuckets {
+    timeRange.end.add(this._groupByOffsetMs, 'ms');
     const ranges = Array.from(timeRange.reverseBy('milliseconds', { step: this._groupByDurationMs })).reverse();
     // const res: EntityCachePoints[] = [[]];
     const buckets: HistoryBuckets = [];
