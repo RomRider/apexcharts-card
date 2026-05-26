@@ -42,6 +42,7 @@ import {
   computeTimezoneDiffWithLocal,
 } from './utils';
 import ApexCharts from 'apexcharts';
+// ApexYAxis is declared globally in apexcharts/types/apexcharts.d.ts (no top-level import/export → ambient)
 import { Ripple } from '@material/mwc-ripple';
 import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -796,12 +797,13 @@ class ChartsCard extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
-      this._apexChart = new ApexCharts(graph, layout);
-      const promises: Promise<void>[] = [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this._apexChart = new ApexCharts(graph as HTMLElement, layout as any);
+      const promises: Promise<unknown>[] = [];
       promises.push(this._apexChart.render());
       if (this._config.series_in_brush.length && brush) {
         this._apexBrush = new ApexCharts(
-          brush,
+          brush as HTMLElement,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id),
         );
@@ -986,7 +988,7 @@ class ChartsCard extends LitElement {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentMax = (this._apexChart as any).axes?.w?.globals?.maxX;
       this._headerState = [...this._headerState];
-      const chartUpdates: Promise<void>[] = [];
+      const chartUpdates: Promise<unknown>[] = [];
       chartUpdates.push(
         this._apexChart?.updateOptions(
           graphData,
@@ -1700,6 +1702,11 @@ return data.reverse();
       };
     }
     return conf;
+  }
+
+  static async getConfigElement(): Promise<HTMLElement> {
+    await import('./editor/index');
+    return document.createElement('apexcharts-card-editor');
   }
 }
 
