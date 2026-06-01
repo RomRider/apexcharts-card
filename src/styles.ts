@@ -2,7 +2,7 @@ import { css, CSSResultGroup } from 'lit';
 
 export const stylesApex: CSSResultGroup = css`
   ha-card {
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
 
@@ -167,6 +167,7 @@ export const stylesApex: CSSResultGroup = css`
     position: relative;
     direction: ltr !important;
     user-select: none;
+    overflow: visible !important;
   }
 
   .apexcharts-canvas ::-webkit-scrollbar {
