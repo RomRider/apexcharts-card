@@ -1704,6 +1704,72 @@ return data.reverse();
 }
 
 // Configure the preview in the Lovelace card picker
+const NUMERIC_DOMAINS = ['counter', 'input_number', 'number'];
+
+const isNumericEntity = (hass: HomeAssistant, entityId: string): boolean => {
+  const domain = entityId.split('.')[0];
+  if (NUMERIC_DOMAINS.includes(domain)) return true;
+  if (domain !== 'sensor') return false;
+  const stateObj = hass.states[entityId];
+  if (!stateObj) return false;
+  return !!stateObj.attributes.unit_of_measurement || !!stateObj.attributes.state_class;
+};
+
+const getEntitySuggestion = (hass: HomeAssistant, entityId: string) => {
+  if (!isNumericEntity(hass, entityId)) return null;
+  const stateClass = hass.states[entityId]?.attributes.state_class;
+  if (stateClass === 'total' || stateClass === 'total_increasing') {
+    return [
+      {
+        label: 'Last 7 days',
+        config: {
+          type: 'custom:apexcharts-card',
+          graph_span: '7d',
+          span: { end: 'day' },
+          series: [{ entity: entityId, type: 'column', statistics: { type: 'change', period: 'day' } }],
+        },
+      },
+      {
+        label: 'Last 30 days',
+        config: {
+          type: 'custom:apexcharts-card',
+          graph_span: '30d',
+          span: { end: 'day' },
+          series: [{ entity: entityId, type: 'column', statistics: { type: 'change', period: 'day' } }],
+        },
+      },
+    ];
+  }
+  if (stateClass === 'measurement') {
+    return [
+      {
+        label: 'Last 24 hours',
+        config: {
+          type: 'custom:apexcharts-card',
+          graph_span: '24h',
+          series: [{ entity: entityId, statistics: { type: 'mean', period: 'hour' } }],
+        },
+      },
+      {
+        label: 'Last 7 days',
+        config: {
+          type: 'custom:apexcharts-card',
+          graph_span: '7d',
+          span: { end: 'day' },
+          series: [{ entity: entityId, statistics: { type: 'mean', period: 'day' } }],
+        },
+      },
+    ];
+  }
+  return {
+    config: {
+      type: 'custom:apexcharts-card',
+      graph_span: '24h',
+      series: [{ entity: entityId, group_by: { func: 'avg' } }],
+    },
+  };
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (window as any).customCards = (window as any).customCards || [];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1712,4 +1778,5 @@ return data.reverse();
   name: 'ApexCharts Card',
   preview: true,
   description: 'A graph card based on ApexCharts',
+  getEntitySuggestion,
 });
