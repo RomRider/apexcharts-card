@@ -70,6 +70,7 @@ export default class GraphEntry {
       median: this._median,
       delta: this._delta,
       diff: this._diff,
+      diff_inc: this._diff_inc,
     };
     this._index = index;
     this._cache = config.statistics ? false : cache;
@@ -626,6 +627,24 @@ export default class GraphEntry {
       return null;
     }
     return last - first;
+  }
+
+  private _diff_inc(items: EntityCachePoints): number | null {
+    const noNulls = this._filterNulls(items);
+    const first = this._first(noNulls);
+    const last = this._last(noNulls);
+    if (first === null || last === null) {
+      return null;
+    }
+    const min = this._minimum(noNulls);
+    if (min === null || min >= first) {
+      return last - first;
+    }
+    const max = this._maximum(noNulls);
+    if (max === null) {
+      return last - min
+    }
+    return (max - first) + (last - min);
   }
 
   private _filterNulls(items: EntityCachePoints): EntityCachePoints {
