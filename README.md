@@ -317,7 +317,7 @@ The position of the marker will only update when the card updates (state change 
 | `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
 | `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over a `duration`. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
 | `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
-| `start_with_last` | boolean | `false` | v1.8.0 | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
+| `start_with_last` | boolean | `false` | v1.8.0 | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` and `func:diff_inc` |
 
 ### `func` Options
 
@@ -333,6 +333,7 @@ The position of the marker will only update when the card updates (state change 
 | `median` | v1.0.0 | Will return the median of all the states in each bucket |
 | `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
 | `diff` | v1.4.0 | Will return the difference between the last and the first entry in the bucket |
+| `diff_inc` | v2.2.4 | Will return the difference between the last and the first entry in the bucket for increasing data with potential resets |
 
 ### `chart_type` Options
 
