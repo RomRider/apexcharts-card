@@ -7,6 +7,8 @@ import {
   HassHistoryEntry,
   HistoryBuckets,
   HistoryPoint,
+  RangeValue,
+  StateValue,
   Statistics,
   StatisticValue,
 } from './types';
@@ -19,6 +21,24 @@ import parse from 'parse-duration';
 import SparkMD5 from 'spark-md5';
 import { ChartCardSpanExtConfig, StatisticsPeriod } from './types-config';
 import * as pjson from '../package.json';
+
+function midpoint(a: number | null, b: number | null): number | null {
+  if (a === null) return b;
+  if (b === null) return a;
+  return (a + b) / 2;
+}
+
+// A range point carries [low, high]; a plain one is both its own low and high.
+// Comparing StateValue directly with </> silently falls back to Array-to-string
+// comparison ("9,10" < "10,30" is false), which is what made minMaxWithTimestamp
+// pick the wrong points.
+function rangeLow(value: StateValue): number | null {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function rangeHigh(value: StateValue): number | null {
+  return Array.isArray(value) ? value[1] : value;
+}
 
 export default class GraphEntry {
   private _computedHistory?: EntityCachePoints;
@@ -110,7 +130,7 @@ export default class GraphEntry {
     this._cache = this._config.statistics ? false : cache;
   }
 
-  get lastState(): number | null {
+  get lastState(): StateValue {
     return this.history.length > 0 ? this.history[this.history.length - 1][1] : null;
   }
 
@@ -122,17 +142,26 @@ export default class GraphEntry {
       return false;
     });
     if (index === -1) return null;
-    return this.history[index][1];
+    return rangeLow(this.history[index][1]);
+  }
+
+  // BOTH edges of a range, so `min`/`max` describe the band rather than just
+  // its underside. Those getters feed the color_threshold gradient stops.
+  private flatMapper(item: HistoryPoint): number[] {
+    if (Array.isArray(item[1])) {
+      return item[1].filter((value): value is number => value !== null);
+    }
+    return item[1] === null ? [] : [item[1]];
   }
 
   get min(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
-    return Math.min(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+    return Math.min(...this._computedHistory.flatMap(this.flatMapper));
   }
 
   get max(): number | undefined {
     if (!this._computedHistory || this._computedHistory.length === 0) return undefined;
-    return Math.max(...this._computedHistory.flatMap((item) => (item[1] === null ? [] : [item[1]])));
+    return Math.max(...this._computedHistory.flatMap(this.flatMapper));
   }
 
   public minMaxWithTimestamp(
@@ -147,8 +176,12 @@ export default class GraphEntry {
       (acc: { min: HistoryPoint; max: HistoryPoint }, point) => {
         if (point[1] === null) return acc;
         if (point[0] > end || point[0] < start) return acc;
-        if (acc.max[1] === null || acc.max[1] < point[1]) acc.max = [...point];
-        if (acc.min[1] === null || (point[1] !== null && acc.min[1] > point[1])) acc.min = [...point];
+        const pointHigh = rangeHigh(point[1]);
+        const accHigh = rangeHigh(acc.max[1]);
+        if (accHigh === null || (pointHigh !== null && accHigh < pointHigh)) acc.max = [...point];
+        const pointLow = rangeLow(point[1]);
+        const accLow = rangeLow(acc.min[1]);
+        if (accLow === null || (pointLow !== null && accLow > pointLow)) acc.min = [...point];
         return acc;
       },
       { min: [0, null], max: [0, null] },
@@ -200,7 +233,7 @@ export default class GraphEntry {
     this._updating = true;
 
     if (this._config.ignore_history) {
-      let currentState: null | number | string = null;
+      let currentState: StateValue | string = null;
       if (this._config.attribute) {
         currentState = this._entityState.attributes?.[this._config.attribute];
       } else {
@@ -267,17 +300,20 @@ export default class GraphEntry {
         const newHistory = await this._fetchStatistics(fetchStart, fetchEnd, this._config.statistics.period);
         if (newHistory && newHistory.length > 0) {
           updateGraphHistory = true;
-          let lastNonNull: number | null = null;
+          let lastNonNull: StateValue = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
           newStateHistory = newHistory.map((item) => {
-            let stateParsed: number | null = null;
-            [lastNonNull, stateParsed] = this._transformAndFill(
-              item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
-              item,
-              lastNonNull,
-            );
+            let stateParsed: StateValue = null;
+            if (this._config.statistics?.type === 'range')
+              [lastNonNull, stateParsed] = this._transformAndFill([item.min, item.max], item, lastNonNull);
+            else
+              [lastNonNull, stateParsed] = this._transformAndFill(
+                item[this._config.statistics?.type || DEFAULT_STATISTICS_TYPE],
+                item,
+                lastNonNull,
+              );
 
             let displayDate: Date | null = null;
             const startDate = new Date(item.start);
@@ -317,12 +353,13 @@ export default class GraphEntry {
           if ((this._config.attribute || this._config.transform) && skipInitialState) {
             newHistory[0].shift();
           }
-          let lastNonNull: number | null = null;
+          let lastNonNull: StateValue = null;
           if (history && history.data && history.data.length > 0) {
             lastNonNull = history.data[history.data.length - 1][1];
           }
           newStateHistory = newHistory[0].map((item) => {
-            let currentState: unknown = null;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let currentState: any = null;
             if (this._config.attribute) {
               if (item.attributes && item.attributes[this._config.attribute] !== undefined) {
                 currentState = item.attributes[this._config.attribute];
@@ -330,7 +367,7 @@ export default class GraphEntry {
             } else {
               currentState = item.state;
             }
-            let stateParsed: number | null = null;
+            let stateParsed: StateValue = null;
             [lastNonNull, stateParsed] = this._transformAndFill(currentState, item, lastNonNull);
 
             if (this._config.attribute) {
@@ -377,8 +414,9 @@ export default class GraphEntry {
       const res: EntityCachePoints = this._dataBucketer(history, moment.range(startHistory, end)).map((bucket) => {
         return [bucket.timestamp, this._func(bucket.data)];
       });
-      if ([undefined, 'line', 'area'].includes(this._config.type)) {
-        while (res.length > 0 && res[0][1] === null) res.shift();
+      if ([undefined, 'line', 'area', 'rangeArea'].includes(this._config.type)) {
+        while (res.length > 0 && (res[0][1] === null || (Array.isArray(res[0][1]) && res[0][1][0] === null)))
+          res.shift();
       }
       this._computedHistory = res;
     } else {
@@ -388,14 +426,7 @@ export default class GraphEntry {
     return true;
   }
 
-  private _transformAndFill(
-    currentState: unknown,
-    item: HassHistoryEntry | StatisticValue,
-    lastNonNull: number | null,
-  ): [number | null, number | null] {
-    if (this._config.transform) {
-      currentState = this._applyTransform(currentState, item);
-    }
+  private _lastNonNull(currentState: unknown, lastNonNull: number | null): [number | null, number | null] {
     let stateParsed: number | null = parseFloat(currentState as string);
     stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
     if (stateParsed === null) {
@@ -410,7 +441,30 @@ export default class GraphEntry {
     return [lastNonNull, stateParsed];
   }
 
-  private _applyTransform(value: unknown, historyItem: HassHistoryEntry | StatisticValue): number | null {
+  private _transformAndFill(
+    currentState: string | boolean | number | null | [unknown, unknown],
+    item: HassHistoryEntry | StatisticValue,
+    lastNonNull: StateValue,
+  ): [StateValue, StateValue] {
+    if (this._config.transform) {
+      currentState = this._applyTransform(currentState, item);
+    }
+    if (Array.isArray(currentState)) {
+      const stateParsed: RangeValue = [null, null];
+      // Not just `=== null`: a transform may return a pair for some points and a
+      // scalar for others, and indexing a primitive throws in strict mode.
+      if (!Array.isArray(lastNonNull)) lastNonNull = [null, null];
+      // A RangeValue is a 2-tuple. Running to 3 appended a third element to
+      // every point, so they no longer matched their own declared type.
+      for (let i = 0; i < 2; ++i) {
+        [lastNonNull[i], stateParsed[i]] = this._lastNonNull(currentState[i], lastNonNull[i]);
+      }
+      return [lastNonNull, stateParsed];
+    }
+    return this._lastNonNull(currentState, <number | null>lastNonNull);
+  }
+
+  private _applyTransform(value: unknown, historyItem: HassHistoryEntry | StatisticValue): StateValue {
     return new Function('x', 'hass', 'entity', `'use strict'; ${this._config.transform}`).call(
       this,
       value,
@@ -504,7 +558,7 @@ export default class GraphEntry {
         return false;
       });
     });
-    let lastNonNullBucketValue: number | null = null;
+    let lastNonNullBucketValue: StateValue = null;
     const now = new Date().getTime();
     buckets.forEach((bucket, index) => {
       if (bucket.data.length === 0) {
@@ -555,10 +609,10 @@ export default class GraphEntry {
       let val = 0;
       if (entry && entry[1] === null) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        val = items[lastIndex][1]!;
+        val = (Array.isArray(items[lastIndex][1]) ? items[lastIndex][1]![0] : items[lastIndex][1])!;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        val = entry[1]!;
+        val = (Array.isArray(entry[1]) ? entry[1][0] : entry[1])!;
         lastIndex = index;
       }
       return sum + val;
@@ -574,9 +628,10 @@ export default class GraphEntry {
   private _minimum(items: EntityCachePoints): number | null {
     let min: number | null = null;
     items.forEach((item) => {
-      if (item[1] !== null)
-        if (min === null) min = item[1];
-        else min = Math.min(item[1], min);
+      const val = rangeLow(item[1]);
+      if (val !== null)
+        if (min === null) min = val;
+        else min = Math.min(val, min);
     });
     return min;
   }
@@ -584,32 +639,44 @@ export default class GraphEntry {
   private _maximum(items: EntityCachePoints): number | null {
     let max: number | null = null;
     items.forEach((item) => {
-      if (item[1] !== null)
-        if (max === null) max = item[1];
-        else max = Math.max(item[1], max);
+      // The HIGH edge - the maximum of a band is its top, not its underside.
+      const val = rangeHigh(item[1]);
+      if (val !== null)
+        if (max === null) max = val;
+        else max = Math.max(val, max);
     });
     return max;
   }
 
   private _last(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
-    return items.slice(-1)[0][1];
+    const lastSlice = items.slice(-1)[0][1];
+    return Array.isArray(lastSlice) ? lastSlice[0] : lastSlice;
   }
 
   private _first(items: EntityCachePoints): number | null {
     if (items.length === 0) return null;
-    return items[0][1];
+    const firstSlice = items[0][1];
+    return Array.isArray(firstSlice) ? firstSlice[0] : firstSlice;
   }
 
   private _median(items: EntityCachePoints) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const itemsDup = this._filterNulls([...items]).sort((a, b) => a[1]! - b[1]!);
+    const itemsDup = this._filterNulls([...items]).sort((a, b) => rangeLow(a[1])! - rangeLow(b[1])!);
     if (itemsDup.length === 0) return null;
     if (itemsDup.length === 1) return itemsDup[0][1];
     const mid = Math.floor((itemsDup.length - 1) / 2);
     if (itemsDup.length % 2 === 1) return itemsDup[mid][1];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return (itemsDup[mid][1]! + itemsDup[mid + 1][1]!) / 2;
+
+    const lower = itemsDup[mid][1];
+    const upper = itemsDup[mid + 1][1];
+    // Element-wise for a range, so an even-length bucket returns the same
+    // SHAPE as an odd-length one. Previously it returned a bare number there,
+    // and `a + b / 2` on top of that - missing parentheses, so roughly 1.5x.
+    if (Array.isArray(lower) && Array.isArray(upper)) {
+      return [midpoint(lower[0], upper[0]), midpoint(lower[1], upper[1])] as RangeValue;
+    }
+    return midpoint(<number | null>lower, <number | null>upper);
   }
 
   private _delta(items: EntityCachePoints): number | null {

@@ -1,12 +1,29 @@
 import { HassEntities, HassEntity } from 'home-assistant-js-websocket';
 import { compress as lzStringCompress, decompress as lzStringDecompress } from 'lz-string';
-import { ChartCardConfig, EntityCachePoints } from './types';
+import { ChartCardConfig, EntityCachePoints, RangeValue, StateValue } from './types';
 import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
 import { formatNumber, FrontendLocaleData, HomeAssistant } from 'custom-card-helpers';
 import { OverrideFrontendLocaleData } from './types-ha';
+
+// The edge of a range that a given extreme lives on: a maximum sits on the
+// high edge, a minimum on the low one. A plain value is both.
+export function rangeEdge(value: StateValue, edge: 'low' | 'high'): number | null {
+  if (!Array.isArray(value)) return value;
+  return edge === 'high' ? value[1] : value[0];
+}
+
+// Negating a range flips it end for end: the negated high becomes the new low.
+// `-value` on the pair itself yields NaN.
+export function negateStateValue(value: StateValue): StateValue {
+  if (value === null) return null;
+  if (Array.isArray(value)) {
+    return [value[1] === null ? null : -value[1], value[0] === null ? null : -value[0]];
+  }
+  return -value;
+}
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -310,18 +327,19 @@ export function truncateFloat(
 }
 
 export function myFormatNumber(
-  num: string | number | null | undefined,
+  num: string | number | null | undefined | RangeValue,
   localeOptions?: FrontendLocaleData,
   precision?: number | undefined,
 ): string | null {
-  let lValue: string | number | null | undefined = num;
-  if (lValue === undefined || lValue === null) return null;
+  let lValue: string | number | null | undefined | RangeValue = num;
   if (typeof lValue === 'string') {
     lValue = parseFloat(lValue);
     if (Number.isNaN(lValue)) {
       return num as string;
     }
   }
+  if (Array.isArray(lValue)) lValue = lValue[0];
+  if (lValue === undefined || lValue === null) return null;
   return formatNumber(lValue, localeOptions, {
     minimumFractionDigits: precision === undefined ? 0 : precision,
     maximumFractionDigits: precision === undefined ? DEFAULT_FLOAT_PRECISION : precision,

@@ -92,6 +92,15 @@ export function getLayoutConfig(
     },
   };
 
+  // Only when EVERY series is a range. Forcing `rangeArea` on a MIXED chart
+  // switches ApexCharts to its range tooltip: a single series, no shared rows,
+  // and the x-axis formatter is handed something that is not a timestamp, so a
+  // configured `tooltip.x.format` renders as NaN.NaN.NaN. A mixed chart does
+  // not need the switch - ApexCharts draws a rangeArea series correctly from
+  // the per-series `type` alone.
+  if (def.chart.type === 'line' && def.series.length > 0 && def.series.every((s) => s.type === 'rangeArea'))
+    def.chart.type = 'rangeArea';
+
   let conf = {};
   switch (config.layout) {
     case 'minimal':
@@ -176,13 +185,22 @@ export function getBrushLayoutConfig(
       text: 'Loading...',
     },
   };
+
+  // Same condition as in getLayoutConfig above.
+  if (def.chart.type === 'line' && def.series.length > 0 && def.series.every((s) => s.type === 'rangeArea'))
+    def.chart.type = 'rangeArea';
+
   return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config)) : def;
 }
 
 function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
-    return serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
+    return serie.opacity !== undefined
+      ? serie.opacity
+      : serie.type === 'area' || serie.type === 'rangeArea'
+        ? DEFAULT_AREA_OPACITY
+        : 1;
   });
 }
 
@@ -194,7 +212,9 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, bru
         name: computeName(index, series, undefined, hass?.states[serie.entity]),
         group: config.stacked && serie.type === 'column' ? serie.stack_group : undefined,
         type: serie.type,
-        data: [],
+        // A rangeArea needs a [low, high] shaped seed, or ApexCharts throws
+        // while measuring the empty series before any data has arrived.
+        data: (serie.type ?? config.chart_type) === 'rangeArea' ? [[0, [0, 0]]] : [],
       };
     });
   } else {
@@ -278,6 +298,7 @@ function getXTooltipFormatter(
         } as any).format(val);
       }
     : function (val, _a, _b, hours_12 = hours12) {
+        if (!val) return '';
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Intl.DateTimeFormat(lang, {
           year: 'numeric',
@@ -294,6 +315,7 @@ function getXTooltipFormatter(
 
 function getYTooltipFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (value, opts, conf = config, hass2 = hass) {
+    if (!opts) return value;
     let lValue = value;
     if (conf.series_in_graph[opts.seriesIndex]?.invert && lValue) {
       lValue = -lValue;
@@ -477,14 +499,14 @@ function getDataLabels_enabledOnSeries(config: ChartCardConfig) {
 }
 
 function getStrokeWidth(config: ChartCardConfig, brush: boolean) {
-  if (config.chart_type !== undefined && config.chart_type !== 'line')
+  if (config.chart_type !== undefined && config.chart_type !== 'line' && config.chart_type !== 'rangeArea')
     return config.apex_config?.stroke?.width === undefined ? 3 : config.apex_config?.stroke?.width;
   const series = brush ? config.series_in_brush : config.series_in_graph;
   return series.map((serie) => {
     if (serie.stroke_width !== undefined) {
       return serie.stroke_width;
     }
-    return [undefined, 'line', 'area'].includes(serie.type) ? 5 : 0;
+    return [undefined, 'line', 'area', 'rangeArea'].includes(serie.type) ? 5 : 0;
   });
 }
 
