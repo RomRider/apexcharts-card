@@ -51,7 +51,7 @@ export interface ChartCardExternalConfig {
   yaxis?: ChartCardYAxisExternal[];
 }
 
-export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar';
+export type ChartCardChartType = 'line' | 'scatter' | 'pie' | 'donut' | 'radialBar' | 'rangeArea';
 
 export interface ChartCardBrushExtConfig {
   selection_span?: string;
@@ -73,7 +73,7 @@ export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
   attribute?: string;
   name?: string;
-  type?: 'line' | 'column' | 'area';
+  type?: 'line' | 'column' | 'area' | 'rangeArea';
   stack_group?: string;
   color?: string;
   opacity?: number;
@@ -85,7 +85,7 @@ export interface ChartCardAllSeriesExternalConfig {
   invert?: boolean;
   data_generator?: string;
   statistics?: {
-    type?: 'mean' | 'max' | 'min' | 'sum' | 'state' | 'change';
+    type?: 'mean' | 'max' | 'min' | 'sum' | 'state' | 'change' | 'range';
     period?: StatisticsPeriod;
     align?: 'start' | 'end' | 'middle';
   };

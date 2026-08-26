@@ -40,6 +40,8 @@ import {
   getLovelace,
   isUsingServerTimezone,
   computeTimezoneDiffWithLocal,
+  negateStateValue,
+  rangeEdge,
 } from './utils';
 import ApexCharts from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
@@ -852,7 +854,7 @@ class ChartsCard extends LitElement {
               );
             } else {
               // not raw
-              this._headerState[index] = graph.lastState;
+              this._headerState[index] = Array.isArray(graph.lastState) ? graph.lastState[0] : graph.lastState;
             }
           }
           if (!this._config?.series[index].show.in_chart && !this._config?.series[index].show.in_brush) {
@@ -915,7 +917,7 @@ class ChartsCard extends LitElement {
               }
               data = 0;
             } else {
-              const lastState = graph.lastState;
+              const lastState = Array.isArray(graph.lastState) ? graph.lastState[0] : graph.lastState;
               data = lastState || 0;
               if (this._config?.series[index].show.in_header !== 'raw') {
                 this._headerState[index] = lastState;
@@ -953,7 +955,7 @@ class ChartsCard extends LitElement {
           gradient: {
             type: 'vertical',
             colorStops: this._config.series_in_graph.map((serie, index) => {
-              if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+              if (!serie.color_threshold || ![undefined, 'area', 'rangeArea', 'line'].includes(serie.type)) return [];
               const min = this._graphs?.[serie.index]?.min;
               const max = this._graphs?.[serie.index]?.max;
               if (min === undefined || max === undefined) return [];
@@ -968,7 +970,7 @@ class ChartsCard extends LitElement {
             gradient: {
               type: 'vertical',
               colorStops: this._config.series_in_brush.map((serie, index) => {
-                if (!serie.color_threshold || ![undefined, 'area', 'line'].includes(serie.type)) return [];
+                if (!serie.color_threshold || ![undefined, 'area', 'rangeArea', 'line'].includes(serie.type)) return [];
                 const min = this._graphs?.[serie.index]?.min;
                 const max = this._graphs?.[serie.index]?.max;
                 if (min === undefined || max === undefined) return [];
@@ -1083,6 +1085,7 @@ class ChartsCard extends LitElement {
               serie.invert,
               sameDay,
               withTime,
+              'low',
             ),
           );
         }
@@ -1120,7 +1123,12 @@ class ChartsCard extends LitElement {
     invert = false,
     sameDay: boolean,
     withTime: boolean,
+    // Which edge of a range this extreme sits on. Without it the annotation
+    // received the [low, high] pair itself: an invalid `y`, and NaN once
+    // `invert` negated it.
+    edge: 'low' | 'high' = 'high',
   ) {
+    const extremaValue = rangeEdge(value[1], edge);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const points: any = [];
     const multiYAxis =
@@ -1129,7 +1137,7 @@ class ChartsCard extends LitElement {
       this._config.apex_config.yaxis.length > 1;
     points.push({
       x: offset ? value[0] - offset : value[0],
-      y: invert && value[1] ? -value[1] : value[1],
+      y: invert && extremaValue ? -extremaValue : extremaValue,
       seriesIndex: index,
       yAxisIndex: multiYAxis ? index : 0,
       marker: {
@@ -1137,7 +1145,7 @@ class ChartsCard extends LitElement {
         fillColor: 'var(--card-background-color)',
       },
       label: {
-        text: myFormatNumber(value[1], this._hass?.locale, serie.float_precision),
+        text: myFormatNumber(extremaValue, this._hass?.locale, serie.float_precision),
         borderColor: 'var(--card-background-color)',
         borderWidth: 2,
         style: {
@@ -1160,7 +1168,7 @@ class ChartsCard extends LitElement {
       const lang = getLang(this._config, this._hass);
       points.push({
         x: offset ? value[0] - offset : value[0],
-        y: invert && value[1] ? -value[1] : value[1],
+        y: invert && extremaValue ? -extremaValue : extremaValue,
         seriesIndex: index,
         yAxisIndex: multiYAxis ? index : 0,
         marker: {
@@ -1221,13 +1229,15 @@ class ChartsCard extends LitElement {
           );
           if (!lMinMax) return undefined;
           if (this._config?.series[id].invert) {
-            const cmin = lMinMax.min[1];
-            const cmax = lMinMax.max[1];
+            // A range flips end for end - the negated high becomes the new low.
+            // Negating the pair itself yields NaN.
+            const cmin = negateStateValue(lMinMax.min[1]);
+            const cmax = negateStateValue(lMinMax.max[1]);
             if (cmin !== null) {
-              lMinMax.max[1] = -cmin;
+              lMinMax.max[1] = cmin;
             }
             if (cmax !== null) {
-              lMinMax.min[1] = -cmax;
+              lMinMax.min[1] = cmax;
             }
           }
           return lMinMax;
@@ -1236,15 +1246,20 @@ class ChartsCard extends LitElement {
         let max: number | null = null;
         minMax?.forEach((elt) => {
           if (!elt) return;
+          // Not Math.min/max over the raw pair: a half-known band carries a null
+          // edge, and Math.min(null, x) coerces it to 0, dragging the axis to
+          // zero. rangeEdge picks the meaningful edge and leaves null as null.
+          const val_min = rangeEdge(elt.min[1], 'low');
+          const val_max = rangeEdge(elt.max[1], 'high');
           if (min === undefined || min === null) {
-            min = elt.min[1];
-          } else if (elt.min[1] !== null && min > elt.min[1]) {
-            min = elt.min[1];
+            min = val_min;
+          } else if (val_min !== null && min > val_min) {
+            min = val_min;
           }
           if (max === undefined || max === null) {
-            max = elt.max[1];
-          } else if (elt.max[1] !== null && max < elt.max[1]) {
-            max = elt.max[1];
+            max = val_max;
+          } else if (val_max !== null && max < val_max) {
+            max = val_max;
           }
         });
         if (yaxis.align_to !== undefined) {
@@ -1368,7 +1383,12 @@ class ChartsCard extends LitElement {
         return [];
       }
       let color: string | undefined = undefined;
-      const defaultOp = serie.opacity !== undefined ? serie.opacity : serie.type === 'area' ? DEFAULT_AREA_OPACITY : 1;
+      const defaultOp =
+        serie.opacity !== undefined
+          ? serie.opacity
+          : serie.type === 'area' || serie.type === 'rangeArea'
+          ? DEFAULT_AREA_OPACITY
+          : 1;
       let opacity = thres.opacity === undefined ? defaultOp : thres.opacity;
       if (thres.value > max && arr[index - 1]) {
         const factor = (max - arr[index - 1].value) / (thres.value - arr[index - 1].value);
@@ -1492,7 +1512,7 @@ class ChartsCard extends LitElement {
   private _invertData(data: EntityCachePoints): EntityCachePoints {
     return data.map((item) => {
       if (item[1] === null) return item;
-      return [item[0], -item[1]];
+      return [item[0], negateStateValue(item[1])];
     });
   }
 

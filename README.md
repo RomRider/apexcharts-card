@@ -30,6 +30,7 @@ However, some things might be broken :grin:
 - [Using the card](#using-the-card)
   - [Main Options](#main-options)
   - [`series` Options](#series-options)
+  - [`rangeArea` series](#rangearea-series)
   - [series' `show` Options](#series-show-options)
   - [`header_actions` or `title_actions` options](#header_actions-or-title_actions-options)
   - [`*_action` options](#_action-options)
@@ -166,10 +167,10 @@ The card strictly validates all the options available (but not for the `apex_con
 | `name` | string | | v1.0.0 | Override the name of the entity |
 | `stack_group` | string | | v2.1.0 | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
-| `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
-| `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
+| `opacity` | number | `0.7` for `area` and `rangeArea`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
+| `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area`, `line` and `rangeArea` (`0` leaves a `rangeArea` with no outline) |
 | `stroke_dash` | number or array | `0` | v2.1.0 | Creates a dashed line. The higher the number, the bigger the dash. An array can be used to specify more complex patterns. |
-| `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
+| `type` | string | `line` | v1.0.0 | `line`, `area`, `column` or `rangeArea` are supported for now. `rangeArea` fills the band between a low and a high value and expects each data point to be `[timestamp, [low, high]]` — see [`rangeArea` series](#rangearea-series) |
 | `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down), `monotoneCubic` (create a monotone cubic spline) |
 | ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
 | `extend_to` | boolean or string | `end` | v2.0.0 | If the value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (usefull for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
@@ -189,6 +190,68 @@ The card strictly validates all the options available (but not for the `apex_con
 | `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis to which this series should be associated. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
 | `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-or-title_actions-options) |
+
+### `rangeArea` series
+
+A `rangeArea` series fills the band between a low and a high value instead of
+drawing a single line. Each data point is `[timestamp, [low, high]]`.
+
+The usual case is a daily minimum and maximum with the mean as a line through
+it, which `statistics: {type: range}` produces directly:
+
+```yaml
+type: custom:apexcharts-card
+graph_span: 30d
+series:
+  - entity: sensor.outside_temperature
+    name: Range
+    type: rangeArea
+    opacity: 0.25
+    stroke_width: 0
+    statistics:
+      type: range
+      period: day
+  - entity: sensor.outside_temperature
+    name: Mean
+    type: line
+    statistics:
+      type: mean
+      period: day
+```
+
+A `data_generator` can feed one just as well, as long as every point is a pair.
+Note that `data_generator` replaces the card's own fetching, so the data has to
+come from somewhere you reach yourself — `hass.callWS` for statistics, for
+instance:
+
+```yaml
+    data_generator: |
+      const res = await hass.callWS({
+        type: 'recorder/statistics_during_period',
+        start_time: start.toISOString(),
+        end_time: end.toISOString(),
+        statistic_ids: [entity.entity_id],
+        period: 'day',
+      });
+      return (res[entity.entity_id] || []).map((r) => [new Date(r.start).getTime(), [r.min, r.max]]);
+```
+
+`group_by` is not meaningful on a range: its aggregators reduce a band to a
+single number, and `fill: null` would write a bare `null` where a pair is
+required. Leave it at its default for `rangeArea` series.
+
+Three things are worth knowing:
+
+- **Missing points must be `[null, null]`, not `null`.** ApexCharts reads
+  index `0` of every point in a range series and throws on a plain `null`,
+  which leaves the whole chart blank.
+- **A band scales by its high edge, and a `min` by its low.** ApexCharts works
+  this out on its own, and so does a configured `yaxis` block, so a band is
+  never clipped at the top by its own mean.
+- **Mixing a `rangeArea` with lines changes the tooltip.** ApexCharts renders
+  every row as `low - high` as soon as one series is a range, so a line shows
+  up as `null - null`. Use `apex_config.tooltip.custom` if you need both kinds
+  in one tooltip.
 
 ### series' `show` Options
 
@@ -274,7 +337,7 @@ series:
 
 | Name | Type | Default | Since | Description |
 | ---- | :--: | :-----: | :---: | ----------- |
-| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` `state` or `change` |
+| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum`, `state`, `change` or `range`. `range` yields the `[min, max]` pair of each bucket and is meant for a `rangeArea` series |
 | `period` | string | `hour` | v2.0.0 | Period of statistics to pull. Can be one of `5minute`, `hour`, `day`, `week` or `month` |
 | `align` | string | `middle` | v2.0.0 | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 
@@ -339,7 +402,8 @@ The position of the marker will only update when the card updates (state change 
 
 | Name | Since | Description |
 | ---- | :---: | ----------- |
-| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` |
+| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line`, `area` and `rangeArea` |
+| `rangeArea` | vNEXT | A timeline of bands only. Only needed when EVERY series is a `rangeArea` — a chart mixing bands with lines should stay on `line`, or ApexCharts switches to its range tooltip, which shows a single series and no shared rows. See [`rangeArea` series](#rangearea-series) |
 | `scatter` | v1.4.0 | Displays a cloud of points without a line between the values |
 | `pie` | v1.4.0 | This will display a pie chart with the last value computed for each sensor |
 | `donut` | v1.4.0 | This will display a donut chart with the last value computed of each sensor, the same as pie but with a hole in the center |
