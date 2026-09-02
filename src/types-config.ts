@@ -166,6 +166,7 @@ export interface ChartCardYAxisExternal {
   min?: 'auto' | number | string;
   max?: 'auto' | number | string;
   align_to?: number;
+  tick_step?: number;
   decimals?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   apex_config?: any;
