@@ -533,6 +533,7 @@ class ChartsCard extends LitElement {
       let yAxisDup: any = JSON.parse(JSON.stringify(config.yaxis![idx]));
       delete yAxisDup.apex_config;
       delete yAxisDup.decimals;
+      delete yAxisDup.tick_step;
       yAxisDup.decimalsInFloat =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         config.yaxis![idx].decimals === undefined ? DEFAULT_FLOAT_PRECISION : config.yaxis![idx].decimals;
@@ -1242,15 +1243,16 @@ class ChartsCard extends LitElement {
             max = elt.max[1];
           }
         });
-        if (yaxis.align_to !== undefined) {
+        const alignTo = yaxis.align_to !== undefined ? yaxis.align_to : yaxis.tick_step;
+        if (alignTo !== undefined) {
           if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
-            if (min % yaxis.align_to !== 0) {
-              min = min >= 0 ? min - (min % yaxis.align_to) : -(yaxis.align_to + (min % yaxis.align_to) - min);
+            if (min % alignTo !== 0) {
+              min = min >= 0 ? min - (min % alignTo) : -(alignTo + (min % alignTo) - min);
             }
           }
           if (max !== null && yaxis.max_type !== minmax_type.FIXED) {
-            if (max % yaxis.align_to !== 0) {
-              max = max >= 0 ? yaxis.align_to - (max % yaxis.align_to) + max : (max % yaxis.align_to) - max;
+            if (max % alignTo !== 0) {
+              max = max >= 0 ? alignTo - (max % alignTo) + max : (max % alignTo) - max;
             }
           }
         }
@@ -1277,6 +1279,20 @@ class ChartsCard extends LitElement {
           }
         });
       }
+    });
+    // tick_step: place a tick every `tick_step` units by deriving ApexCharts' tickAmount from the final
+    // extremas. Done here (not in _generateYAxisConfig) so it follows auto/soft/absolute extremas as they
+    // change with the data, zoom and pan, and still works when min/max are fixed.
+    this._yAxisConfig?.forEach((yaxis) => {
+      if (yaxis.tick_step === undefined || yaxis.tick_step <= 0) return;
+      yaxis.series_id?.forEach((id) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const axis = this._config!.apex_config!.yaxis![id];
+        if (typeof axis.min === 'number' && typeof axis.max === 'number' && axis.max > axis.min) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          axis.tickAmount = Math.max(1, Math.round((axis.max - axis.min) / yaxis.tick_step!));
+        }
+      });
     });
     return this._config?.apex_config?.yaxis;
   }

@@ -528,6 +528,7 @@ You can have as many y-axis as there are series defined in your configuration or
 | `decimals` | number | `1` | v1.10.0 | Number of decimals to show on this y-axis |
 | `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
 | `align_to` | number | | v1.10.0 | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
+| `tick_step` | number | | v2.3.0 | Puts a tick (and a label) every `tick_step` units on this y-axis, e.g. `tick_step: 1` for `0, 1, 2, 3...`. The non-fixed extremas are aligned to a multiple of `tick_step` (unless `align_to` is set, which takes precedence) so every label lands on a round number, and the axis still follows the data, zoom and pan. Works with fixed `min`/`max` too. |
 
 #### Min/Max Format
 
