@@ -30,18 +30,22 @@ import * as nl from 'apexcharts/dist/locales/nl.json';
 import * as pl from 'apexcharts/dist/locales/pl.json';
 import * as pt_br from 'apexcharts/dist/locales/pt-br.json';
 import * as pt from 'apexcharts/dist/locales/pt.json';
-import * as rs from 'apexcharts/dist/locales/rs.json';
+import * as sr from 'apexcharts/dist/locales/sr.json';
 import * as ru from 'apexcharts/dist/locales/ru.json';
-import * as se from 'apexcharts/dist/locales/se.json';
+import * as sv from 'apexcharts/dist/locales/sv.json';
 import * as sk from 'apexcharts/dist/locales/sk.json';
 import * as sl from 'apexcharts/dist/locales/sl.json';
 import * as sq from 'apexcharts/dist/locales/sq.json';
 import * as th from 'apexcharts/dist/locales/th.json';
 import * as tr from 'apexcharts/dist/locales/tr.json';
-import * as ua from 'apexcharts/dist/locales/ua.json';
+import * as uk from 'apexcharts/dist/locales/uk.json';
 import * as vi from 'apexcharts/dist/locales/vi.json';
 import * as zh_cn from 'apexcharts/dist/locales/zh-cn.json';
 import * as zh_tw from 'apexcharts/dist/locales/zh-tw.json';
+
+function localeAlias<T extends { name: string }>(locale: T, name: string): T {
+  return { ...locale, name };
+}
 
 export function getLocales(): Record<string, unknown> {
   return {
@@ -77,15 +81,18 @@ export function getLocales(): Record<string, unknown> {
     pl: pl,
     'pt-br': pt_br,
     pt: pt,
-    rs: rs,
+    rs: localeAlias(sr, 'rs'),
+    sr: sr,
     ru: ru,
-    se: se,
+    se: localeAlias(sv, 'se'),
+    sv: sv,
     sk: sk,
     sl: sl,
     sq: sq,
     th: th,
     tr: tr,
-    ua: ua,
+    ua: localeAlias(uk, 'ua'),
+    uk: uk,
     vi: vi,
     'zh-cn': zh_cn,
     'zh-tw': zh_tw,

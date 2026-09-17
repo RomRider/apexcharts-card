@@ -1,4 +1,5 @@
 import { HomeAssistant } from 'custom-card-helpers';
+import { type ApexOptions } from 'apexcharts';
 import parse from 'parse-duration';
 import {
   DEFAULT_AREA_OPACITY,
@@ -20,7 +21,7 @@ export function getLayoutConfig(
   config: ChartCardConfig,
   hass: HomeAssistant | undefined = undefined,
   graphs: (GraphEntry | undefined)[] | undefined,
-): unknown {
+): ApexOptions {
   const locales = getLocales();
   const def = {
     chart: {
@@ -111,7 +112,7 @@ export function getBrushLayoutConfig(
   config: ChartCardConfig,
   hass: HomeAssistant | undefined = undefined,
   id: string,
-): unknown {
+): ApexOptions {
   const locales = getLocales();
   const def = {
     chart: {
