@@ -5,6 +5,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
+import { computeEntityName } from './entity-name';
 import { formatNumber, FrontendLocaleData, HomeAssistant } from 'custom-card-helpers';
 import { OverrideFrontendLocaleData } from './types-ha';
 
@@ -61,18 +62,15 @@ export function mergeDeep(target: any, source: any): any {
 }
 
 export function computeName(
+  hass: HomeAssistant | undefined,
   index: number,
   series: ChartCardSeriesExternalConfig[] | undefined,
   entities: (HassEntity | undefined)[] | HassEntities | undefined = undefined,
   entity: HassEntity | undefined = undefined,
 ): string {
   if (!series || (!entities && !entity)) return '';
-  let name = '';
-  if (entity) {
-    name = series[index].name || entity.attributes?.friendly_name || entity.entity_id || '';
-  } else if (entities) {
-    name = series[index].name || entities[index]?.attributes?.friendly_name || entities[index]?.entity_id || '';
-  }
+  const stateObj = entity ?? (entities ? entities[index] : undefined);
+  const name = computeEntityName(hass, stateObj, series[index].name);
   return name + (series[index].show?.offset_in_name && series[index].offset ? ` (${series[index].offset})` : '');
 }
 

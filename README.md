@@ -163,7 +163,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | ---- | :--: | :-----: | :---: | ----------- |
 | :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
 | `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
-| `name` | string | | v1.0.0 | Override the name of the entity |
+| `name` | string \| list | | v1.0.0 | Override the name of the entity. Accepts a [structured name](#structured-names) on Home Assistant 2026.4 and later. |
 | `stack_group` | string | | v2.1.0 | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
 | `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
@@ -189,6 +189,31 @@ The card strictly validates all the options available (but not for the `apex_con
 | `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis to which this series should be associated. See [yaxis](#yaxis-options-multi-y-axis) |
 | `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
 | `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-or-title_actions-options) |
+
+### Structured names
+
+*Requires Home Assistant 2026.4 or later. On earlier versions a structured `name` falls back to the entity's friendly name.*
+
+Home Assistant composes an entity's display name out of its registry context
+(entity, device, area, floor) rather than one `friendly_name` string. A series'
+`name` can be a list of those parts instead of a plain string, so it keeps
+following renames and matches what the built-in cards show:
+
+```yaml
+type: custom:apexcharts-card
+series:
+  - entity: sensor.living_room_thermostat_temperature
+    name:
+      - type: area
+      - type: entity
+```
+
+Available part types are `entity`, `device`, `area`, `floor`, and
+`text` (a literal, written as `{type: text, text: Indoor}`). Parts that resolve to
+nothing are dropped, so the surrounding parts still render. A plain string `name`
+keeps working exactly as before.
+
+See the [Home Assistant developer documentation](https://developers.home-assistant.io/docs/frontend/data#hassformatentitynamestateobj-name-options) for details.
 
 ### series' `show` Options
 

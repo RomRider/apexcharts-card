@@ -46,6 +46,7 @@ import { Ripple } from '@material/mwc-ripple';
 import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { getBrushLayoutConfig, getLayoutConfig } from './apex-layouts';
+import { entityNamesChanged } from './entity-name';
 import GraphEntry from './graphEntry';
 import { createCheckers } from 'ts-interface-checker';
 import {
@@ -224,7 +225,7 @@ class ChartsCard extends LitElement {
       if (this._config?.experimental?.hidden_by_default) {
         this._config.series_in_graph.forEach((serie, index) => {
           if (serie.show.hidden_by_default) {
-            const name = computeName(index, this._config?.series_in_graph, this._entities);
+            const name = computeName(this._hass, index, this._config?.series_in_graph, this._entities);
             this._apexChart?.hideSeries(name);
           }
         });
@@ -233,8 +234,18 @@ class ChartsCard extends LitElement {
   }
 
   public set hass(hass: HomeAssistant) {
+    const oldHass = this._hass;
     this._hass = hass;
     if (!this._config || !this._graphs || !hass) return;
+
+    // Header names resolve against the entity/device/area/floor registries, and
+    // HA swaps the real formatEntityName in asynchronously once translations
+    // load. Neither changes an entity state, so nothing below would re-render
+    // them. The chart's own series labels are refreshed by ApexCharts on the
+    // next data update.
+    if (entityNamesChanged(oldHass, hass)) {
+      this.requestUpdate();
+    }
 
     this._graphs.map((graph) => {
       if (graph) graph.hass = hass;
@@ -754,7 +765,7 @@ class ChartsCard extends LitElement {
                     : ''}
                 </div>
                 ${serie.show.name_in_header
-                  ? html`<div id="state__name">${computeName(index, this._config?.series, this._entities)}</div>`
+                  ? html`<div id="state__name">${computeName(this._hass, index, this._config?.series, this._entities)}</div>`
                   : ''}
                 <mwc-ripple unbounded id="ripple-${index}"></mwc-ripple>
               </div>

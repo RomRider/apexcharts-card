@@ -191,7 +191,7 @@ function getSeries(config: ChartCardConfig, hass: HomeAssistant | undefined, bru
   if (TIMESERIES_TYPES.includes(config.chart_type)) {
     return series.map((serie, index) => {
       return {
-        name: computeName(index, series, undefined, hass?.states[serie.entity]),
+        name: computeName(hass, index, series, undefined, hass?.states[serie.entity]),
         group: config.stacked && serie.type === 'column' ? serie.stack_group : undefined,
         type: serie.type,
         data: [],
@@ -207,7 +207,7 @@ function getLabels(config: ChartCardConfig, hass: HomeAssistant | undefined) {
     return [];
   } else {
     return config.series_in_graph.map((serie, index) => {
-      return computeName(index, config.series_in_graph, undefined, hass?.states[serie.entity]);
+      return computeName(hass, index, config.series_in_graph, undefined, hass?.states[serie.entity]);
     });
   }
 }
@@ -388,6 +388,7 @@ function getPlotOptions_radialBar(config: ChartCardConfig, hass: HomeAssistant |
 function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (_, opts, conf = config, hass2 = hass) {
     const name = computeName(
+      hass2,
       opts.seriesIndex,
       conf.series_in_graph,
       undefined,

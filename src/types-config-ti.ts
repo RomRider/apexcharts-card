@@ -67,10 +67,23 @@ export const ChartCardStartEnd = t.union(t.lit('minute'), t.lit('hour'), t.lit('
 
 export const StatisticsPeriod = t.union(t.lit('5minute'), t.lit('hour'), t.lit('day'), t.lit('week'), t.lit('month'));
 
+export const EntityName = t.union("string", "EntityNameItem", t.array("EntityNameItem"));
+
+export const EntityNameItem = t.union("EntityNameContextItem", "EntityNameTextItem");
+
+export const EntityNameContextItem = t.iface([], {
+  "type": t.union(t.lit('entity'), t.lit('device'), t.lit('area'), t.lit('floor')),
+});
+
+export const EntityNameTextItem = t.iface([], {
+  "type": t.lit('text'),
+  "text": "string",
+});
+
 export const ChartCardAllSeriesExternalConfig = t.iface([], {
   "entity": t.opt("string"),
   "attribute": t.opt("string"),
-  "name": t.opt("string"),
+  "name": t.opt("EntityName"),
   "type": t.opt(t.union(t.lit('line'), t.lit('column'), t.lit('area'))),
   "stack_group": t.opt("string"),
   "color": t.opt("string"),
@@ -238,6 +251,10 @@ const exportedTypeSuite: t.ITypeSuite = {
   ChartCardSpanExtConfig,
   ChartCardStartEnd,
   StatisticsPeriod,
+  EntityName,
+  EntityNameItem,
+  EntityNameContextItem,
+  EntityNameTextItem,
   ChartCardAllSeriesExternalConfig,
   ActionsConfig,
   ChartCardSeriesShowConfigExt,

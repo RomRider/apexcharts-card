@@ -69,10 +69,24 @@ export type ChartCardStartEnd = 'minute' | 'hour' | 'day' | 'week' | 'month' | '
 
 export type StatisticsPeriod = '5minute' | 'hour' | 'day' | 'week' | 'month';
 
+/** A `name` option: a plain string, or name parts resolved from the registry. */
+export type EntityName = string | EntityNameItem | EntityNameItem[];
+
+export type EntityNameItem = EntityNameContextItem | EntityNameTextItem;
+
+export interface EntityNameContextItem {
+  type: 'entity' | 'device' | 'area' | 'floor';
+}
+
+export interface EntityNameTextItem {
+  type: 'text';
+  text: string;
+}
+
 export interface ChartCardAllSeriesExternalConfig {
   entity?: string;
   attribute?: string;
-  name?: string;
+  name?: EntityName;
   type?: 'line' | 'column' | 'area';
   stack_group?: string;
   color?: string;
