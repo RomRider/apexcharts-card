@@ -426,7 +426,7 @@ export default class GraphEntry {
   ): Promise<HassHistory | undefined> {
     let url = 'history/period';
     if (start) url += `/${start.toISOString()}`;
-    url += `?filter_entity_id=${this._entityID}`;
+    url += `?filter_entity_id=${encodeURIComponent(this._entityID)}`;
     if (end) url += `&end_time=${end.toISOString()}`;
     if (skipInitialState) url += '&skip_initial_state';
     url += '&significant_changes_only=0';
