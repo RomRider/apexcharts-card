@@ -1,0 +1,229 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Color threshold gap regression</title>
+<style>
+  body { font: 14px sans-serif; background: #eee; }
+  apexcharts-card { display: block; width: 600px; margin: 20px; }
+  pre { white-space: pre-wrap; }
+</style>
+<p>Build the card, serve the repository over HTTP, and open this page. It uses synthetic data and needs no Home Assistant connection.</p>
+<pre id="results">Running…</pre>
+<script type="module">
+await import('../dist/apexcharts-card.js');
+
+const thresholds = [
+  { value: 32, color: '#3b82f6' }, { value: 50, color: '#22d3ee' },
+  { value: 70, color: '#22c55e' }, { value: 85, color: '#eab308' },
+  { value: 100, color: '#f97316' }, { value: 110, color: '#ef4444' },
+  { value: 120, color: '#9f1239' },
+];
+const narrow = [76, 77, null, 80, 82, null, 99, 107];
+const wide = [60, 62, null, 80, 82, null, 117, 120];
+window.datasets = {};
+window.fixtures = {};
+window.hooks = {};
+window.errors = [];
+addEventListener('error', (event) => errors.push(event.message));
+addEventListener('unhandledrejection', (event) => errors.push(String(event.reason)));
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function until(condition) {
+  const deadline = Date.now() + 5000;
+  while (!condition()) {
+    assert(Date.now() < deadline, 'Timed out waiting for the chart');
+    await pause(20);
+  }
+}
+
+window.makeCard = async (name, specs, options = {}) => {
+  const card = document.createElement('apexcharts-card');
+  hooks[name] = { mounted: 0, updated: 0, animationEnd: 0, contextOK: true };
+  const events = Object.fromEntries(['mounted', 'updated', 'animationEnd'].map((event) => [event,
+    `EVAL:function(chart) { window.hooks[${JSON.stringify(name)}][${JSON.stringify(event)}]++;
+      window.hooks[${JSON.stringify(name)}].contextOK &&= this === chart.w.config.chart.events; }`,
+  ]));
+  const states = {};
+  const series = specs.map((spec, index) => {
+    const key = `${name}_${index}`;
+    datasets[key] = spec.points || spec.values.map((value, i) => [i * 3600000, value]);
+    const entity = `sensor.fixture_${index}`;
+    states[entity] = { entity_id: entity, state: '81', attributes: { unit_of_measurement: '°F' } };
+    return {
+      entity, type: spec.type || 'line', invert: spec.invert || false,
+      curve: spec.curve || 'straight', stroke_width: 3, extend_to: false,
+      color_threshold: spec.threshold === false ? undefined : thresholds,
+      show: { header_color_threshold: true, in_brush: !!options.brush },
+      data_generator: `return window.datasets[${JSON.stringify(key)}].map(([t,v])=>[start.getTime()+t,v]);`,
+    };
+  });
+  card.setConfig({
+    type: 'custom:apexcharts-card', graph_span: '24h', cache: false,
+    experimental: { color_threshold: true, brush: !!options.brush },
+    header: { show: true, show_states: true, colorize_states: true },
+    apex_config: { chart: { animations: { enabled: false }, events }, yaxis: options.yaxis, markers: options.markers },
+    brush: options.brush ? { apex_config: { chart: { animations: { enabled: false } }, markers: options.markers } } : undefined,
+    series,
+  });
+  card.hass = {
+    states, config: { time_zone: 'UTC' }, themes: { darkMode: false }, language: 'en',
+    locale: { language: 'en', number_format: 'decimal', time_format: '24', time_zone: 'local' },
+  };
+  document.body.append(card);
+  fixtures[name] = card;
+  await until(() => card._apexChart?.w.globals.series[0]?.length > 1 && !card._updating);
+  return card;
+};
+
+window.sampleCard = async (card, brush = false) => {
+  const root = card.shadowRoot.querySelector(brush ? '#brush' : '#graph');
+  const chart = brush ? card._apexBrush : card._apexChart;
+  const globals = chart.w.globals;
+  const series = brush ? card._config.series_in_brush : card._config.series_in_graph;
+  const width = Math.ceil(globals.gridWidth + 20), height = Math.ceil(globals.gridHeight + 20);
+  const results = [];
+  for (const group of root.querySelectorAll('.apexcharts-series')) {
+    const index = Number(group.getAttribute('data:realIndex'));
+    if (series[index]?.type !== 'line') continue;
+    const paths = [...group.querySelectorAll('.apexcharts-line')];
+    if (!paths.length) continue;
+    const defs = [...root.querySelectorAll('linearGradient')].map((g) => g.outerHTML).join('');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width * 4}" height="${height * 4}" viewBox="0 0 ${width} ${height}"><defs>${defs}</defs>${paths.map((p) => p.outerHTML).join('')}</svg>`;
+    const image = new Image();
+    image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = width * 4; canvas.height = height * 4;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(image, 0, 0);
+    for (const path of paths.filter((p) => p.getTotalLength() > 2)) {
+      const point = path.getPointAtLength(path.getTotalLength() / 2);
+      let value = globals.maxY - point.y / globals.gridHeight * (globals.maxY - globals.minY);
+      if (series[index].invert) value = -value;
+      // The header implements the value-based scale independently of SVG gradients.
+      const expected = card._computeHeaderStateColor(series[index], value).match(/[a-f0-9]{2}/gi).map((hex) => parseInt(hex, 16));
+      const actual = [...context.getImageData(Math.round(point.x * 4), Math.round(point.y * 4), 1, 1).data];
+      const error = Math.max(...expected.map((component, i) => Math.abs(component - actual[i])));
+      results.push({ index, value, expected, actual, error });
+    }
+  }
+  return results;
+};
+
+async function checkColors(card, brush = false) {
+  const samples = await sampleCard(card, brush);
+  assert(samples.length > 0, 'No line pixels sampled');
+  assert(samples.every((sample) => sample.actual[3] === 255 && sample.error <= 3), JSON.stringify(samples));
+  return { samples: samples.length, maxColorError: Math.max(...samples.map((sample) => sample.error)) };
+}
+const results = [];
+async function check(name, run) {
+  try { results.push({ name, passed: true, evidence: await run() }); }
+  catch (error) { results.push({ name, passed: false, error: String(error) }); }
+  document.querySelector('#results').textContent = JSON.stringify(results, null, 2);
+}
+
+await check('narrow range with gaps', async () => checkColors(await makeCard('narrow', [{ values: narrow }])));
+await check('wider range with the same middle values', async () => checkColors(await makeCard('wide', [{ values: wide }])));
+await check('manual axis range', async () => checkColors(await makeCard('manual', [{ values: narrow }], { yaxis: { min: 0, max: 150 } })));
+await check('inverted series', async () => checkColors(await makeCard('inverted', [{ values: narrow, invert: true }])));
+await check('flat segment among other values', async () => checkColors(await makeCard('flat', [{ values: [75,77,null,81,81,null,105,107] }])));
+await check('isolated extrema', async () => checkColors(await makeCard('isolated', [{ values: [50,null,80,82,null,110] }])));
+await check('isolated last point after one segment', async () => checkColors(await makeCard('isolatedLast', [{ values: [80,82,null,110] }])));
+await check('two independent line gradients', async () => checkColors(await makeCard('multiple', [{ values: narrow }, { values: wide }])));
+await check('single path remains unchanged', async () => {
+  const card = await makeCard('continuous', [{ values: [76,80,82,107] }]);
+  assert([...card.shadowRoot.querySelectorAll('linearGradient')].every((g) => !g.hasAttribute('gradientUnits')), 'Changed a continuous line');
+  return checkColors(card);
+});
+await check('area and column gradients remain unchanged', async () => {
+  const card = await makeCard('otherTypes', [{ values: narrow, type: 'area' }, { values: wide, type: 'column' }]);
+  assert([...card.shadowRoot.querySelectorAll('linearGradient')].every((g) => !g.hasAttribute('gradientUnits')), 'Changed another series type');
+});
+await check('history update', async () => {
+  datasets.narrow_0 = wide.map((v,i) => [i * 3600000, v]);
+  await fixtures.narrow._updateData();
+  return checkColors(fixtures.narrow);
+});
+await check('gaps disappear and return', async () => {
+  const card = fixtures.wide;
+  datasets.wide_0 = [60,80,82,120].map((v,i) => [i * 3600000, v]);
+  await card._updateData();
+  assert([...card.shadowRoot.querySelectorAll('linearGradient')].every((g) => !g.hasAttribute('gradientUnits')), 'Stale gap coordinates');
+  await checkColors(card);
+  datasets.wide_0 = wide.map((v,i) => [i * 3600000, v]);
+  await card._updateData();
+  return checkColors(card);
+});
+await check('resize', async () => {
+  const card = fixtures.narrow, oldWidth = card._apexChart.w.globals.gridWidth;
+  card.style.width = '450px';
+  dispatchEvent(new Event('resize'));
+  await until(() => card._apexChart.w.globals.gridWidth !== oldWidth);
+  return checkColors(card);
+});
+await check('brush chart', async () => {
+  const card = await makeCard('brush', [{ values: narrow }], { brush: true });
+  return checkColors(card, true);
+});
+await check('visible markers', async () => {
+  const card = await makeCard('markers', [{ values: narrow }], { markers: { size: 4 } });
+  assert(card._apexChart.w.globals.pointsArray.length === 0, 'Expected visible marker path');
+  return checkColors(card);
+});
+await check('marker settings change', async () => {
+  const card = fixtures.markers;
+  await card._apexChart.updateOptions({ markers: { size: 0 } }, false, false);
+  await checkColors(card);
+  await card._apexChart.updateOptions({ markers: { size: 4 } }, false, false);
+  return checkColors(card);
+});
+await check('brush chart with visible markers', async () => {
+  const card = await makeCard('brushMarkers', [{ values: narrow }], { brush: true, markers: { size: 4 } });
+  return checkColors(card, true);
+});
+await check('animated update and custom animationEnd handler', async () => {
+  const card = fixtures.narrow, chart = card._apexChart;
+  // Let resize observers from inserting the fixtures settle before animating.
+  await pause(300);
+  await chart.updateOptions({ chart: { animations: {
+    enabled: true, speed: 100, animateGradually: { enabled: false },
+    dynamicAnimation: { enabled: true, speed: 100 },
+  } } }, false, false);
+  const count = hooks.narrow.animationEnd;
+  // Change a middle point while keeping the range (and color stops) unchanged.
+  await chart.updateSeries(chart.w.config.series.map((series) => ({
+    ...series, data: series.data.map(([x,y],index) => [x,index === 3 ? 83 : y]),
+  })), true);
+  await until(() => hooks.narrow.animationEnd > count);
+  // ApexCharts emits animationEnd from one path; allow other paths to finish.
+  await pause(150);
+  assert(hooks.narrow.contextOK, 'Lost the custom handler context');
+  return checkColors(card);
+});
+await check('custom mounted and updated handlers', async () => {
+  assert(hooks.narrow.mounted === 1 && hooks.narrow.updated >= 2 && hooks.narrow.contextOK, JSON.stringify(hooks.narrow));
+  return hooks.narrow;
+});
+await check('large point arrays do not exceed the argument limit', async () => {
+  const card = fixtures.narrow, chart = card._apexChart;
+  const originalValues = chart.w.globals.series, originalPositions = chart.w.globals.seriesYvalues;
+  const values = Array.from({ length: 200000 }, () => 1);
+  const positions = Array.from({ length: 200000 }, (_, i) => i % 1000);
+  values.push(null); positions.push(1000000);
+  try {
+    // Exercise the gradient event without rendering 200,000 SVG points.
+    chart.w.globals.series = [values];
+    chart.w.globals.seriesYvalues = [positions];
+    chart.w.config.chart.events.updated(chart);
+    const gradient = card.shadowRoot.querySelector('linearGradient');
+    assert(gradient.getAttribute('y1') === '0' && gradient.getAttribute('y2') === '999', 'Incorrect complete-series bounds');
+  } finally {
+    chart.w.globals.series = originalValues;
+    chart.w.globals.seriesYvalues = originalPositions;
+    chart.w.config.chart.events.updated(chart);
+  }
+});
+await check('no browser errors', async () => assert(errors.length === 0, JSON.stringify(errors)));
+window.results = results;
+window.finished = true;
+</script>
