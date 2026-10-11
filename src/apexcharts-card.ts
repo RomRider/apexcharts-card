@@ -41,7 +41,7 @@ import {
   isUsingServerTimezone,
   computeTimezoneDiffWithLocal,
 } from './utils';
-import ApexCharts from 'apexcharts';
+import ApexCharts, { ApexOptions } from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
 import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -791,7 +791,8 @@ class ChartsCard extends LitElement {
     const brush = this.shadowRoot?.querySelector('#brush');
     if (!this._apexChart && graph && this._config) {
       this._loaded = true;
-      const layout = getLayoutConfig(this._config, this._hass, this._graphs);
+      const layout = getLayoutConfig(this._config, this._hass, this._graphs) as ApexOptions;
+      this._configureThresholdGradients(layout, graph, this._config.series_in_graph);
       if (this._config.series_in_brush.length) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
@@ -800,16 +801,86 @@ class ChartsCard extends LitElement {
       const promises: Promise<void>[] = [];
       promises.push(this._apexChart.render());
       if (this._config.series_in_brush.length && brush) {
-        this._apexBrush = new ApexCharts(
-          brush,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id),
-        );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const brushLayout = getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id) as ApexOptions;
+        this._configureThresholdGradients(brushLayout, brush, this._config.series_in_brush);
+        this._apexBrush = new ApexCharts(brush, brushLayout);
         promises.push(this._apexBrush.render());
       }
       await Promise.all(promises);
       this._firstDataLoad();
     }
+  }
+
+  private _configureThresholdGradients(
+    layout: ApexOptions,
+    element: Element,
+    series: ChartCardSeriesConfig[],
+  ): void {
+    if (
+      !this._config?.experimental?.color_threshold ||
+      !series.some((serie) => serie.type === 'line' && serie.color_threshold?.length)
+    ) {
+      return;
+    }
+
+    const updateGradients = (chart: unknown) => {
+      const { series: values, seriesYvalues } = (
+        chart as { w: { globals: { series: (number | null)[][]; seriesYvalues: number[][] } } }
+      ).w.globals;
+      const gradients = new Map(
+        Array.from(element.querySelectorAll<SVGLinearGradientElement>('linearGradient'), (gradient) => [
+          gradient.id,
+          gradient,
+        ]),
+      );
+      element.querySelectorAll('.apexcharts-series').forEach((group) => {
+        const index = group.getAttribute('data:realIndex');
+        const serie = index === null ? undefined : series[Number(index)];
+        if (serie?.type !== 'line' || !serie.color_threshold) return;
+
+        const paths = Array.from(group.querySelectorAll<SVGPathElement>('.apexcharts-line')).filter((path) =>
+          path.getAttribute('d'),
+        );
+        const data = values[Number(index)];
+        const positions = seriesYvalues[Number(index)];
+        if (!paths.length || !positions || !data?.includes(null)) return;
+
+        // Null values split a line into paths. Their shared gradient must use
+        // the complete series bounds, rather than each segment's bounding box.
+        // Include isolated points, which may not have a rendered line path.
+        // Line coordinates are available whether markers are visible or not.
+        let minY = Infinity;
+        let maxY = -Infinity;
+        for (let point = 0; point < data.length; point++) {
+          const y = positions[point];
+          if (data[point] !== null && Number.isFinite(y)) {
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+          }
+        }
+        if (!(maxY > minY)) return;
+
+        const ids = new Set(paths.map((path) => path.getAttribute('stroke')?.match(/#([^)'"]+)/)?.[1]));
+        ids.forEach((id) => {
+          const gradient = id && gradients.get(id);
+          if (!gradient) return;
+          gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+          gradient.setAttribute('y1', String(minY));
+          gradient.setAttribute('y2', String(maxY));
+        });
+      });
+    };
+
+    const events = { ...layout.chart?.events };
+    (['mounted', 'updated', 'animationEnd'] as const).forEach((event) => {
+      const original = events[event];
+      events[event] = function (this: unknown, ...args: [unknown, unknown?]) {
+        updateGradients(args[0]);
+        if (typeof original === 'function') return original.apply(this, args);
+      };
+    });
+    layout.chart = { ...layout.chart, events };
   }
 
   private async _updateData() {
