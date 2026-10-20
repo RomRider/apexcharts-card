@@ -986,6 +986,42 @@ class ChartsCard extends LitElement {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentMax = (this._apexChart as any).axes?.w?.globals?.maxX;
       this._headerState = [...this._headerState];
+      if (this._apexBrush) {
+        const newMin = start.getTime() - this._serverTimeOffset;
+        const newMax = this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false);
+        brushData.xaxis = {
+          min: newMin,
+          max: newMax,
+        };
+        let selectionXAxis: { min: number; max: number };
+        if (brushIsAtEnd || !this._brushInit) {
+          selectionXAxis = {
+            min: brushData.xaxis.max - (this._brushSelectionSpan ? this._brushSelectionSpan : this._graphSpan / 4),
+            max: brushData.xaxis.max,
+          };
+        } else {
+          selectionXAxis = {
+            min: currentMin < newMin ? newMin : currentMin,
+            max: currentMin < newMin ? newMin + (currentMax - currentMin) : currentMax,
+          };
+        }
+        const selectionColor = computeColor('var(--primary-text-color)');
+        brushData.chart = {
+          selection: {
+            enabled: true,
+            xaxis: { ...selectionXAxis },
+            stroke: { color: selectionColor },
+            fill: { color: selectionColor, opacity: 0.1 },
+          },
+        };
+        // The brush chart only fires its `selection` event (which zooms the main chart) when it draws the
+        // selection for the first time; on later updateOptions it just redraws the rectangle. Meanwhile
+        // updating the main chart's series reverts its xaxis to the stored initial (full) range, so the
+        // main chart jumps back to the full graph_span on every refresh (#954, #1041). Set the main
+        // chart's xaxis to the selection explicitly on every update so both charts stay in sync.
+        graphData.xaxis = { ...selectionXAxis };
+        this._brushInit = true;
+      }
       const chartUpdates: Promise<void>[] = [];
       chartUpdates.push(
         this._apexChart?.updateOptions(
@@ -995,37 +1031,6 @@ class ChartsCard extends LitElement {
         ),
       );
       if (this._apexBrush) {
-        const newMin = start.getTime() - this._serverTimeOffset;
-        const newMax = this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false);
-        brushData.xaxis = {
-          min: newMin,
-          max: newMax,
-        };
-        if (brushIsAtEnd || !this._brushInit) {
-          brushData.chart = {
-            selection: {
-              enabled: true,
-              xaxis: {
-                min: brushData.xaxis.max - (this._brushSelectionSpan ? this._brushSelectionSpan : this._graphSpan / 4),
-                max: brushData.xaxis.max,
-              },
-            },
-          };
-        } else {
-          brushData.chart = {
-            selection: {
-              enabled: true,
-              xaxis: {
-                min: currentMin < newMin ? newMin : currentMin,
-                max: currentMin < newMin ? newMin + (currentMax - currentMin) : currentMax,
-              },
-            },
-          };
-        }
-        const selectionColor = computeColor('var(--primary-text-color)');
-        brushData.chart.selection.stroke = { color: selectionColor };
-        brushData.chart.selection.fill = { color: selectionColor, opacity: 0.1 };
-        this._brushInit = true;
         chartUpdates.push(this._apexBrush?.updateOptions(brushData, false, false));
       }
       await Promise.all(chartUpdates);
