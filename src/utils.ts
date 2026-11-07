@@ -91,25 +91,6 @@ export function computeUom(
   return '';
 }
 
-export function computeColors(colors: string[] | undefined): string[] {
-  if (!colors) return [];
-  return colors.map((color) => {
-    return computeColor(color);
-  });
-}
-
-export function computeColor(color: string): string {
-  if (color[0] === '#') {
-    return new TinyColor(color).toHexString();
-  } else if (color.substring(0, 3) === 'var') {
-    return new TinyColor(
-      window.getComputedStyle(document.documentElement).getPropertyValue(color.substring(4).slice(0, -1)).trim(),
-    ).toHexString();
-  } else {
-    return new TinyColor(color).toHexString();
-  }
-}
-
 export function computeTextColor(backgroundColor: string): string {
   const colorObj = new TinyColor(backgroundColor);
   if (colorObj.isValid && colorObj.isLight()) {
@@ -175,6 +156,10 @@ export function getLovelace(): any | null {
 }
 
 export function interpolateColor(a: string, b: string, factor: number): string {
+  if (!/^#[0-9a-f]{6}$/i.test(a) || !/^#[0-9a-f]{6}$/i.test(b)) {
+    // Both colors must be plain hex values to be interpolated (see computeColor()).
+    return a;
+  }
   const ah = +a.replace('#', '0x');
   const ar = ah >> 16;
   const ag = (ah >> 8) & 0xff;
