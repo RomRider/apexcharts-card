@@ -15,9 +15,8 @@ import {
 import { handleAction, HomeAssistant } from 'custom-card-helpers';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
+import { computeColor, computeColors } from './color';
 import {
-  computeColor,
-  computeColors,
   computeName,
   computeTextColor,
   computeUom,
@@ -459,6 +458,8 @@ class ChartsCard extends LitElement {
         });
         this._config.series_in_graph = [];
         this._config.series_in_brush = [];
+        this._colors = [];
+        this._brushColors = [];
         this._config.series.forEach((serie, index) => {
           if (serie.show.in_chart) {
             this._colors.push(this._headerColors[index]);
@@ -939,10 +940,11 @@ class ChartsCard extends LitElement {
               if (serie.type === 'column') return [];
               return [this._colors[index]];
             }),
+            this,
           ),
         };
         // graphData.fill = { colors: graphData.colors };
-        graphData.legend = { markers: { fillColors: computeColors(this._colors) } };
+        graphData.legend = { markers: { fillColors: computeColors(this._colors, this) } };
         graphData.tooltip = { marker: { fillColors: graphData.legend.markers.fillColors } };
         graphData.fill = {
           gradient: {
@@ -953,7 +955,13 @@ class ChartsCard extends LitElement {
               const max = this._graphs?.[serie.index]?.max;
               if (min === undefined || max === undefined) return [];
               return (
-                this._computeFillColorStops(serie, min, max, computeColor(this._colors[index]), serie.invert) || []
+                this._computeFillColorStops(
+                  serie,
+                  min,
+                  max,
+                  computeColor(this._colors[index], this),
+                  serie.invert,
+                ) || []
               );
             }),
           },
@@ -968,7 +976,13 @@ class ChartsCard extends LitElement {
                 const max = this._graphs?.[serie.index]?.max;
                 if (min === undefined || max === undefined) return [];
                 return (
-                  this._computeFillColorStops(serie, min, max, computeColor(this._colors[index]), serie.invert) || []
+                  this._computeFillColorStops(
+                    serie,
+                    min,
+                    max,
+                    computeColor(this._colors[index], this),
+                    serie.invert,
+                  ) || []
                 );
               }),
             },
@@ -1022,7 +1036,7 @@ class ChartsCard extends LitElement {
             },
           };
         }
-        const selectionColor = computeColor('var(--primary-text-color)');
+        const selectionColor = computeColor('var(--primary-text-color)', this);
         brushData.chart.selection.stroke = { color: selectionColor };
         brushData.chart.selection.fill = { color: selectionColor, opacity: 0.1 };
         this._brushInit = true;
@@ -1061,7 +1075,7 @@ class ChartsCard extends LitElement {
           min: [0, null],
           max: [0, null],
         };
-        const bgColor = computeColor(this._colors[index]);
+        const bgColor = computeColor(this._colors[index], this);
         const txtColor = computeTextColor(bgColor);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const extremas: any = [];
@@ -1142,7 +1156,7 @@ class ChartsCard extends LitElement {
       },
     });
     if (withTime) {
-      let bgColorTime = tinycolor(computeColor('var(--card-background-color)'));
+      let bgColorTime = tinycolor(computeColor('var(--card-background-color)', this));
       bgColorTime =
         bgColorTime.isValid && bgColorTime.getLuminance() > 0.5 ? bgColorTime.darken(20) : bgColorTime.lighten(20);
       const txtColorTime = computeTextColor(bgColorTime.toHexString());
@@ -1180,7 +1194,7 @@ class ChartsCard extends LitElement {
 
   private _computeNowAnnotation(now: Date) {
     if (this._config?.now?.show) {
-      const color = computeColor(this._config.now.color || 'var(--primary-color)');
+      const color = computeColor(this._config.now.color || 'var(--primary-color)', this);
       const textColor = computeTextColor(color);
       return {
         xaxis: [
@@ -1321,7 +1335,10 @@ class ChartsCard extends LitElement {
   }
 
   private _computeChartColors(brush: boolean): (string | (({ value }) => string))[] {
-    const defaultColors: (string | (({ value }) => string))[] = computeColors(brush ? this._brushColors : this._colors);
+    const defaultColors: (string | (({ value }) => string))[] = computeColors(
+      brush ? this._brushColors : this._colors,
+      this,
+    );
     const series = brush ? this._config?.series_in_brush : this._config?.series_in_graph;
     series?.forEach((serie, index) => {
       if (
@@ -1333,12 +1350,12 @@ class ChartsCard extends LitElement {
       ) {
         const colors = this._colors;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        defaultColors[index] = function ({ value }, sortedL = serie.color_threshold!, defColor = colors[index]) {
+        defaultColors[index] = ({ value }, sortedL = serie.color_threshold!, defColor = colors[index]) => {
           let returnValue = sortedL[0].color || defColor;
           sortedL.forEach((color) => {
             if (value > color.value) returnValue = color.color || defColor;
           });
-          return computeColor(returnValue);
+          return computeColor(returnValue, this);
         };
       }
     });
@@ -1431,24 +1448,28 @@ class ChartsCard extends LitElement {
         if (index < 0) {
           color = computeColor(
             serie.color_threshold[serie.color_threshold.length - 1].color || this._headerColors[serie.index],
+            this,
           );
         } else if (index === 0) {
-          color = computeColor(serie.color_threshold[0].color || this._headerColors[serie.index]);
+          color = computeColor(serie.color_threshold[0].color || this._headerColors[serie.index], this);
         } else {
           const prev = serie.color_threshold[index - 1];
           const next = serie.color_threshold[index];
           if (serie.type === 'column') {
-            color = computeColor(prev.color || this._headerColors[serie.index]);
+            color = computeColor(prev.color || this._headerColors[serie.index], this);
           } else {
             const factor = (value - prev.value) / (next.value - prev.value);
             color = interpolateColor(
-              computeColor(prev.color || this._headerColors[serie.index]),
-              computeColor(next.color || this._headerColors[serie.index]),
+              computeColor(prev.color || this._headerColors[serie.index], this),
+              computeColor(next.color || this._headerColors[serie.index], this),
               factor,
             );
           }
         }
       } else {
+        // The color is used as-is here: when it is a CSS variable, the browser
+        // resolves it itself, and computeColor() now reads those variables from
+        // this very element, so the chart and the header always match.
         return this._headerColors && this._headerColors.length > 0 ? `color: ${this._headerColors[serie.index]};` : '';
       }
     }
