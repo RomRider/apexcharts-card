@@ -1,0 +1,213 @@
+<!doctype html>
+<!--
+  Reproduction for https://github.com/RomRider/apexcharts-card/issues/1123
+
+  `npm run build` (or `npm run watch`) in this repository, then serve this
+  directory over HTTP and open  http://localhost:5000/issue-1123-colors.html
+  (`npx http-server . -p 5000`, or any static server pointing at the repository
+  root and then /test/issue-1123-colors.html). No Home Assistant needed.
+
+  What it does: it renders a card with colorize_states: true and no color at
+  all, so the first series uses DEFAULT_COLORS[0] = var(--accent-color).
+  Home Assistant applies themes with applyThemesOnElement(), so the variables
+  are not always on <html>: this page defines a different --accent-color on
+  <html> and on the wrapper around the card, exactly like a theme would.
+  The header is painted by the browser (card scope), while the chart colors are
+  resolved by the card. If the two disagree, the bug is present.
+-->
+<meta charset="utf-8" />
+<title>apexcharts-card #1123</title>
+<style>
+  body {
+    font: 14px/1.4 sans-serif;
+    margin: 0;
+    padding: 16px;
+    background: #1c1c1c;
+    color: #eee;
+  }
+  /* What <html> (and documentElement) says. */
+  html {
+    --accent-color: #7aa2be;
+    --primary-text-color: #f2f2f2;
+    --card-background-color: #1c1c1c;
+  }
+  /* What the theme applied on the dashboard element says: the card is painted
+     with this one, the header included. */
+  #dash {
+    width: 680px;
+    padding: 8px;
+    background: var(--card-background-color);
+    --accent-color: #ff9800;
+  }
+  pre {
+    white-space: pre-wrap;
+    max-width: 700px;
+  }
+  .pass {
+    color: #2ecc71;
+  }
+  .fail {
+    color: #e74c3c;
+  }
+</style>
+<h3>Issue #1123: header states vs series colors</h3>
+<p>
+  <html> accent: <b id="accent-html"></b> &mdash; card accent: <b id="accent-card"></b>
+</p>
+<div id="dash"></div>
+<pre id="results">Running&hellip;</pre>
+<script type="module">
+import '../dist/apexcharts-card.js';
+
+const ACCENT_ON_HTML = '#7aa2be';
+const ACCENT_ON_DASH = '#ff9800';
+const HEX_SERIE = '#3498db';
+const OKLCH_SERIE = 'oklch(62.8% 0.257 29.234)';
+
+const CONFIG = {
+  type: 'custom:apexcharts-card',
+  graph_span: '24h',
+  header: { show: true, show_states: true, colorize_states: true },
+  apex_config: { chart: { animations: { enabled: false }, toolbar: { show: false }, height: 170 } },
+  series: [
+    { entity: 'sensor.var_color' },
+    { entity: 'sensor.hex_color', color: HEX_SERIE },
+    { entity: 'sensor.oklch_color', color: OKLCH_SERIE },
+  ],
+};
+
+// Stand-in for the Home Assistant frontend's `hass` object.
+const now = Date.now();
+const iso = (t) => new Date(t).toISOString();
+const stateObj = (id, value, t) => ({
+  entity_id: id,
+  state: String(value),
+  attributes: { unit_of_measurement: 'kWh', friendly_name: id.split('.')[1].replace(/_/g, ' ') },
+  last_changed: iso(t),
+  last_updated: iso(t),
+  last_reported: iso(t),
+  context: { id: 'ctx', parent_id: null, user_id: null },
+});
+const hass = {
+  states: {
+    'sensor.var_color': stateObj('sensor.var_color', 42.5, now - 60000),
+    'sensor.hex_color': stateObj('sensor.hex_color', 12, now - 60000),
+    'sensor.oklch_color': stateObj('sensor.oklch_color', 7, now - 60000),
+  },
+  config: { time_zone: 'UTC', unit_system: { length: 'km', mass: 'g', temperature: 'C', volume: 'L', energy: 'kWh' } },
+  locale: {
+    language: 'en',
+    number_format: 'comma_decimal',
+    time_format: 'language',
+    first_weekday: 'monday',
+    first_weekday_workday_index: 0,
+    day_format: 'american',
+    time_zone: 'UTC',
+  },
+  language: 'en',
+  connected: true,
+  callApi: (method, path) => {
+    const url = new URL(path, 'http://localhost/api/');
+    const ids = url.searchParams.getAll('filter_entity_id');
+    const start = Date.parse(decodeURIComponent(url.pathname.split('/').pop() || '')) || now - 86400000;
+    const end = Date.parse(url.searchParams.get('end_time') || '') || now;
+    return Promise.resolve(
+      ids.map((id) => {
+        const points = [];
+        for (let t = start; t <= end; t += 1800000) {
+          const offset = { 'sensor.hex_color': 7, 'sensor.oklch_color': 14 }[id] || 0;
+          const value = 10 + 5 * Math.sin((t - start) / 3600000) + offset;
+          points.push(stateObj(id, value.toFixed(2), t));
+        }
+        return points;
+      }),
+    );
+  },
+  callWS: () => Promise.resolve({}),
+};
+
+const canvas = document.createElement('canvas');
+canvas.width = 1;
+canvas.height = 1;
+const ctx = canvas.getContext('2d');
+// Reads back what the browser would really paint for any CSS color
+// (hex, rgb(), var() already substituted, oklch(), color(...), ...).
+const rgbOf = (value) => {
+  value = (value || '').trim();
+  if (!value) return null;
+  ctx.fillStyle = '#010203';
+  ctx.fillStyle = value;
+  if (ctx.fillStyle === '#010203') return null; // the browser rejected it too
+  ctx.clearRect(0, 0, 1, 1);
+  ctx.fillRect(0, 0, 1, 1);
+  const d = ctx.getImageData(0, 0, 1, 1).data;
+  return [d[0], d[1], d[2]];
+};
+const near = (a, b) => a !== null && b !== null && Math.max(...a.map((v, i) => Math.abs(v - b[i]))) <= 2;
+const rgb = (value) => (value === null ? 'nothing' : `rgb(${value.join(',')})`);
+
+document.getElementById('accent-html').textContent = getComputedStyle(document.documentElement)
+  .getPropertyValue('--accent-color')
+  .trim();
+
+const card = document.createElement('apexcharts-card');
+document.getElementById('dash').appendChild(card);
+card.setConfig(CONFIG);
+card.hass = hass;
+
+document.getElementById('accent-card').textContent = getComputedStyle(card).getPropertyValue('--accent-color').trim();
+
+const pick = () => {
+  const root = card.shadowRoot;
+  if (!root) return null;
+  const legend = [...root.querySelectorAll('.apexcharts-legend-series')];
+  const lines = [...root.querySelectorAll('.apexcharts-line')];
+  if (legend.length < 3 || lines.length < 3) return null;
+  return {
+    header: [...root.querySelectorAll('#state__value span#state')].map((el) => rgbOf(getComputedStyle(el).color)),
+    legend: legend.map((s) => rgbOf(s.querySelector('span.apexcharts-legend-marker path[fill]')?.getAttribute('fill'))),
+    lines: lines.map((p) => rgbOf(p.getAttribute('stroke'))),
+  };
+};
+
+const results = [];
+const deadline = Date.now() + 20000;
+let measured = null;
+while (Date.now() < deadline) {
+  measured = pick();
+  if (measured) break;
+  await new Promise((r) => setTimeout(r, 100));
+}
+
+const SERIES = [
+  { label: 'serie 1, no color set (var(--accent-color))', expected: ACCENT_ON_DASH },
+  { label: 'serie 2, color: #3498db', expected: HEX_SERIE },
+  { label: 'serie 3, color: oklch(62.8% 0.257 29.234)', expected: OKLCH_SERIE },
+];
+
+if (!measured) {
+  results.push({ check: 'the chart rendered', passed: false, error: 'timeout, no legend/lines' });
+} else {
+  SERIES.forEach((s, index) => {
+    const same =
+      near(measured.header[index], measured.legend[index]) && near(measured.legend[index], measured.lines[index]);
+    const correct = near(measured.lines[index], rgbOf(s.expected));
+    results.push({
+      check: `${s.label}: header == legend == line == ${s.expected}`,
+      passed: same && correct,
+      header: rgb(measured.header[index]),
+      legend: rgb(measured.legend[index]),
+      line: rgb(measured.lines[index]),
+      expected: rgb(rgbOf(s.expected)),
+    });
+  });
+}
+
+const out = document.getElementById('results');
+out.textContent = results
+  .map((r) => `${r.passed ? 'PASS' : 'FAIL'}  ${r.check}\n      ${JSON.stringify(r)}`)
+  .join('\n\n');
+out.className = results.every((r) => r.passed) ? 'pass' : 'fail';
+window.results = results;
+window.finished = true;
+</script>
