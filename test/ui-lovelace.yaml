@@ -21,6 +21,21 @@ views:
       - type: grid
         columns: 3
         cards:
+          # https://github.com/RomRider/apexcharts-card/issues/1123
+          # No color_list/color configured, so the first series uses var(--accent-color).
+          # The header states, the legend markers and the lines must all use the same color.
+          - type: custom:apexcharts-card
+            graph_span: 1h
+            update_interval: 30s
+            header:
+              show: true
+              title: 'Header colors (#1123)'
+              show_states: true
+              colorize_states: true
+            series:
+              - entity: sensor.random0_100
+              - entity: sensor.random_0_1000
+              - entity: sensor.temperature
           - type: custom:apexcharts-card
             apex_config:
               chart:
