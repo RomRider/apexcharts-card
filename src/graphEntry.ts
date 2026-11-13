@@ -190,14 +190,27 @@ export default class GraphEntry {
   }
 
   public async _updateHistory(start: Date, end: Date): Promise<boolean> {
+    if (!this._entityState || this._updating) return false;
+    this._updating = true;
+    try {
+      return await this._fetchAndComputeHistory(start, end);
+    } finally {
+      // Always clear the flag, even if a fetch failed (network drop, HA
+      // restart...). Otherwise this series would never update again.
+      this._updating = false;
+    }
+  }
+
+  private async _fetchAndComputeHistory(start: Date, end: Date): Promise<boolean> {
+    // Already checked in _updateHistory(), but TS doesn't carry the narrowing
+    // across methods, so _entityState needs to be checked again here.
+    if (!this._entityState) return false;
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
       const range = end.getTime() - start.getTime();
       const nbBuckets = Math.floor(range / this._groupByDurationMs) + (range % this._groupByDurationMs > 0 ? 1 : 0);
       startHistory = new Date(end.getTime() - (nbBuckets + 1) * this._groupByDurationMs);
     }
-    if (!this._entityState || this._updating) return false;
-    this._updating = true;
 
     if (this._config.ignore_history) {
       let currentState: null | number | string = null;
@@ -212,7 +225,6 @@ export default class GraphEntry {
       let stateParsed: number | null = parseFloat(currentState as string);
       stateParsed = !Number.isNaN(stateParsed) ? stateParsed : null;
       this._computedHistory = [[new Date(this._entityState.last_updated).getTime(), stateParsed]];
-      this._updating = false;
       return true;
     }
 
@@ -369,7 +381,6 @@ export default class GraphEntry {
     }
 
     if (!history || history.data.length === 0) {
-      this._updating = false;
       this._computedHistory = undefined;
       return false;
     }
@@ -384,7 +395,6 @@ export default class GraphEntry {
     } else {
       this._computedHistory = history.data;
     }
-    this._updating = false;
     return true;
   }
 
