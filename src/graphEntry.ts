@@ -202,6 +202,8 @@ export default class GraphEntry {
   }
 
   private async _fetchAndComputeHistory(start: Date, end: Date): Promise<boolean> {
+    // Already checked in _updateHistory(), but TS doesn't carry the narrowing
+    // across methods, so _entityState needs to be checked again here.
     if (!this._entityState) return false;
     let startHistory = new Date(start);
     if (this._config.group_by.func !== 'raw') {
