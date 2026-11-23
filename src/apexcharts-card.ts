@@ -165,6 +165,11 @@ class ChartsCard extends LitElement {
 
   private _brushInit = false;
 
+  // Range chosen by the user with the zoom/pan toolbar; kept across data refreshes
+  private _userZoom?: { min: number; max: number };
+
+  private _zoomResetting = false;
+
   private _brushSelectionSpan = 0;
 
   private _yAxisConfig?: ChartCardYAxis[];
@@ -781,6 +786,38 @@ class ChartsCard extends LitElement {
     return html``;
   }
 
+  // Remember the range picked with the zoom/pan toolbar so a data refresh does not reset it.
+  // Any user supplied apex_config.chart.events handlers are still called.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private _trackUserZoom(layout: any): void {
+    layout.chart = layout.chart || {};
+    const events = (layout.chart.events = layout.chart.events || {});
+    const { zoomed, scrolled, beforeResetZoom } = events;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const keep = (_chart: unknown, opts: any): void => {
+      if (this._zoomResetting) return;
+      const x = opts?.xaxis;
+      if (x && x.min != null && x.max != null) this._userZoom = { min: x.min, max: x.max };
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    events.zoomed = (chart: unknown, opts: any) => {
+      keep(chart, opts);
+      return zoomed?.(chart, opts);
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    events.scrolled = (chart: unknown, opts: any) => {
+      keep(chart, opts);
+      return scrolled?.(chart, opts);
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    events.beforeResetZoom = (chart: unknown, opts: any) => {
+      this._userZoom = undefined;
+      this._zoomResetting = true; // ApexCharts fires "zoomed" right after the reset
+      setTimeout(() => (this._zoomResetting = false), 0);
+      return beforeResetZoom?.(chart, opts);
+    };
+  }
+
   private async _initialLoad() {
     await new Promise((resolve) => requestAnimationFrame(resolve));
     await this.updateComplete;
@@ -796,6 +833,8 @@ class ChartsCard extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
+      this._userZoom = undefined;
+      this._trackUserZoom(layout);
       this._apexChart = new ApexCharts(graph, layout);
       const promises: Promise<void>[] = [];
       promises.push(this._apexChart.render());
@@ -893,10 +932,12 @@ class ChartsCard extends LitElement {
           graphData.yaxis = this._computeYAxisAutoMinMax(start, end);
         }
         if (!this._apexBrush) {
-          graphData.xaxis = {
-            min: start.getTime() - this._serverTimeOffset,
-            max: this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false),
-          };
+          graphData.xaxis = this._userZoom
+            ? { min: this._userZoom.min, max: this._userZoom.max }
+            : {
+                min: start.getTime() - this._serverTimeOffset,
+                max: this._findEndOfChart(new Date(end.getTime() - this._serverTimeOffset), false),
+              };
         }
       } else {
         // No timeline charts
